@@ -321,7 +321,7 @@
 
     // Confirmation opener (wired)
     function openConfirmation(b){
-      const url = 'booking-confirmation.html?b='+btoa(JSON.stringify(b));
+      const url = '/booking-confirmation.html?b='+btoa(JSON.stringify(b));
       window.open(url, '_blank');
     }
 
