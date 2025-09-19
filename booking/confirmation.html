@@ -1,0 +1,493 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Elite Air — Booking Confirmation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      /* Brand & UI tokens (match other pages) */
+      --gold:#C7A98C; --gold-hi:#FFD479; --ink:#111827; --muted:#6B7280; --line:#E5E7EB; --bg:#F7F6F3; --white:#ffffff;
+      --shadow:0 18px 60px rgba(15,23,42,.12);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--ink);background:var(--bg);line-height:1.55}
+
+    /* ===== Header ===== */
+    .topbar{position:sticky;top:0;z-index:50;
+      background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%);
+      box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)}
+    .topbar-inner{max-width:1200px;margin:0 auto;padding:18px 20px;display:flex;align-items:center;gap:20px}
+    .brand{font-weight:700;font-size:22px;letter-spacing:.06em;color:#1e1e1e}
+    .navlink{font-weight:800;text-decoration:none;color:#1e1e1e}
+    .spacer{flex:1}
+    .pill{border:1px solid var(--line);border-radius:999px;background:#fff;padding:8px 12px;font-weight:800;font-size:13px}
+
+    .lang{position:relative}
+    .langbtn{border:1px solid var(--line);border-radius:999px;background:#fff;padding:8px 12px;font-weight:800;cursor:pointer}
+    .langlist{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 26px rgba(0,0,0,.08);list-style:none;margin:0;padding:6px;display:none;min-width:92px}
+    .langlist li{padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:700}
+    .langlist li:hover{background:#f4f5f7}
+    .lang.open .langlist{display:block}
+
+    /* ===== Banner ===== */
+    .banner{background-image:linear-gradient(to bottom, rgba(255,255,255,.1), rgba(255,255,255,.75)),
+                         url('https://eliteair.com.kw/demo/img/eliteair-service3.png');
+            background-size:cover;background-position:center}
+    .banner-inner{max-width:1200px;margin:0 auto;padding:26px 20px}
+    .route{font-size:32px;font-weight:900;letter-spacing:.3px}
+    .route small{display:block;font-size:12px;color:var(--muted);margin-top:6px}
+
+    /* ===== Layout ===== */
+    .wrap{max-width:1200px;margin:0 auto;padding:18px 20px}
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+    @media (max-width:940px){.grid{grid-template-columns:1fr}}
+
+    /* ===== Cards ===== */
+    .card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+    .hd{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+    .bd{padding:14px 16px}
+    .k{font-size:12px;color:var(--muted)}
+    .status{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:#ecfdf5;color:#16a34a;font-weight:900;font-size:12px}
+    .status .dot{width:8px;height:8px;border-radius:999px;background:#16a34a}
+
+    .details{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+    .detail{border:1px dashed var(--line);border-radius:12px;padding:10px}
+    .detail small{display:block;color:var(--muted);font-weight:800;margin-bottom:6px}
+
+    .legs{display:grid;gap:12px}
+    .leg{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+    .leg .row{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+    .leg .city{font-weight:900}
+    .plane{opacity:.6;text-align:center}
+
+    .tickets{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:10px}
+    .ticket{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff;display:grid;gap:8px}
+    .ticket h3{margin:0;font-size:16px}
+    .row{display:flex;gap:10px;justify-content:space-between}
+    .qr{border:1px dashed var(--line);border-radius:12px;padding:10px;display:grid;gap:8px;place-items:center}
+    .qr .meta{font-size:11px;color:#6b7280;text-align:center;word-break:break-all}
+    .qr img{width:160px;height:160px;display:block}
+
+    .price{display:grid;gap:8px}
+    .price .line{display:flex;justify-content:space-between}
+    .price .total{border-top:1px solid var(--line);margin-top:8px;padding-top:8px;font-weight:900}
+
+    .bar{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
+    .btn.primary{background:linear-gradient(135deg,var(--gold),#E7D9C7);color:#111}
+    .btn.ghost{background:#fff;border:1px solid var(--line)}
+
+    /* ===== Footer ===== */
+    .elite-footer{position:relative;background:linear-gradient(180deg,#1C2128,#161A1F);color:#FDFDFC;padding:42px 20px 24px;overflow:hidden;margin-top:26px}
+    .elite-mesh{position:absolute;inset:-10% -6% -18% -6%;transform:rotate(-6deg);width:120%;height:140%;pointer-events:none}
+    .footer-inner{position:relative;z-index:1;max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .copy{color:#9FA6B2;font:500 14px/1.6 Inter,system-ui}
+    .links{display:flex;gap:14px}
+    .links a{color:#B9C1CC;text-decoration:none;font:600 14px/1.6 Inter,system-ui}
+    .links a:hover{color:#FFD479}
+  </style>
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <div class="brand">ELITE&nbsp;AIR</div>
+      <a class="navlink" href="../index.html">Home</a>
+      <div class="spacer"></div>
+      <span class="pill" id="paxSummary">—</span>
+      <div class="lang" id="lang">
+        <button class="langbtn" id="langbtn" aria-haspopup="listbox" aria-expanded="false"><span id="curLang">EN</span> ▾</button>
+        <ul class="langlist" id="langlist" role="listbox" aria-label="Choose language">
+          <li role="option" data-lang="en">EN</li>
+          <li role="option" data-lang="ar">AR</li>
+          <li role="option" data-lang="fr">FR</li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Banner ===== -->
+  <section class="banner">
+    <div class="banner-inner">
+      <div class="route" id="routeTitle">—</div>
+      <small id="routeSub">—</small>
+    </div>
+  </section>
+
+  <!-- ===== Main ===== -->
+  <div class="wrap">
+    <div class="grid">
+      <!-- LEFT: Confirmation & tickets -->
+      <div class="card">
+        <div class="hd">
+          <strong>Booking confirmation</strong>
+          <span class="status"><span class="dot"></span> Ticketed</span>
+        </div>
+        <div class="bd">
+          <div class="details">
+            <div class="detail"><small>PNR</small><strong id="pnr">—</strong></div>
+            <div class="detail"><small>Passengers</small><strong id="paxCount">—</strong></div>
+            <div class="detail"><small>Lead passenger</small><strong id="leadName">—</strong></div>
+            <div class="detail"><small>Lead seat</small><strong id="leadSeat">—</strong></div>
+          </div>
+
+          <div class="legs" style="margin-top:12px">
+            <div class="leg" id="leg0" hidden>
+              <div class="row">
+                <div>
+                  <div class="k">Departure</div>
+                  <div class="city"><span id="fromIata0">—</span> • <span id="fromCity0">—</span></div>
+                  <div class="k"><span id="depDate0">—</span> • STD <span id="depTime0">02:00</span></div>
+                </div>
+                <div class="plane" aria-hidden="true">✈️</div>
+                <div style="text-align:right">
+                  <div class="k">Arrival</div>
+                  <div class="city"><span id="toIata0">—</span> • <span id="toCity0">—</span></div>
+                  <div class="k"><span id="arrDate0">—</span> • STA <span id="arrTime0">—</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="leg" id="leg1" hidden>
+              <div class="row">
+                <div>
+                  <div class="k">Return</div>
+                  <div class="city"><span id="fromIata1">—</span> • <span id="fromCity1">—</span></div>
+                  <div class="k"><span id="depDate1">—</span> • STD <span id="depTime1">02:00</span></div>
+                </div>
+                <div class="plane" aria-hidden="true">✈️</div>
+                <div style="text-align:right">
+                  <div class="k">Arrival</div>
+                  <div class="city"><span id="toIata1">—</span> • <span id="toCity1">—</span></div>
+                  <div class="k"><span id="arrDate1">—</span> • STA <span id="arrTime1">—</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="margin:16px 0 6px">E-tickets</h3>
+          <div class="tickets" id="tickets"></div>
+
+          <div class="bar" style="margin-top:12px">
+            <button class="btn ghost" id="newSearch">New search</button>
+            <button class="btn primary" id="printBtn">Print / Save PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Price summary -->
+      <aside class="card">
+        <div class="hd"><strong>Price summary</strong></div>
+        <div class="bd">
+          <div class="price" id="priceBox"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ===== Footer ===== -->
+  <footer class="elite-footer">
+    <svg class="elite-mesh" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="eaGold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#C7A98C"/><stop offset="1" stop-color="#FFD479"/>
+      </linearGradient></defs>
+      <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+        <path d="M-120,840 C 220,690 560,640 980,620 1310,605 1670,560 1880,490"/>
+        <path d="M-120,760 C 220,620 560,580 980,560 1310,545 1670,510 1880,450"/>
+        <path d="M-120,680 C 220,550 560,520 980,500 1310,490 1670,470 1880,415"/>
+        <path d="M-120,600 C 220,480 560,460 980,440 1310,430 1670,440 1880,385"/>
+        <path d="M-120,520 C 220,420 560,400 980,380 1310,370 1670,410 1880,360"/>
+      </g>
+      <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+        <path d="M 0,900 C 360,760 720,700 1120,660 1520,620 1920,560 2320,520"/>
+        <path d="M 0,820 C 360,700 720,640 1120,600 1520,560 1920,540 2320,500"/>
+        <path d="M 0,740 C 360,640 720,600 1120,560 1520,520 1920,520 2320,480"/>
+        <path d="M 0,660 C 360,580 720,560 1120,520 1520,500 1920,500 2320,460"/>
+      </g>
+    </svg>
+    <div class="footer-inner">
+      <div class="copy">© Elite Air</div>
+      <div class="links">
+        <a href="../privacy-policy.html">Privacy</a>
+        <a href="../Terms-And-Conditions.html">Terms</a>
+        <a href="../contact.html">Help</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* Language dropdown */
+    (function(){
+      const wrap = document.getElementById('lang');
+      const btn  = document.getElementById('langbtn');
+      const list = document.getElementById('langlist');
+      const cur  = document.getElementById('curLang');
+      btn.addEventListener('click', ()=>{ const open=wrap.classList.toggle('open'); btn.setAttribute('aria-expanded',open?'true':'false'); });
+      document.addEventListener('click',(e)=>{ if(!wrap.contains(e.target)){ wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }});
+      list.addEventListener('click',(e)=>{ const li=e.target.closest('li'); if(!li) return; cur.textContent=li.dataset.lang.toUpperCase(); wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false'); document.documentElement.dir = (li.dataset.lang==='ar')?'rtl':'ltr'; });
+    })();
+  </script>
+
+  <script>
+    /* ===== Confirmation logic: reads URL + session (order, passengers, seats), renders tickets, fares & totals ===== */
+
+    const qs=(s,el=document)=>el.querySelector(s);
+    const qsa=(s,el=document)=>Array.from(el.querySelectorAll(s));
+
+    const AIRPORTS = {
+      KWI:{city:'Kuwait'}, LHR:{city:'London Heathrow'}, LGW:{city:'London Gatwick'},
+      ORY:{city:'Paris Orly'}, RAK:{city:'Marrakesh'}, CAI:{city:'Cairo'},
+      IST:{city:'Istanbul'}, DXB:{city:'Dubai'}, RUH:{city:'Riyadh'}, DOH:{city:'Doha'}, BAH:{city:'Bahrain'}, JED:{city:'Jeddah'}
+    };
+    const city = code => AIRPORTS[code]?.city || code;
+    const dstr = iso => new Date(iso).toLocaleDateString(undefined,{weekday:'short', day:'2-digit', month:'short', year:'numeric'});
+
+    // === Fare/Package helpers (NEW)
+    const FARE_NAMES = { SR:'Serene', HR:'Harmony', MJ:'Majesty' };
+    const fareLabel = (code) => code ? `${code} • ${FARE_NAMES[code] || ''}` : '—';
+
+    function params(){
+      const u = new URL(location.href);
+      const p = Object.fromEntries(u.searchParams.entries());
+      p.from = (p.from||'KWI').toUpperCase();
+      p.to   = (p.to||'ORY').toUpperCase();
+      p.trip = (p.trip==='oneway') ? 'oneway' : 'round';
+      p.date = p.date || new Date().toISOString().slice(0,10);
+      if(p.trip==='round'){ p.returnDate = p.returnDate || new Date(Date.parse(p.date)+3*86400000).toISOString().slice(0,10); }
+      p.a = Math.max(1, Math.min(9, Number(p.a||1)));
+      p.c = Math.max(0, Math.min(9, Number(p.c||0)));
+      p.i = Math.max(0, Math.min(9, Number(p.i||0)));
+      p.pax = Math.max(1, Math.min(9, Number(p.pax || (p.a+p.c+p.i))));
+      p.cur = (p.cur||'KWD').toUpperCase();
+
+      // Fares & prices (from Review)
+      if(p.fare0) p.fare0 = String(p.fare0).toUpperCase();
+      if(p.fare1) p.fare1 = String(p.fare1).toUpperCase();
+      p.price0 = Number(p.price0||0); p.price1 = Number(p.price1||0);
+
+      // Seats & seat fees (from Seat selection / Review)
+      p.seatSel0 = (p.seatSel0||'').split(',').filter(Boolean);
+      p.seatSel1 = (p.seatSel1||'').split(',').filter(Boolean);
+      p.seatFeeKWD0 = Number(p.seatFeeKWD0||0);
+      p.seatFeeKWD1 = Number(p.seatFeeKWD1||0);
+
+      // Total & booking ref
+      p.total = Number(String(p.total||'0').replace(/[^\d.]/g,''));
+      p.ref = p.ref || ('EA' + Math.random().toString(36).slice(2,8).toUpperCase());
+      return p;
+    }
+    const P = params();
+
+    // Fallbacks from session for robustness (if user refreshed or arrived directly)
+    function readOrder(){
+      try{ return JSON.parse(sessionStorage.getItem('ea:order')||'{}'); }catch(e){ return {}; }
+    }
+    function readPassengers(){
+      try{
+        const raw = sessionStorage.getItem('ea:passengers'); if(!raw) return [];
+        const o = JSON.parse(raw); const list=[];
+        list.push({title:o['title1']||'',fn:o['fn1']||'',ln:o['ln1']||'',dob:o['dob1']||'',nat:o['nat1']||''});
+        for(let i=2;i<=P.pax;i++){
+          list.push({title:o[`title${i}`]||'',fn:o[`fn${i}`]||'',ln:o[`ln${i}`]||'',dob:o[`dob${i}`]||'',nat:o[`nat${i}`]||''});
+        }
+        return list;
+      }catch(e){ return []; }
+    }
+
+    // (NEW) Fill missing fare/price from saved order
+    function maybeFillFromOrder(){
+      const order = readOrder();
+      if(!order || !order.from) return;
+      if(!P.fare0 && order.fare0) P.fare0 = order.fare0;
+      if(!P.fare1 && order.fare1) P.fare1 = order.fare1;
+      if((!P.price0 || P.price0===0) && order.price0) P.price0 = Number(order.price0);
+      if((!P.price1 || P.price1===0) && order.price1) P.price1 = Number(order.price1);
+      if(!P.cur && order.cur) P.cur = order.cur;
+    }
+
+    function maybeFillSeatsFromSession(){
+      // build booking key like seat-selection
+      const key = `${P.from}-${P.to}-${P.date}-p${P.pax}`;
+      try{
+        if(!P.seatSel0.length){
+          const s0 = JSON.parse(sessionStorage.getItem(`ea:seats:${key}:leg0`)||'null');
+          if(s0){ P.seatSel0 = s0.seats||[]; P.seatFeeKWD0 = Number(s0.feeKWD||0); }
+        }
+        if(P.trip==='round' && !P.seatSel1.length){
+          const s1 = JSON.parse(sessionStorage.getItem(`ea:seats:${key}:leg1`)||'null');
+          if(s1){ P.seatSel1 = s1.seats||[]; P.seatFeeKWD1 = Number(s1.feeKWD||0); }
+        }
+      }catch(e){}
+    }
+
+    function fmt(n,cur){
+      try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:(cur||'KWD')}).format(Number(n||0)); }
+      catch(e){ return (cur||'KWD')+' '+Number(n||0).toFixed(2); }
+    }
+
+    function renderHeader(){
+      const isRT = (P.trip==='round' && P.returnDate);
+      qs('#paxSummary').textContent = `Adult ${P.a} · Child ${P.c} · Infant ${P.i}`;
+      qs('#routeTitle').textContent = isRT ? `${P.from} → ${P.to} → ${P.from}` : `${P.from} → ${P.to}`;
+      const seg1 = `${city(P.from)} to ${city(P.to)} on ${dstr(P.date)}`;
+      const seg2 = isRT ? ` · Return ${city(P.to)} to ${city(P.from)} on ${dstr(P.returnDate)}` : '';
+      qs('#routeSub').textContent = `${seg1}${seg2} · ${P.pax} passenger${P.pax>1?'s':''}`;
+    }
+
+    function renderLegs(){
+      // Departure
+      qs('#leg0').hidden = false;
+      qs('#fromIata0').textContent = P.from; qs('#fromCity0').textContent = city(P.from);
+      qs('#toIata0').textContent = P.to;     qs('#toCity0').textContent   = city(P.to);
+      qs('#depDate0').textContent = dstr(P.date);
+      qs('#arrDate0').textContent = dstr(P.date); // same-day placeholder
+      // Return
+      if(P.trip==='round' && P.returnDate){
+        qs('#leg1').hidden = false;
+        qs('#fromIata1').textContent = P.to;     qs('#fromCity1').textContent = city(P.to);
+        qs('#toIata1').textContent   = P.from;   qs('#toCity1').textContent   = city(P.from);
+        qs('#depDate1').textContent  = dstr(P.returnDate);
+        qs('#arrDate1').textContent  = dstr(P.returnDate);
+      }
+    }
+
+    // (NEW) Fare & Package block: auto-injects near priceBox and fills chips
+    function renderFares(){
+      const isRT = (P.trip==='round' && P.returnDate);
+      let block = document.getElementById('fareBlock');
+      if(!block){
+        const priceBox = qs('#priceBox');
+        if(priceBox && priceBox.parentElement){
+          const wrap = priceBox.parentElement;
+          block = document.createElement('div');
+          block.id = 'fareBlock';
+          block.style.marginTop = '12px';
+          block.innerHTML = `
+            <h3 style="margin:0 0 6px">Fare &amp; package</h3>
+            <div class="row"><span class="k">Outbound</span> <span class="chip" id="fareChip0">—</span></div>
+            <div class="row" id="fareRow1" hidden><span class="k">Return</span> <span class="chip" id="fareChip1">—</span></div>
+          `;
+          wrap.insertBefore(block, wrap.firstChild);
+        }
+      }
+      const row1 = qs('#fareRow1');
+      const chip0 = qs('#fareChip0');
+      const chip1 = qs('#fareChip1');
+      if(chip0) chip0.textContent = fareLabel(P.fare0);
+      if(row1) row1.hidden = !isRT;
+      if(isRT && chip1) chip1.textContent = fareLabel(P.fare1);
+    }
+
+    function passengersList(){
+      const fromStorage = readPassengers();
+      if(fromStorage.length){ return fromStorage; }
+      // Fallback generic names
+      return Array.from({length:P.pax},(_,i)=>({title:'',fn:'Passenger',ln:String(i+1),dob:'',nat:''}));
+    }
+
+    /* === QR helper: your old API === */
+    function qrUrl(text, size=160){
+      // SVG for print crisp; qzone adds quiet zone
+      const base = 'https://api.qrserver.com/v1/create-qr-code/';
+      return `${base}?format=svg&size=${size}x${size}&qzone=2&data=${encodeURIComponent(text)}`;
+    }
+
+    function renderDetailsAndTickets(){
+      const pax = passengersList();
+      const lead = pax[0] || {};
+      qs('#pnr').textContent = P.ref;
+      qs('#paxCount').textContent = String(P.pax);
+      qs('#leadName').textContent = [lead.title, lead.fn, lead.ln].filter(Boolean).join(' ').trim() || 'Passenger 1';
+      const leadSeat = (P.seatSel0[0] || P.seatSel1[0] || '—');
+      qs('#leadSeat').textContent = leadSeat;
+
+      const box = qs('#tickets'); box.innerHTML='';
+      pax.forEach((p,idx)=>{
+        const name  = [p.title,p.fn,p.ln].filter(Boolean).join(' ').trim() || `Passenger ${idx+1}`;
+        const seat0 = P.seatSel0[idx] || P.seatSel0[0] || '—';
+        const seat1 = (P.trip==='round' && P.returnDate) ? (P.seatSel1[idx] || P.seatSel1[0] || '—') : null;
+
+        // QR payload with NAME + SEAT(s)
+        const payload =
+          `ELITEAIR|PNR:${P.ref}|PAX:${idx+1}|NAME:${name}|SEAT:${seat0}` +
+          `${seat1?`|RETURN_SEAT:${seat1}`:''}|FROM:${P.from}|TO:${P.to}` +
+          `${(P.trip==='round'&&P.returnDate)?'|RTN:'+P.from:''}|DATE:${P.date}`;
+
+        const card = document.createElement('div');
+        card.className='ticket';
+        card.innerHTML = `
+          <h3>${name}</h3>
+          <div class="row"><span class="k">Departure seat</span><strong>${seat0}</strong></div>
+          ${seat1?`<div class="row"><span class="k">Return seat</span><strong>${seat1}</strong></div>`:''}
+          <div class="qr">
+            <img alt="Boarding QR for ${name}" src="${qrUrl(payload,160)}">
+            <div class="meta"><strong>${name}</strong> • Seat ${seat0}${seat1?` / Return ${seat1}`:''}</div>
+            <div class="meta">Ref ${P.ref} • ${P.from}–${P.to}${(P.trip==='round'&&P.returnDate)?'–'+P.from:''}</div>
+          </div>
+        `;
+        box.appendChild(card);
+      });
+    }
+
+    function renderPrices(){
+      const isRT = (P.trip==='round' && P.returnDate);
+      const base0 = Number(P.price0||0) * P.pax;
+      const base1 = isRT ? (Number(P.price1||0) * P.pax) : 0;
+      const seatFees = Number(P.seatFeeKWD0||0) + (isRT ? Number(P.seatFeeKWD1||0) : 0);
+      const subtotal = base0 + base1 + seatFees;
+      const total = P.total || subtotal;
+
+      qs('#priceBox').innerHTML = `
+        <div class="line"><span>Outbound fare × ${P.pax}</span><span>${fmt(base0,P.cur)}</span></div>
+        ${isRT?`<div class="line"><span>Return fare × ${P.pax}</span><span>${fmt(base1,P.cur)}</span></div>`:''}
+        <div class="line"><span>Seat selection fees</span><span>${fmt(seatFees,P.cur)}</span></div>
+        <div class="total line"><span>Total paid</span><span>${fmt(total,P.cur)}</span></div>
+      `;
+    }
+
+    function linkButtons(){
+      qs('#newSearch').addEventListener('click', ()=>{
+        const u = new URL('../booking/Choose-flight.html', location.href);
+        const sp = u.searchParams;
+        sp.set('from', P.from); sp.set('to', P.to);
+        sp.set('date', P.date);
+        sp.set('trip', P.trip);
+        if(P.trip==='round' && P.returnDate) sp.set('returnDate', P.returnDate);
+        sp.set('a', P.a); sp.set('c', P.c); sp.set('i', P.i); sp.set('pax', P.pax);
+        sp.set('cur', P.cur);
+        if(P.fare0) sp.set('fare0', P.fare0);
+        if(P.fare1) sp.set('fare1', P.fare1);
+        if(P.price0) sp.set('price0', P.price0);
+        if(P.price1) sp.set('price1', P.price1);
+        location.href = u.toString();
+      });
+      qs('#printBtn').addEventListener('click', ()=>window.print());
+    }
+
+    function init(){
+      maybeFillFromOrder();
+      // If URL lacks seats/totals, borrow from session 'ea:order'
+      const order = readOrder();
+      if(order && (!P.seatSel0.length || (P.trip==='round' && !P.seatSel1.length))){
+        P.seatSel0 = P.seatSel0.length?P.seatSel0:(order.seatSel0||[]);
+        P.seatSel1 = P.seatSel1.length?P.seatSel1:(order.seatSel1||[]);
+        P.seatFeeKWD0 = P.seatFeeKWD0 || order.seatFeeKWD0 || 0;
+        P.seatFeeKWD1 = P.seatFeeKWD1 || order.seatFeeKWD1 || 0;
+      }
+      maybeFillSeatsFromSession();
+
+      renderHeader();
+      renderLegs();
+      renderFares();           // 🔹 NEW: show selected package(s)
+      renderDetailsAndTickets();
+      renderPrices();
+      linkButtons();
+    }
+    init();
+</script>
+
+</body>
+</html>

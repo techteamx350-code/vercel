@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — Modify search</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#C7A98C; --ink:#111827; --muted:#6B7280; --line:#E5E7EB; --bg:#F7F6F3; --white:#fff;
+    --shadow:0 10px 24px rgba(0,0,0,.06);
+  }
+  *{box-sizing:border-box}
+
+  /* Page -> sticky header, footer pinned to bottom */
+  html,body{height:100%}
+  body{margin:0;display:flex;min-height:100vh;flex-direction:column;
+       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--ink);background:var(--bg)}
+  main{flex:1}
+
+  /* Header (logo • Home • guests • language) */
+  .topbar{position:sticky;top:0;z-index:10;background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%);
+    box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)}
+  .topbar-inner{max-width:1100px;margin:0 auto;padding:18px 20px;display:flex;align-items:center;gap:20px}
+  .brand{font-weight:800;font-size:22px;letter-spacing:.06em}
+  .navlink{font-weight:800;text-decoration:none;color:#1e1e1e}
+  .spacer{flex:1}
+  .pill{border:1px solid var(--line);border-radius:999px;background:#fff;padding:8px 12px;font-weight:800;font-size:13px}
+  .dropdown{position:relative}
+  .dropbtn{border:1px solid var(--line);border-radius:999px;background:#fff;padding:8px 12px;font-weight:800;cursor:pointer}
+  .droplist{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid var(--line);border-radius:12px;
+    box-shadow:0 12px 26px rgba(0,0,0,.08);list-style:none;margin:0;padding:6px;display:none;min-width:120px}
+  .droplist li{padding:8px 10px;border-radius:8px;cursor:pointer;font-weight:700}
+  .droplist li:hover{background:#f4f5f7}
+  .dropdown.open .droplist{display:block}
+
+  /* Form shell */
+  .wrap{max-width:1100px;margin:24px auto;padding:0 20px}
+  .searchCard{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:16px;padding:18px}
+
+  /* Tabs */
+  .tabs{display:inline-flex;gap:10px;margin-bottom:12px}
+  .tabs button{padding:10px 14px;border-radius:999px;border:1px solid #D6C3AE;background:#fff;font-weight:800;cursor:pointer}
+  .tabs button.active{background:#D6C3AE;color:#111;border-color:#D6C3AE}
+
+  /* Grid fields like your mock */
+  .grid{display:grid;grid-template-columns:1.2fr 1.2fr 1.1fr 1.1fr .9fr;gap:16px;align-items:end}
+  @media (max-width:1080px){.grid{grid-template-columns:1fr}}
+  label{display:block;font-size:12px;color:#687285;margin-bottom:6px}
+  select,input{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px;font-weight:600}
+
+  /* Swap button */
+  .swap{align-self:end;display:flex;justify-content:center}
+  .swap button{border:1px solid #D6C3AE;background:#fff;border-radius:999px;padding:10px 12px;cursor:pointer}
+
+  /* Guests select */
+  .guests select{appearance:auto}
+
+  /* Search button */
+  .actions{display:flex;justify-content:flex-end;margin-top:14px}
+  .searchBtn{border:1px solid #D6C3AE;background:#fff;border-radius:999px;padding:12px 24px;font-weight:900;cursor:pointer}
+  .searchBtn:hover{background:#F8F4EF}
+
+  .hint{color:#6B7280;font-size:12px;margin-top:10px}
+  .err{margin-top:10px;color:#b91c1c;background:#fee2e2;border:1px solid #fecaca;padding:10px;border-radius:10px;display:none}
+
+  /* Luxury footer pinned to bottom by flex layout */
+  .elite-footer{position:relative;background:linear-gradient(180deg,#1C2128,#161A1F);color:#FDFDFC;padding:42px 20px 24px;overflow:hidden;margin-top:28px}
+  .elite-mesh{position:absolute;inset:-10% -6% -18% -6%;transform:rotate(-6deg);width:120%;height:140%;pointer-events:none}
+  .footer-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .copy{color:#9FA6B2}
+  .links{display:flex;gap:14px}
+  .links a{color:#B9C1CC;text-decoration:none;font-weight:700}
+  .links a:hover{color:#FFD479}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">ELITE&nbsp;AIR</div>
+    <a class="navlink" href="index.html">Home</a>
+    <div class="spacer"></div>
+    <span class="pill" id="paxSummary">Guests: 1</span>
+    <div class="dropdown" id="lang">
+      <button class="dropbtn" id="langbtn" aria-haspopup="listbox" aria-expanded="false"><span id="curLang">EN</span> ▾</button>
+      <ul class="droplist" id="langlist" role="listbox" aria-label="Choose language">
+        <li role="option" data-lang="en">EN</li>
+        <li role="option" data-lang="ar">AR</li>
+        <li role="option" data-lang="fr">FR</li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="searchCard">
+      <div class="tabs" role="tablist" aria-label="Trip type">
+        <button id="tabRound" class="active" role="tab" aria-selected="true">Round-trip</button>
+        <button id="tabOne" role="tab" aria-selected="false">One-way</button>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label>From</label>
+          <select id="from"></select>
+        </div>
+
+        <div class="swap" aria-hidden="true">
+          <button id="swap" title="Swap From/To">↔</button>
+        </div>
+
+        <div>
+          <label>To</label>
+          <select id="to"></select>
+        </div>
+
+        <div>
+          <label id="depLabel">Departure</label>
+          <input id="dep" type="date"/>
+        </div>
+
+        <div id="retCol">
+          <label>Return</label>
+          <input id="ret" type="date"/>
+        </div>
+
+        <div class="guests" style="grid-column:1 / span 2">
+          <label>Guests</label>
+          <select id="guests">
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+            <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+          </select>
+        </div>
+
+        <div class="actions" style="grid-column:4 / -1">
+          <button id="search" class="searchBtn">Search</button>
+        </div>
+      </div>
+
+      <div class="hint">Kuwait hub rule: **either the origin or the destination must be Kuwait (KWI)**.</div>
+      <div id="err" class="err" role="alert" aria-live="polite"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="elite-footer">
+  <svg class="elite-mesh" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+    <defs><linearGradient id="eaGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C7A98C"/><stop offset="1" stop-color="#FFD479"/></linearGradient></defs>
+    <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+      <path d="M-120,840 C220,690 560,640 980,620 1310,605 1670,560 1880,490"/>
+      <path d="M-120,760 C220,620 560,580 980,560 1310,545 1670,510 1880,450"/>
+      <path d="M-120,680 C220,550 560,520 980,500 1310,490 1670,470 1880,415"/>
+      <path d="M-120,600 C220,480 560,460 980,440 1310,430 1670,440 1880,385"/>
+      <path d="M-120,520 C220,420 560,400 980,380 1310,370 1670,410 1880,360"/>
+    </g>
+    <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+      <path d="M0,900 C360,760 720,700 1120,660 1520,620 1920,560 2320,520"/>
+      <path d="M0,820 C360,700 720,640 1120,600 1520,560 1920,540 2320,500"/>
+      <path d="M0,740 C360,640 720,600 1120,560 1520,520 1920,520 2320,480"/>
+      <path d="M0,660 C360,580 720,560 1120,520 1520,500 1920,500 2320,460"/>
+    </g>
+  </svg>
+  <div class="footer-inner">
+    <div class="copy">© Elite Air</div>
+    <div class="links">
+      <a href="privacy-policy.html">Privacy</a>
+      <a href="Terms-And-Conditions.html">Terms</a>
+      <a href="contact.html">Help</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const qs=(s,el=document)=>el.querySelector(s);
+
+  /* Language dropdown */
+  (function(){
+    const wrap=qs('#lang'),btn=qs('#langbtn'),list=qs('#langlist'),cur=qs('#curLang');
+    btn.addEventListener('click',()=>{const o=wrap.classList.toggle('open');btn.setAttribute('aria-expanded',o?'true':'false');});
+    document.addEventListener('click',e=>{if(!wrap.contains(e.target)){wrap.classList.remove('open');btn.setAttribute('aria-expanded','false');}});
+    list.addEventListener('click',e=>{const li=e.target.closest('li');if(!li)return;cur.textContent=li.dataset.lang.toUpperCase();wrap.classList.remove('open');btn.setAttribute('aria-expanded','false');document.documentElement.dir=(li.dataset.lang==='ar')?'rtl':'ltr';});
+  })();
+
+  /* Airports (include KWI plus regional & European examples) */
+  const AIRPORTS = {
+    KWI:'Kuwait (KWI)', DXB:'Dubai (DXB)', DOH:'Doha (DOH)', BAH:'Bahrain (BAH)',
+    JED:'Jeddah (JED)', RUH:'Riyadh (RUH)', CAI:'Cairo (CAI)', IST:'Istanbul (IST)',
+    LHR:'London Heathrow (LHR)', LGW:'London Gatwick (LGW)', ORY:'Paris Orly (ORY)', RAK:'Marrakesh (RAK)'
+  };
+
+  function fillSelect(sel, value){
+    sel.innerHTML = Object.entries(AIRPORTS).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
+    sel.value = value && AIRPORTS[value] ? value : sel.options[0].value;
+  }
+
+  // Pull params if coming from Choose-flight
+  function params(){
+    const u=new URL(location.href), p=Object.fromEntries(u.searchParams.entries());
+    p.trip = (p.trip==='oneway') ? 'oneway' : 'round';
+    p.from = p.from || 'KWI';
+    p.to   = p.to   || 'LGW';
+    const d = new Date(Date.now()+7*864e5).toISOString().slice(0,10);
+    const r = new Date(Date.now()+10*864e5).toISOString().slice(0,10);
+    p.dep  = p.date || p.dep || d;
+    p.ret  = p.returnDate || p.ret || r;
+    p.pax  = String(Math.max(1,Math.min(9,Number(p.pax||1))));
+    return p;
+  }
+
+  // Kuwait hub rule validator
+  function validateKuwaitRule(from,to){
+    return from==='KWI' || to==='KWI';
+  }
+
+  // Boot
+  (function(){
+    const P=params();
+    fillSelect(qs('#from'), P.from);
+    fillSelect(qs('#to'),   P.to);
+    qs('#dep').value = P.dep;
+    qs('#ret').value = P.ret;
+    qs('#guests').value = P.pax;
+    qs('#paxSummary').textContent = `Guests: ${P.pax}`;
+
+    // Tabs
+    function setTrip(mode){
+      const round = mode==='round';
+      qs('#tabRound').classList.toggle('active', round);
+      qs('#tabOne').classList.toggle('active', !round);
+      qs('#retCol').style.display = round ? 'block' : 'none';
+    }
+    setTrip(P.trip);
+    qs('#tabRound').onclick=()=>setTrip('round');
+    qs('#tabOne').onclick =()=>setTrip('oneway');
+
+    // Swap
+    qs('#swap').onclick=()=>{
+      const fromSel=qs('#from'), toSel=qs('#to');
+      const tmp=fromSel.value; fromSel.value=toSel.value; toSel.value=tmp;
+    };
+
+    // Guests pill
+    qs('#guests').addEventListener('change', e=>{
+      qs('#paxSummary').textContent = `Guests: ${e.target.value}`;
+    });
+
+    // Date constraints
+    qs('#dep').addEventListener('change',()=>{
+      const d=qs('#dep').value; qs('#ret').min=d||'';
+      if(qs('#ret').value && qs('#ret').value < d){ qs('#ret').value=d; }
+    });
+
+    // Search -> back to Choose-flight with validation (KWI must be in From or To)
+    qs('#search').onclick=()=>{
+      const trip = qs('#tabRound').classList.contains('active') ? 'round' : 'oneway';
+      const from = qs('#from').value;
+      const to   = qs('#to').value;
+      const dep  = qs('#dep').value;
+      const pax  = qs('#guests').value;
+
+      const err = qs('#err');
+      err.style.display='none'; err.textContent='';
+
+      if(!dep){ err.textContent='Please choose a departure date.'; err.style.display='block'; return; }
+
+      if(trip==='round' && !qs('#ret').value){
+        err.textContent='Please choose a return date for round-trip.'; err.style.display='block'; return;
+      }
+
+      if(!validateKuwaitRule(from,to)){
+        err.textContent='For Elite Air routes, either the origin or the destination must be Kuwait (KWI).';
+        err.style.display='block';
+        return;
+      }
+
+      // Build URL for Choose-flight.html
+      const url = new URL('Choose-flight.html', location.href);
+      const sp = new URLSearchParams({ from, to, date: dep, pax, trip });
+      if(trip==='round') sp.set('returnDate', qs('#ret').value);
+      url.search = sp.toString();
+      location.href = url.toString();
+    };
+  })();
+</script>
+<script src="../lang.js"></script>
+</body>
+</html>

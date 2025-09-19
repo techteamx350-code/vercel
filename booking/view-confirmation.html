@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air | Booking Confirmation</title>
+<meta name="description" content="View and print your Elite Air ticket with QR code, PNR, itinerary, and passenger details."/>
+
+<style>
+  :root{
+    /* from Investor header */
+    --ea-charcoal:#161A1F; --ea-pearl:#FDFDFC; --ea-gold:#C7A98C; --ea-gold-hi:#FFD479;
+    --ink:#111827; --muted:#6b7280; --panel:#fff; --back:#f7f4ee; --line:#e6e8ee;
+    --radius:18px; --shadow:0 18px 60px rgba(15,23,42,.12); --nav-h:72px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; display:flex; flex-direction:column; min-height:100vh;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+    color:var(--ink); background:var(--back); line-height:1.6;
+    /* room for fixed header (same as investor page) */
+    padding-top:calc(var(--nav-h) + 18px);
+  }
+  a{color:#2563eb;text-decoration:none}
+  main{flex:1}
+
+  /* ===== HEADER (copied from Investor page) ===== */
+  .nav{
+    position:fixed; top:0; left:0; right:0; z-index:10000;
+    display:flex; align-items:center; gap:18px;
+    padding:26px 56px;
+    background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%);
+    box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45);
+  }
+  .logo{font-family:"Playfair Display",serif;font-size:28px;font-weight:600;color:#1e1e1e;letter-spacing:.06em}
+  .nav-links{display:flex;align-items:center;gap:30px;flex-wrap:wrap}
+  .nav a{color:#222;text-decoration:none;font-weight:600;position:relative}
+  .nav a::after{content:"";position:absolute;left:0;right:0;bottom:-10px;height:2px;background:linear-gradient(90deg,#C7A98C,#E7D9C7);opacity:0;transform:scaleX(.6);transition:opacity .2s, transform .2s}
+  .nav a:hover{color:#c7a98c}
+  .nav a:hover::after{opacity:1;transform:scaleX(1)}
+  .spacer{flex:1}
+  .btn-book{padding:12px 20px;border-radius:999px;border:1px solid #c7a98c;background:rgba(255,255,255,.35);font-weight:700;color:#1e1e1e;box-shadow:0 4px 14px rgba(0,0,0,.05);cursor:pointer}
+  .btn-book:hover{background:#c7a98c;color:#fff}
+  .ea-actions{display:flex;align-items:center;gap:10px}
+  .lang-switch{position:relative}
+  .lang-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #e6e8ee;border-radius:999px;background:#fff;color:#111;cursor:pointer;font-weight:700;letter-spacing:.04em}
+  .lang-btn .chev{transition:transform .15s}
+  .lang-switch.open .lang-btn .chev{transform:rotate(180deg)}
+  .lang-list{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #e6e8ee;border-radius:12px;box-shadow:0 12px 26px rgba(0,0,0,.08);padding:6px;list-style:none;margin:0;display:none;min-width:92px;z-index:50}
+  .lang-switch.open .lang-list{display:block}
+  .lang-list li{padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:700}
+  .lang-list li:hover{background:#f4f5f7}
+  .hamburger{display:none;border:0;background:transparent;padding:8px;border-radius:10px}
+  .hamburger:focus{outline:2px solid #c7a98c;outline-offset:2px}
+  .ham-bars{display:inline-grid;gap:5px}
+  .ham-bars span{display:block;width:22px;height:2px;background:#1e1e1e;border-radius:2px;transition:transform .25s,opacity .25s}
+  .nav-panel{display:none;position:fixed;top:var(--nav-h);left:0;right:0;background:#fff;box-shadow:0 22px 60px rgba(0,0,0,.16);z-index:9999;padding:12px 14px 16px;border-bottom:1px solid #eee}
+  .nav-panel a{display:block;margin:10px 6px;font-weight:700;color:#222;text-decoration:none}
+  .nav-panel a:hover{color:#c7a98c}
+  .nav-panel .row-actions{display:grid;gap:10px;margin-top:6px}
+  .nav-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:9998}
+  .nav.open .nav-panel{display:block;animation:slideDown .18s ease-out}
+  .nav.open + .nav-backdrop{display:block}
+  .nav.open .ham-bars span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .nav.open .ham-bars span:nth-child(2){opacity:0}
+  .nav.open .ham-bars span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  @keyframes slideDown{from{transform:translateY(-8px);opacity:.6}to{transform:translateY(0);opacity:1}}
+  @media (max-width:960px){
+    :root{--nav-h:64px}
+    body{padding-top:calc(var(--nav-h) + 8px)}
+    .nav{padding:12px 16px}
+    .nav-links,.btn-book,.ea-actions{display:none}
+    .hamburger{display:inline-flex}
+  }
+
+  /* ===== Confirmation content ===== */
+  .container{max-width:1100px;margin:24px auto;padding:0 20px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px rgba(2,8,23,.08)}
+  .card .hd{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line)}
+  .card .bd{padding:18px}
+  .muted{color:#64748b}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:.04em}
+  .big{font-family:Georgia,serif;font-size:30px;margin:0}
+  .ticket{display:grid;grid-template-columns:1fr 320px;gap:18px}
+  @media (max-width:980px){.ticket{grid-template-columns:1fr}}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media (max-width:720px){.grid2,.grid3{grid-template-columns:1fr}}
+  .divider{height:1px;background:#eef2f7;margin:12px 0}
+  .boarding{background:repeating-linear-gradient(45deg,#fafafa,#fafafa 10px,#f3f4f6 10px,#f3f4f6 20px);padding:12px;border-radius:12px;border:1px dashed #e5e7eb}
+  .qrbox{display:grid;justify-items:center;gap:8px;padding:14px}
+  .qrbox img{width:180px;height:180px;border-radius:12px;border:1px solid #e5e7eb;background:#fff}
+  .status{display:inline-flex;gap:6px;align-items:center;background:#ecfdf5;border:1px solid #d1fae5;color:#065f46;padding:6px 10px;border-radius:999px;font-size:12px}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+  .btn{appearance:none;border:0;background:#111;color:#fff;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer}
+  .btn.secondary{background:#f1f5f9;color:#111;border:1px solid #e5e7eb}
+  .stubs{display:grid;gap:10px;margin-top:18px}
+  .stub{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px;border:1px dashed #e5e7eb;border-radius:12px;background:#fff}
+  .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #e5e7eb;border-radius:999px;padding:4px 10px;font-size:12px;background:#fff}
+
+  /* Print */
+  @media print{
+    .nav, .nav-backdrop, .actions{ display:none !important; }
+    body{ background:#fff; padding-top:0 }
+    .card{ box-shadow:none; border:1px solid #e5e7eb; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER (Investor header reused) ===== -->
+<nav class="nav" aria-label="Primary">
+  <div class="logo">ELITE&nbsp;AIR</div>
+
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="destinations.html">Destinations</a>
+    <a href="offers.html">Offers</a>
+    <a href="experience.html">Experience</a>
+    <a href="news.html">Latest news</a>
+    <a href="cargo.html">Cargo</a>
+    <a href="membership.html">Membership</a>
+  </div>
+
+  <div class="spacer"></div>
+
+  <button class="btn-book" type="button" onclick="location.href='members'">Members Login</button>
+
+  <!-- Desktop language -->
+  <div class="ea-actions">
+    <div class="lang-switch" id="lang-switch">
+      <button class="lang-btn" id="lang-btn" aria-haspopup="listbox" aria-expanded="false">
+        <span id="lang-current">EN</span>
+        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <ul class="lang-list" id="lang-list" role="listbox" aria-label="Choose language">
+        <li role="option" data-lang="en">EN</li>
+        <li role="option" data-lang="ar">AR</li>
+        <li role="option" data-lang="fr">FR</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Mobile hamburger -->
+  <button class="hamburger" id="nav-toggle" aria-expanded="false" aria-controls="nav-panel" aria-label="Open menu">
+    <span class="ham-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+  </button>
+
+  <!-- Mobile panel -->
+  <div class="nav-panel" id="nav-panel" hidden>
+    <a href="index.html">Home</a>
+    <a href="destinations.html">Destinations</a>
+    <a href="offers.html">Offers</a>
+    <a href="experience.html">Experience</a>
+    <a href="news.html">Latest news</a>
+    <a href="cargo.html">Cargo</a>
+    <a href="membership.html">Membership</a>
+    <a href="contact.html">Contact</a>
+    <div class="row-actions">
+      <button class="btn-book" type="button" onclick="location.href='members'">Members Login</button>
+      <!-- Mobile language -->
+      <div class="ea-actions">
+        <div class="lang-switch" id="lang-switch-m">
+          <button class="lang-btn" id="lang-btn-m" aria-haspopup="listbox" aria-expanded="false">
+            <span id="lang-current-m">EN</span>
+            <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <ul class="lang-list" id="lang-list-m" role="listbox" aria-label="Choose language">
+            <li role="option" data-lang="en">EN</li>
+            <li role="option" data-lang="ar">AR</li>
+            <li role="option" data-lang="fr">FR</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop" hidden></div>
+
+<!-- ===== MAIN: Confirmation ticket ===== -->
+<main>
+  <div class="container">
+    <section class="card">
+      <div class="hd">
+        <div style="font-weight:800">Booking Confirmation</div>
+        <div class="mono" id="pnrTag">PNR —</div>
+      </div>
+
+      <div class="bd ticket">
+        <!-- LEFT -->
+        <div>
+          <h1 class="big" id="route">—</h1>
+          <div class="muted" id="dates">—</div>
+          <div class="divider"></div>
+
+          <div class="grid3">
+            <div><div class="muted">Passenger</div><div id="passenger">—</div></div>
+            <div><div class="muted">Passenger type</div><div id="ptype">Adult</div></div>
+            <div><div class="muted">Fare</div><div id="fare">—</div></div>
+          </div>
+
+          <div class="grid2" style="margin-top:10px">
+            <div><div class="muted">From</div><div><strong id="from">—</strong></div></div>
+            <div><div class="muted">To</div><div><strong id="to">—</strong></div></div>
+          </div>
+
+          <div class="grid2" style="margin-top:10px">
+            <div><div class="muted">Departure</div><div id="depInfo">—</div></div>
+            <div><div class="muted">Return</div><div id="retInfo">—</div></div>
+          </div>
+
+          <div class="grid2" style="margin-top:10px">
+            <div><div class="muted">Extras</div><div id="extras">—</div></div>
+            <div><div class="muted">Email</div><div id="email">—</div></div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="boarding">
+            <div class="muted">Boarding</div>
+            <div id="boarding">Arrive 2 hours before departure. Time & gate assigned by Elite Air. Keep your QR code ready.</div>
+          </div>
+
+          <div class="actions">
+            <button class="btn" onclick="window.print()">Print / Save PDF</button>
+            <button class="btn secondary" id="btnResend">Resend to email</button>
+            <a class="btn secondary" id="btnAddCal" download>Add to calendar (.ics)</a>
+          </div>
+
+          <!-- Mini ticket stubs (1 per passenger) -->
+          <div class="stubs" id="stubs"></div>
+        </div>
+
+        <!-- RIGHT: QR -->
+        <div class="qrbox">
+          <img id="qr" alt="QR code" src=""/>
+          <div class="mono" id="qrPayload" style="font-size:12px">—</div>
+          <div class="status" id="statusBadge">✓ Ticket issued</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+/* ===== Investor header interactions (hamburger + language) ===== */
+const navEl = document.querySelector('.nav');
+const navToggle = document.getElementById('nav-toggle');
+const navPanel = document.getElementById('nav-panel');
+const backdrop = document.getElementById('nav-backdrop');
+
+function openMenu(){ navEl.classList.add('open'); navPanel.hidden=false; backdrop.hidden=false; navToggle?.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden'; }
+function closeMenu(){ navEl.classList.remove('open'); navPanel.hidden=true; backdrop.hidden=true; navToggle?.setAttribute('aria-expanded','false'); document.body.style.overflow=''; }
+navToggle?.addEventListener('click', ()=> navEl.classList.contains('open') ? closeMenu() : openMenu());
+backdrop?.addEventListener('click', closeMenu);
+window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeMenu(); });
+navPanel?.addEventListener('click', e=>{ if(e.target.closest('a,button')) closeMenu(); });
+
+(function langDesktop(){
+  const wrap=document.getElementById('lang-switch'); if(!wrap) return;
+  const btn=document.getElementById('lang-btn'), list=document.getElementById('lang-list'), cur=document.getElementById('lang-current');
+  btn.addEventListener('click',()=>{const o=wrap.classList.toggle('open'); btn.setAttribute('aria-expanded',o?'true':'false');});
+  document.addEventListener('click',e=>{ if(!wrap.contains(e.target)){ wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }});
+  list.addEventListener('click',e=>{ const li=e.target.closest('li'); if(!li) return; cur.textContent=li.dataset.lang.toUpperCase(); wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false'); document.documentElement.dir=(li.dataset.lang==='ar')?'rtl':'ltr'; });
+})();
+(function langMobile(){
+  const wrap=document.getElementById('lang-switch-m'); if(!wrap) return;
+  const btn=document.getElementById('lang-btn-m'), list=document.getElementById('lang-list-m'), cur=document.getElementById('lang-current-m');
+  btn.addEventListener('click',()=>{const o=wrap.classList.toggle('open'); btn.setAttribute('aria-expanded',o?'true':'false');});
+  document.addEventListener('click',e=>{ if(!wrap.contains(e.target)){ wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }});
+  list.addEventListener('click',e=>{ const li=e.target.closest('li'); if(!li) return; cur.textContent=li.dataset.lang.toUpperCase(); wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false'); document.documentElement.dir=(li.dataset.lang==='ar')?'rtl':'ltr'; });
+})();
+
+/* ===== Confirmation page logic ===== */
+const $ = (s)=>document.querySelector(s);
+function getParams(){ const u=new URL(location.href); const p=Object.fromEntries(u.searchParams.entries()); if(p.b){ try{ Object.assign(p, JSON.parse(atob(p.b))); }catch{} } return p; }
+const fmt = (d)=>{ try{ return new Date(d+'T00:00:00').toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'});}catch(e){return d||'—'} };
+function ics({pnr,name,from,to,date,returnDate}){ const uid=pnr+'@eliteair'; const dt=(s)=> s?s.replace(/-/g,'')+'T090000Z':''; const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Elite Air//Booking//EN','BEGIN:VEVENT','UID:'+uid,'DTSTAMP:'+dt(date),'DTSTART:'+dt(date),'DTEND:'+dt(date),'SUMMARY:Elite Air '+from+' → '+to+' ('+pnr+')','DESCRIPTION:'+name+' — show QR at boarding.','END:VEVENT']; if(returnDate){ lines.push('BEGIN:VEVENT','UID:'+uid+'-RET','DTSTAMP:'+dt(returnDate),'DTSTART:'+dt(returnDate),'DTEND:'+dt(returnDate),'SUMMARY:Elite Air '+to+' → '+from+' ('+pnr+')','END:VEVENT'); } lines.push('END:VCALENDAR'); return 'data:text/calendar;charset=utf-8,'+encodeURIComponent(lines.join('\r\n')); }
+
+(function(){
+  const p=getParams();
+  const data={
+    pnr:p.pnr || ('EA'+Math.random().toString(36).slice(2,7).toUpperCase()),
+    name:p.name || 'Capt. Salman Alenezi',
+    ptype:p.paxType || 'Adult',
+    fare:p.fare || 'Ivory Saver',
+    from:p.from || 'KWI',
+    to:p.to || 'LHR',
+    date:p.date || new Date(Date.now()+7*864e5).toISOString().slice(0,10),
+    returnDate:p.returnDate || '',
+    pax:Math.max(1,Math.min(9,Number(p.pax||1))),
+    seats:(p.seats||'').split('|').filter(Boolean),
+    email:p.email || 'member@eliteair.example',
+    extras:(p.extras||'').split(',').filter(Boolean).map(x=>x.trim()).join(', ') || '—',
+    status:p.status || 'issued'
+  };
+
+  $('#pnrTag').textContent = 'PNR '+data.pnr;
+  $('#route').textContent = data.from+' → '+data.to+(data.returnDate?' → '+data.from:'');
+  $('#dates').textContent = fmt(data.date)+(data.returnDate?' / '+fmt(data.returnDate):'');
+  $('#passenger').textContent = data.name;
+  $('#ptype').textContent = data.ptype;
+  $('#fare').textContent = data.fare;
+  $('#from').textContent = data.from;
+  $('#to').textContent = data.to;
+  $('#depInfo').textContent = fmt(data.date)+' • Time: TBA';
+  $('#retInfo').textContent = data.returnDate ? (fmt(data.returnDate)+' • Time: TBA') : '—';
+  $('#extras').textContent = data.extras;
+  $('#email').textContent = data.email;
+
+  const badge=$('#statusBadge');
+  if(data.status==='checked-in'){ badge.textContent='✓ Checked in'; badge.style.background='#ecfdf5'; }
+  else if(data.status==='cancelled'){ badge.textContent='✕ Cancelled'; badge.style.background='#fee2e2'; badge.style.color='#7f1d1d'; }
+  else{ badge.textContent='✓ Ticket issued'; }
+
+  const payload=`PNR:${data.pnr}|NAME:${data.name}|FROM:${data.from}|TO:${data.to}|DATE:${data.date}${data.returnDate?('|RET:'+data.returnDate):''}|PAX:${data.pax}`;
+  $('#qrPayload').textContent=payload;
+  $('#qr').src='https://api.qrserver.com/v1/create-qr-code/?size=180x180&data='+encodeURIComponent(payload);
+
+  const mail=`mailto:${encodeURIComponent(data.email)}?subject=${encodeURIComponent('Your Elite Air ticket '+data.pnr)}&body=${encodeURIComponent('Dear '+data.name+',%0D%0A%0D%0AYour Elite Air ticket (PNR '+data.pnr+') is issued.%0D%0ARoute: '+data.from+'→'+data.to+(data.returnDate?'→'+data.from:'')+'.%0D%0ADate(s): '+fmt(data.date)+(data.returnDate?' / '+fmt(data.returnDate):'')+'.%0D%0AExtras: '+data.extras+'.%0D%0A%0D%0AYou can print this page or add the flight to your calendar from the confirmation screen.%0D%0A%0D%0A— Elite Air')}`;
+  document.getElementById('btnResend').onclick=()=>location.href=mail;
+  const icsUrl = ics({pnr:data.pnr,name:data.name,from:data.from,to:data.to,date:data.date,returnDate:data.returnDate});
+  const calBtn=document.getElementById('btnAddCal'); calBtn.href=icsUrl; calBtn.download='EliteAir-'+data.pnr+'.ics';
+
+  // render stubs
+  const stubs=document.getElementById('stubs');
+  const seat=(i)=> data.seats[i] ? 'Seat '+data.seats[i] : 'Seat TBA';
+  for(let i=0;i<data.pax;i++){
+    const el=document.createElement('div');
+    el.className='stub';
+    el.innerHTML=`<div><div style="font-weight:800">${data.from} → ${data.to}${data.returnDate?' (RT)':''}</div><div class="muted mono">${data.pnr} · ${fmt(data.date)}${data.returnDate?' / '+fmt(data.returnDate):''}</div></div><div class="chip">${seat(i)}</div>`;
+    stubs.appendChild(el);
+  }
+})();
+</script>
+<script src="../lang.js"></script>
+</body>
+</html>

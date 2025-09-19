@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Elite Air — Seat selection</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --gold:#C7A98C; --ink:#111827; --muted:#6B7280; --line:#E5E7EB; --bg:#F7F6F3; --white:#fff; --shadow:0 10px 24px rgba(0,0,0,.06);
+      /* seat colors */
+      --ott:#F4D8C5;      /* ottoman seats (aisle C & F) */
+      --prem:#E5E7EB;     /* premium seats */
+      --sel:#16a34a;      /* selected */
+      --unav:#ef4444;     /* unavailable */
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Noto Serif Display",serif;color:var(--ink);background:var(--bg);line-height:1.55}
+    a{color:inherit;text-decoration:none}
+
+    /* ===== Header ===== */
+    .topbar{position:sticky;top:0;z-index:50;background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%);
+      box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)}
+    .topbar-inner{max-width:1200px;margin:0 auto;padding:18px 20px;display:flex;align-items:center;gap:20px}
+    .brand{font-weight:700;font-size:22px;letter-spacing:.06em;color:#1e1e1e}
+    .navlink{font-weight:800}
+    .spacer{flex:1}
+    .pill{border:1px solid var(--line);border-radius:999px;background:#fff;padding:8px 12px;font-weight:800;font-size:13px}
+
+    /* ===== Banner ===== */
+    .banner{background-image:linear-gradient(to bottom, rgba(255,255,255,.1), rgba(255,255,255,.75)),
+                         url('https://eliteair.com.kw/demo/img/eliteair-service3.png');
+            background-size:cover;background-position:center}
+    .banner-inner{max-width:1200px;margin:0 auto;padding:26px 20px}
+    .route{font-size:36px;font-weight:900;letter-spacing:.3px}
+    .route small{display:block;font-size:12px;color:var(--muted);margin-top:6px}
+
+    /* ===== Stepper ===== */
+    .steps{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff}
+    .steps-inner{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;gap:40px;align-items:center}
+    .step{display:flex;align-items:center;gap:10px;color:var(--muted)}
+    .num{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;border:1px solid var(--line);background:#fff;font-weight:700}
+    .active .num{background:linear-gradient(135deg,#C7A98C,#E7D9C7);color:#111;border-color:transparent}
+    .active{color:#111827}
+
+    /* ===== Layout ===== */
+    .wrap{max-width:1200px;margin:0 auto;padding:18px 20px}
+    .layout{display:grid;grid-template-columns:minmax(640px,1fr) 360px;gap:16px}
+    @media (max-width:980px){.layout{grid-template-columns:1fr}}
+
+    /* ===== Seat map ===== */
+    .plane{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px}
+    .endcaps{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin:6px 0}
+    /* 3–aisle–3: A B C | D E F */
+    .grid{display:grid;grid-template-columns:repeat(3,34px) 26px repeat(3,34px);gap:14px 18px;justify-content:center;align-items:center;min-height:620px}
+    .aisle{width:26px;height:100%}
+    .wingband{grid-column:1 / -1;height:24px;display:flex;align-items:center;justify-content:center;color:#475569;font-size:12px;
+      background:repeating-linear-gradient(45deg,#eef2ff 0 12px,#e2e8f0 12px 24px);border:1px dashed var(--line);border-radius:8px;margin:4px 0}
+    .seat{border:1px solid #cbd5e1;border-radius:8px;background:#f8fafc;width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+      cursor:pointer;user-select:none;box-shadow:0 2px 6px rgba(0,0,0,.06);transition:background .15s,border-color .15s;font-size:10px;font-weight:700;color:#111827}
+    .seat.type-ott{background:var(--ott)}
+    .seat.type-prem{background:var(--prem)}
+    .seat.sel{background:var(--sel);border-color:var(--sel);color:#fff}
+    .seat.occ{background:var(--unav);border-color:var(--unav);color:#fff;cursor:not-allowed}
+
+    /* ===== Right panel ===== */
+    .panel{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px;display:grid;gap:12px;align-self:start}
+    .hdr{display:flex;align-items:center;justify-content:space-between}
+    .note{color:#6B7280;font-size:13px}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--line);border-radius:12px;font-size:13px}
+    .legend{display:grid;gap:8px}
+    .card{border:1px solid var(--line);border-radius:12px;padding:12px}
+    .bar{display:flex;gap:10px;align-items:center;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+    .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
+    .btn.primary{background:linear-gradient(135deg,#C7A98C,#E7D9C7);color:#111}
+    .btn.ghost{background:#fff;border:1px solid var(--line)}
+    .btn[disabled]{opacity:.55;cursor:not-allowed}
+  </style>
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <div class="brand">ELITE&nbsp;AIR</div>
+      <a class="navlink" href="/">Home</a>
+      <div class="spacer"></div>
+      <span class="pill" id="paxSummary">1 Passenger</span>
+    </div>
+  </header>
+
+  <!-- ===== Banner ===== -->
+  <section class="banner">
+    <div class="banner-inner">
+      <div class="route" id="routeTitle">—</div>
+      <small id="routeSub">—</small>
+    </div>
+  </section>
+
+  <!-- ===== Stepper ===== -->
+  <div class="steps"><div class="steps-inner">
+    <div class="step"><span class="num">1</span> Choose flight</div>
+    <div class="step"><span class="num">2</span> Personal details</div>
+    <div class="step active"><span class="num">3</span> Seat selection</div>
+    <div class="step"><span class="num">4</span> Review &amp; pay</div>
+  </div></div>
+
+  <!-- ===== Main ===== -->
+  <div class="wrap">
+    <div class="layout">
+      <div class="plane">
+        <div class="endcaps"><span>GALLEY / LAV</span><span id="legLabel">Departure sector</span></div>
+        <div id="seatGrid" class="grid" aria-live="polite"></div>
+        <div class="endcaps"><span>Rear of cabin</span><span>GALLEY / LAV</span></div>
+        <div class="bar">
+          <button class="btn ghost" id="backBtn">Back to personal details</button>
+          <button class="btn primary" id="nextBtn" disabled>Continue</button>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <div class="hdr">
+          <strong id="seatTitle">Seat details</strong>
+          <span id="extraPrice" class="note"></span>
+        </div>
+
+        <div class="card" id="seatImage"
+             style="aspect-ratio:16/9;background:#f3f4f6;border:1px solid var(--line);border-radius:12px;display:grid;place-items:center">
+          Seat preview
+        </div>
+
+        <div class="card">
+          <div style="font-weight:700;margin-bottom:6px">Description</div>
+          <div class="note" id="seatDesc">
+            Select up to the number of passengers. <b>Ottoman</b> (aisle seats C &amp; F) include leg ottoman and extra legroom.
+          </div>
+        </div>
+
+        <div class="card legend">
+          <div class="chip"><span style="width:14px;height:14px;border-radius:6px;background:var(--ott);border:1px solid var(--line)"></span> Ottoman</div>
+          <div class="chip"><span style="width:14px;height:14px;border-radius:6px;background:var(--prem);border:1px solid var(--line)"></span> Premium</div>
+          <div class="chip"><span style="width:14px;height:14px;border-radius:6px;background:#16a34a;border:1px solid var(--line)"></span> Selected</div>
+          <div class="chip"><span style="width:14px;height:14px;border-radius:6px;background:#e5e7eb;border:1px solid var(--line)"></span> Unavailable</div>
+          <div class="chip">🛟 Exit rows 7–8</div>
+        </div>
+
+        <div class="card">
+          <div style="font-weight:800">Your selection</div>
+          <div class="note" id="selList">None yet.</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    /* ---------- helpers ---------- */
+    const $  = (s,el=document)=>el.querySelector(s);
+    const $$ = (s,el=document)=>Array.from(el.querySelectorAll(s));
+    const AIRPORTS = {KWI:{city:'Kuwait'}, LGW:{city:'London Gatwick'}, LHR:{city:'London Heathrow'}, ORY:{city:'Paris Orly'}, DXB:{city:'Dubai'}, IST:{city:'Istanbul'}, CAI:{city:'Cairo'}};
+
+    function dstr(iso){ const d=new Date(iso); return d.toLocaleDateString(undefined,{weekday:'short',day:'2-digit',month:'short',year:'numeric'}); }
+    function city(code){ return AIRPORTS[code]?.city || code; }
+
+    function getParams(){
+      const u=new URL(location.href), sp=u.searchParams;
+      const a=+sp.get('a')||+sp.get('adults')||1, c=+sp.get('c')||+sp.get('children')||0, i=+sp.get('i')||+sp.get('infants')||0;
+      const pax = +sp.get('pax') || (a+c+i) || 1;
+      return {
+        from:(sp.get('from')||'KWI').toUpperCase(),
+        to:(sp.get('to')||'ORY').toUpperCase(),
+        date: sp.get('date') || new Date().toISOString().slice(0,10),
+        returnDate: sp.get('returnDate')||'',
+        trip: (sp.get('trip')==='oneway') ? 'oneway' : 'round',
+        leg: +sp.get('leg')||0,
+        a,c,i,pax,
+        fare0: sp.get('fare0')||'', price0: sp.get('price0')||'',
+        fare1: sp.get('fare1')||'', price1: sp.get('price1')||'',
+        cur: sp.get('cur')||'KWD'
+      };
+    }
+
+    function fmt(n,cur){ try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:cur||'KWD'}).format(Number(n||0)); }catch(e){ return (cur||'KWD')+' '+Number(n||0).toFixed(2); } }
+
+    /* seeded “taken” seats so the map looks real but deterministic */
+    function seededTaken(key, rows, letters){
+      let h=0; for(const ch of key) h=(h*31 + ch.charCodeAt(0))>>>0;
+      const rnd=()=> (h = (h*1664525 + 1013904223)>>>0) / 2**32;
+      const n = Math.floor(rnd()*10)+8; // 8–17 taken
+      const set=new Set();
+      while(set.size<n){
+        const r=Math.floor(rnd()*rows)+1;
+        const l=letters[Math.floor(rnd()*letters.length)];
+        set.add(`${r}${l}`);
+      }
+      return set;
+    }
+
+    function build(){
+      const P=getParams();
+      const isRT = (P.trip==='round' && P.returnDate);
+
+      /* resolve current leg route/date */
+      const legFrom = (isRT && P.leg===1) ? P.to   : P.from;
+      const legTo   = (isRT && P.leg===1) ? P.from : P.to;
+      const legDate = (isRT && P.leg===1) ? (P.returnDate || P.date) : P.date;
+
+      /* header */
+      $('#paxSummary').textContent = `${P.pax} ${P.pax>1?'Passengers':'Passenger'}`;
+      $('#routeTitle').textContent = `${legFrom} → ${legTo}`;
+      $('#routeSub').textContent   = `${city(legFrom)} to ${city(legTo)} · ${dstr(legDate)}`;
+      $('#legLabel').textContent   = (isRT && P.leg===1) ? 'Return sector' : (isRT ? 'Departure sector (1/2)' : 'Departure sector');
+
+      /* seat grid */
+      const grid = $('#seatGrid'); grid.innerHTML='';
+      const LETTERS = ['A','B','C','D','E','F'];
+      const ROWS = 15;
+      const EXIT_ROWS = new Set([7,8]);
+      const TAKEN = seededTaken(`${legFrom}-${legTo}-${legDate}`, ROWS, LETTERS);
+
+      const seatType = (letter)=> (letter==='C'||letter==='F') ? 'Ottoman' : 'Premium';
+      const seatFeeKWD = (letter)=> (letter==='C'||letter==='F') ? 15 : 0;
+
+      // previously saved selection (session)
+      const bookingKey = `${P.from}-${P.to}-${P.date}-p${P.pax}`;
+      function readSaved(leg){
+        try{
+          const raw = sessionStorage.getItem(`ea:seats:${bookingKey}:leg${leg}`);
+          if(!raw) return [];
+          const o = JSON.parse(raw); return o.seats || [];
+        }catch(e){ return []; }
+      }
+      let selected = new Set(readSaved(P.leg));
+
+      // build rows
+      for(let r=1;r<=ROWS;r++){
+        for(let i=0;i<LETTERS.length;i++){
+          if(i===3){ // aisle gap
+            const a = document.createElement('div'); a.className='aisle'; grid.appendChild(a);
+          }
+          const letter = LETTERS[i];
+          const id = `${r}${letter}`;
+          const seat = document.createElement('div');
+          seat.className = `seat ${seatType(letter)==='Ottoman'?'type-ott':'type-prem'}`;
+          seat.dataset.id = id;
+          seat.textContent = id;
+          if(TAKEN.has(id)) seat.classList.add('occ');
+          if(EXIT_ROWS.has(r)) seat.title = 'Emergency Exit Row';
+
+          if(selected.has(id)) seat.classList.add('sel');
+
+          seat.addEventListener('click', ()=>{
+            if(seat.classList.contains('occ')) return;
+            if(selected.has(id)){ selected.delete(id); seat.classList.remove('sel'); }
+            else{
+              // bound by pax
+              if(selected.size >= P.pax){
+                const first = selected.values().next().value;
+                if(first){
+                  selected.delete(first);
+                  const old = grid.querySelector(`.seat[data-id="${first}"]`);
+                  if(old) old.classList.remove('sel');
+                }
+              }
+              selected.add(id); seat.classList.add('sel');
+            }
+            updateRight();
+          });
+
+          grid.appendChild(seat);
+        }
+        if(r===7){
+          const w=document.createElement('div'); w.className='wingband'; w.textContent='Over‑wing area — Exit rows 7–8'; grid.appendChild(w);
+        }
+      }
+
+      function updateRight(){
+        const list = Array.from(selected).sort((a,b)=>a.localeCompare(b));
+        $('#selList').textContent = list.length ? list.join(', ') : 'None yet.';
+        const focus = list[list.length-1] || list[0];
+        if(focus){
+          const t = seatType(focus.slice(-1));
+          $('#seatTitle').textContent = `Seat ${focus} — ${t}`;
+          $('#seatDesc').textContent  = (t==='Ottoman')
+            ? 'Ottoman seat with leg rest and extra legroom. Quick aisle access.'
+            : 'Premium standard seat with comfortable pitch and recline.';
+          const fee = seatFeeKWD(focus.slice(-1));
+          $('#extraPrice').textContent = fee ? `Extra: ${fmt(fee,P.cur)}` : '';
+          $('#seatImage').textContent = `${t} • Row ${focus.replace(/[A-Z]/,'')}`;
+        }else{
+          $('#seatTitle').textContent='Seat details';
+          $('#seatDesc').textContent='Select up to the number of passengers.';
+          $('#extraPrice').textContent=''; $('#seatImage').textContent='Seat preview';
+        }
+        // enable continue only when all pax have seats
+        $('#nextBtn').disabled = (selected.size !== P.pax);
+        // button label
+        $('#nextBtn').textContent = (isRT && P.leg===0) ? 'Continue to return seats' : 'Continue to review & pay';
+      }
+      updateRight();
+
+      function saveLeg(leg){
+        const seats = Array.from(selected);
+        const fee = seats.reduce((s,seat)=> s + seatFeeKWD(seat.slice(-1)), 0);
+        try{
+          sessionStorage.setItem(`ea:seats:${bookingKey}:leg${leg}`, JSON.stringify({seats, feeKWD:fee}));
+          // legacy mirror (just in case)
+          sessionStorage.setItem(`EA_SEL_leg${leg}`, JSON.stringify(seats));
+        }catch(e){}
+        return {seats, fee};
+      }
+
+      /* ---------- nav buttons ---------- */
+      $('#backBtn').addEventListener('click', ()=>{
+        const u = new URL('personal-details.html', location.href);
+        const sp = u.searchParams;
+        sp.set('from', P.from); sp.set('to', P.to);
+        sp.set('date', P.date);
+        if(isRT && P.returnDate) sp.set('returnDate', P.returnDate);
+        sp.set('trip', P.trip);
+        sp.set('a', P.a); sp.set('c', P.c); sp.set('i', P.i); sp.set('pax', P.pax);
+        if(P.fare0) sp.set('fare0', P.fare0); if(P.price0) sp.set('price0', P.price0);
+        if(P.fare1) sp.set('fare1', P.fare1); if(P.price1) sp.set('price1', P.price1);
+        if(P.cur) sp.set('cur', P.cur);
+        location.href = u.toString();
+      });
+
+      $('#nextBtn').addEventListener('click', ()=>{
+        const {seats:curSeats, fee:curFee} = saveLeg(P.leg);
+
+        if(isRT && P.leg===0){
+          // go to return leg seat selection (second page)
+          const u = new URL('seat-selection.html', location.href);
+          const sp = u.searchParams;
+          sp.set('from', P.from); sp.set('to', P.to);
+          sp.set('date', P.date);
+          sp.set('returnDate', P.returnDate);
+          sp.set('trip', 'round'); sp.set('leg','1');
+          sp.set('a', P.a); sp.set('c', P.c); sp.set('i', P.i); sp.set('pax', P.pax);
+          if(P.fare0) sp.set('fare0', P.fare0); if(P.price0) sp.set('price0', P.price0);
+          if(P.fare1) sp.set('fare1', P.fare1); if(P.price1) sp.set('price1', P.price1);
+          if(P.cur) sp.set('cur', P.cur);
+          location.href = u.toString();
+          return;
+        }
+
+        // else → Review & Pay (collect both legs if round-trip)
+        const u = new URL('review-pay.html', location.href);
+        const sp = u.searchParams;
+        sp.set('from', P.from); sp.set('to', P.to);
+        sp.set('date', P.date);
+        if(isRT && P.returnDate) sp.set('returnDate', P.returnDate);
+        sp.set('trip', isRT?'round':'oneway');
+        sp.set('a', P.a); sp.set('c', P.c); sp.set('i', P.i); sp.set('pax', P.pax);
+        if(P.cur) sp.set('cur', P.cur);
+        if(P.fare0) sp.set('fare0', P.fare0); if(P.price0) sp.set('price0', P.price0);
+        if(P.fare1) sp.set('fare1', P.fare1); if(P.price1) sp.set('price1', P.price1);
+
+        // read saved seats for both legs
+        const leg0 = (P.leg===0) ? curSeats : readSaved(0);
+        const leg1 = isRT ? ((P.leg===1) ? curSeats : readSaved(1)) : [];
+
+        // seat fees
+        const fee0 = leg0.reduce((s,seat)=> s + seatFeeKWD(seat.slice(-1)), 0);
+        const fee1 = leg1.reduce((s,seat)=> s + seatFeeKWD(seat.slice(-1)), 0);
+
+        sp.set('seatSel0', leg0.join(','));
+        sp.set('seatFeeKWD0', String(fee0));
+        if(isRT){
+          sp.set('seatSel1', leg1.join(','));
+          sp.set('seatFeeKWD1', String(fee1));
+        }
+
+        location.href = u.toString();
+      });
+    }
+
+    if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', build); }
+    else { build(); }
+  </script>
+</body>
+</html>

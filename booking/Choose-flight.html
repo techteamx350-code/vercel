@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Elite Air — Choose flight</title>
+
+  <style>
+    /* =========================
+       Brand tokens (match site)
+       ========================= */
+    :root{
+      --ea-charcoal:#161A1F;
+      --ea-gold:#C7A98C;
+      --ea-gold-hi:#FFD479;
+      --ea-pearl:#FDFDFC;
+      --ea-text-sub:#B9C1CC;
+      --ea-navy:#0f172a;
+      --ea-ink:#111827;
+      --ea-ivory:#f7f4ee;
+      --ea-panel:#ffffff;
+      --ea-muted:#6b7280;
+      --ea-line:#ececec;
+      --shadow:0 18px 60px rgba(15,23,42,.12);
+      --radius:18px;
+
+      /* choose-flight accents */
+      --brand:#B07C4D;
+      --brand-2:#C59D7B;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+      color:var(--ea-ink);
+      background:var(--ea-ivory);
+      line-height:1.6;
+    }
+    .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+    /* =========================
+       Minimal Header (kept light)
+       ========================= */
+    .topbar{
+      position:sticky;top:0;z-index:50;
+      background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%);
+      box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)
+    }
+    .topbar-inner{max-width:1200px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .brand{font-family:"Playfair Display",serif;font-weight:700;font-size:22px;letter-spacing:.06em;color:#1e1e1e}
+    .navlink{font-weight:800;text-decoration:none;color:#1e1e1e}
+    .spacer{flex:1 1 auto}
+    .pill{border:1px solid var(--ea-line);border-radius:999px;background:#fff;padding:8px 12px;font-weight:800;font-size:13px}
+
+    .lang{position:relative}
+    .langbtn{border:1px solid var(--ea-line);border-radius:999px;background:#fff;padding:8px 12px;font-weight:800;cursor:pointer}
+    .langlist{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid var(--ea-line);border-radius:12px;
+      box-shadow:0 12px 26px rgba(0,0,0,.08);list-style:none;margin:0;padding:6px;display:none;min-width:92px}
+    .langlist li{padding:8px 10px;border-radius:8px;cursor:pointer;font-weight:700}
+    .langlist li:hover{background:#f4f5f7}
+    .lang.open .langlist{display:block}
+
+    /* =========================
+       HERO (route heading)
+       ========================= */
+    .hero-book{background-image:linear-gradient(180deg,#f8f6f1,#ffffff);border:1px solid #eee}
+    .hero-book .inner{ display:block; padding:26px 0; }
+    .ea-breadcrumb{ font-size:14px; color:#6b7280; margin-bottom:10px; display:flex; gap:8px; align-items:center; }
+    .ea-breadcrumb .crumb{ text-decoration:none; color:#6b7280; }
+    .ea-breadcrumb .current{ color:#111827; }
+    .route-title{ font-size:clamp(28px,4.2vw,44px); line-height:1.1; font-weight:900; margin:6px 0 4px; color:#111827 }
+    .route-sub{ color:#4b5563; margin:0 }
+
+    /* =========================
+       Steps (horizontal scroll on mobile)
+       ========================= */
+    .steps{border-top:1px solid var(--ea-line);border-bottom:1px solid var(--ea-line);background:#fff}
+    .steps-inner{max-width:1200px;margin:0 auto;padding:12px 20px;display:flex;gap:28px;align-items:center;overflow:auto}
+    .steps-inner::-webkit-scrollbar{height:6px}
+    .steps-inner::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:999px}
+    .step{display:flex;align-items:center;gap:10px;color:var(--ea-muted);white-space:nowrap}
+    .num{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;border:1px solid var(--ea-line);background:#fff;font-weight:700}
+    .active .num{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-color:transparent}
+    .active{color:#111827}
+
+    /* =========================
+       Choose flight UI
+       ========================= */
+    .wrap{max-width:1200px;margin:0 auto;padding:18px 20px}
+
+    .bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .datebar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+    .date-rail{display:flex;gap:10px;overflow:auto;padding:10px;border:1px solid var(--ea-line);border-radius:999px;background:#fff}
+    .date-rail::-webkit-scrollbar{height:6px}
+    .date-rail::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:999px}
+    .date-pill{min-width:140px;border-radius:999px;border:1px solid var(--ea-line);background:#fff;padding:10px 14px;display:grid;gap:2px;text-align:center;cursor:pointer}
+    .date-pill .d1{font-size:12px;color:var(--ea-muted)}
+    .date-pill .d2{font-weight:800}
+    .date-pill .d3{font-size:12px;color:var(--ea-muted)}
+    .date-pill.sel{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#0b0b0b;border-color:transparent}
+    .date-pill.sel .d1,.date-pill.sel .d3{color:#0b0b0b}
+    .navbtn{border:1px solid var(--ea-line);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer}
+
+    h2{font-size:20px;margin:18px 0 8px}
+
+    .flight{background:#fff;border:1px solid var(--ea-line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+    .flight-hdr{display:flex;align-items:center;gap:14px;padding:16px;border-bottom:1px solid var(--ea-line)}
+    .times{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;font-weight:700}
+    .divider{height:1px;background:var(--ea-line)}
+    .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:16px}
+    .cell{display:grid;gap:4px}
+    .k{font-size:12px;color:var(--ea-muted)}
+    .v{font-weight:700}
+    .farebox{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .price{font-weight:900}
+    .expand{border:1px solid var(--ea-line);background:#fff;border-radius:999px;padding:8px 10px;cursor:pointer}
+
+    .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:16px;border-top:1px dashed var(--ea-line)}
+    .tier{border:1px solid var(--ea-line);border-radius:14px;padding:14px;display:grid;gap:8px}
+    .tier h4{margin:0}
+    .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff}
+    .btn.ghost{background:#fff;border:1px solid var(--ea-line)}
+    .btn.primary.selected{box-shadow:0 0 0 3px rgba(5,150,105,.25) inset}
+    .selNote{font-size:20px;color:#059669;font-weight:800}
+
+    /* currency control */
+    .currency-wrap{display:flex;align-items:center;gap:8px;border:1px solid var(--ea-line);background:#fff;border-radius:12px;padding:6px 10px;margin-left:auto}
+    .currency-wrap label{font-weight:700;color:#374151;font-size:12px;letter-spacing:.02em}
+    .currency-wrap select{border:0;outline:0;background:transparent;font-weight:800}
+
+    @media (max-width:900px){
+      .route-title{font-size:28px}
+      .date-pill{min-width:120px;padding:8px 12px}
+      .flight-hdr{flex-wrap:wrap;gap:10px}
+      .farebox{margin-left:0}
+      .meta{grid-template-columns:repeat(2,1fr)}
+      .tiers{grid-template-columns:1fr}
+      .tier .btn{width:100%}
+      .steps-inner{gap:18px}
+    }
+
+    /* ===== Footer (short) ===== */
+    .elite-footer{position:relative;background:linear-gradient(180deg,#1C2128,#161A1F);color:#FDFDFC;padding:42px 20px 24px;overflow:hidden;margin-top:26px}
+    .elite-mesh{position:absolute;inset:-10% -6% -18% -6%;transform:rotate(-6deg);width:120%;height:140%;pointer-events:none}
+    .footer-inner{position:relative;z-index:1;max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .copy{color:#9FA6B2;font:500 14px/1.6 Inter,system-ui}
+    .links{display:flex;gap:14px}
+    .links a{color:#B9C1CC;text-decoration:none;font:600 14px/1.6 Inter,system-ui}
+    .links a:hover{color:#FFD479}
+
+    /* ===== Modify Search Overlay ===== */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:saturate(120%) blur(2px);display:none;z-index:10050}
+    .modal-backdrop.show{display:block}
+    .modal-sheet{position:fixed;left:50%;top:8vh;transform:translateX(-50%);width:min(980px,92vw);background:#fff;border:1px solid var(--ea-line);
+      border-radius:16px;box-shadow:0 18px 60px rgba(15,23,42,.18);z-index:10060;display:none}
+    .modal-sheet.show{display:block}
+    .sheet-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--ea-line)}
+    .sheet-title{font-weight:900}
+    .sheet-body{padding:16px}
+    .ms-tabs{display:inline-flex;gap:10px;margin-bottom:12px}
+    .ms-tabs button{padding:10px 14px;border-radius:999px;border:1px solid #D6C3AE;background:#fff;font-weight:800;cursor:pointer}
+    .ms-tabs button.active{background:#D6C3AE;color:#111;border-color:#D6C3AE}
+    .ms-grid{display:grid;grid-template-columns:1.2fr 80px 1.2fr 1fr 1fr;gap:16px;align-items:end}
+    @media (max-width:980px){.ms-grid{grid-template-columns:1fr}}
+    .ms-grid label{display:block;font-size:12px;color:#687285;margin-bottom:6px}
+    .ms-grid select,.ms-grid input{width:100%;border:1px solid var(--ea-line);border-radius:12px;background:#fff;padding:12px 14px;font-weight:600}
+    .ms-swap{align-self:end;display:flex;justify-content:center}
+    .ms-swap button{border:1px solid #D6C3AE;background:#fff;border-radius:999px;padding:10px 12px;cursor:pointer}
+    .ms-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+    .ms-btn{border:1px solid #D6C3AE;background:#fff;border-radius:999px;padding:12px 20px;font-weight:900;cursor:pointer}
+    .ms-btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-color:transparent}
+    .ms-hint{color:#6B7280;font-size:12px;margin-top:8px}
+    .ms-err{margin-top:10px;color:#b91c1c;background:#fee2e2;border:1px solid #fecaca;padding:10px;border-radius:10px;display:none}
+
+    /* === Passengers counters (responsive) === */
+    .passengers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .counter{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--ea-line);border-radius:12px;background:#fff;padding:12px 14px;min-height:56px}
+    .counter label{font-weight:700;color:#374151;line-height:1.2}
+    .counter .ctrl{display:flex;gap:8px;align-items:center}
+    .counter button{border:1px solid #D6C3AE;background:#fff;border-radius:999px;width:36px;height:36px;cursor:pointer;font-weight:900}
+    .counter output{min-width:1.5em;text-align:center;font-weight:800}
+    .small-hint{font-size:11px;color:#6B7280;margin-left:4px}
+    @media (max-width:1100px){.passengers-grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:900px){.passengers-grid{grid-template-columns:1fr}}
+    @media (max-width:420px){.counter{padding:10px 12px}.counter button{width:34px;height:34px}}
+    .cta-bar{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+
+    /* === Visually hidden (for screen readers) === */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    /* === Toasts === */
+    .toasts{position:fixed;right:18px;bottom:18px;display:grid;gap:10px;z-index:20000}
+    .toast{background:#111827;color:#fff;border-radius:12px;padding:12px 14px;box-shadow:0 8px 30px rgba(0,0,0,.25);font-weight:700;opacity:.98;transform:translateY(10px);animation:toast-in .18s ease-out forwards}
+    @keyframes toast-in{to{opacity:1;transform:translateY(0)}}
+
+    /* === Sticky selection summary === */
+    .sel-summary {
+  position: fixed;
+  top: 100px;
+  left: 500px;
+  right: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  background: linear-gradient(145deg, #faf7f5, #ffffff); /* soft pearl-like tone */
+  border: 1px solid #e5d4c6; /* subtle champagne-gold line */
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08), 
+              0 1px 4px rgba(0,0,0,0.06);
+
+  padding: 10px 14px;
+  margin: 0 auto;
+  max-width: 500px; /* optional: center it within a layout */
+  font-size: 14px; /* smaller base font */
+}
+
+.sel-items {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: linear-gradient(135deg, #f9f6f2, #fdfdfd);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 600;
+  font-size: 13px; /* reduced for smaller look */
+  color: #444;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.8),
+              0 1px 3px rgba(0,0,0,0.08);
+  transition: all 0.2s ease-in-out;
+}
+
+.chip::before {
+  content: "✓";
+  font-weight: 900;
+  color: #c59d5f; /* muted gold for luxury */
+}
+
+.chip:hover {
+  box-shadow: 0 2px 6px rgba(197,157,95,0.3);
+  transform: translateY(-2px);
+}
+
+.sel-total {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #2c2c2c;
+  font-weight: 600;
+  font-size: 14px; /* slightly smaller */
+  border-left: 1px solid #e8dfd4;
+  padding-left: 10px;
+}
+
+
+  </style>
+</head>
+<body>
+
+  <!-- =========================
+       HEADER
+       ========================= -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <div class="brand">ELITE&nbsp;AIR</div>
+      <a class="navlink" href="../index.html">Home</a>
+      <div class="spacer"></div>
+      <span class="pill" id="paxSummary">Adult 1 · Child 0 · Infant 0</span>
+      <div class="lang" id="lang">
+        <button class="langbtn" id="langbtn" aria-haspopup="listbox" aria-expanded="false"><span id="curLang">EN</span> ▾</button>
+        <ul class="langlist" id="langlist" role="listbox" aria-label="Choose language">
+          <li role="option" data-lang="en">EN</li>
+          <li role="option" data-lang="ar">AR</li>
+          <li role="option" data-lang="fr">FR</li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================
+       HERO
+       ========================= -->
+  <section class="hero-book" role="banner">
+    <div class="container inner">
+      <nav class="ea-breadcrumb" aria-label="Breadcrumb">
+        <a href="../index.html" class="crumb">Home</a>
+        <span aria-hidden="true">/</span>
+        <span class="crumb current">Choose flight</span>
+      </nav>
+      <h1 class="route-title" id="routeTitle">—</h1>
+      <p class="route-sub" id="routeSub">—</p>
+    </div>
+  </section>
+
+  <!-- Steps -->
+  <div class="steps" aria-label="Booking steps"><div class="steps-inner">
+    <div class="step active"><span class="num" aria-hidden="true">1</span> Choose flight</div>
+    <div class="step"><span class="num" aria-hidden="true">2</span> Personal details</div>
+    <div class="step"><span class="num" aria-hidden="true">3</span> Seat selection</div>
+    <div class="step"><span class="num" aria-hidden="true">4</span> Review &amp; pay</div>
+  </div></div>
+
+  <!-- =========================
+       MAIN
+       ========================= -->
+  <main class="wrap">
+
+    <!-- Top controls -->
+    <div class="bar">
+      <div class="currency-wrap">
+        <label for="currencySel">Currency</label>
+        <select id="currencySel" aria-label="Choose currency (defaults to KWD)">
+          <option value="KWD">KWD — Kuwait</option>
+          <option value="GBP">GBP — London</option>
+          <option value="EUR">EUR — Paris</option>
+          <option value="AED">AED — Dubai</option>
+          <option value="EGP">EGP — Cairo</option>
+          <option value="TRY">TRY — Istanbul</option>
+          <option value="MAD">MAD — Marrakesh</option>
+          <option value="SAR">SAR — Riyadh</option>
+          <option value="QAR">QAR — Doha</option>
+        </select>
+      </div>
+      <button class="navbtn" id="modifySearch">Modify search</button>
+    </div>
+
+    <!-- === Selection notifications + summary === -->
+    <div id="ariaLive" class="sr-only" role="status" aria-live="polite"></div>
+    <div id="toasts" class="toasts" aria-hidden="true"></div>
+
+    <div id="selSummary" class="sel-summary" hidden>
+      <div class="sel-items">
+        <div class="chip" id="chip0" hidden>Outbound: —</div>
+        <div class="chip" id="chip1" hidden>Return: —</div>
+      </div>
+      <div class="sel-total">
+        <span class="k">Total</span>
+        <strong id="totalLabel">—</strong>
+      </div>
+    </div>
+
+    <!-- ===== OUTBOUND ===== -->
+    <h2 id="outTitle">Available departure flights</h2>
+    <div class="datebar">
+      <button class="navbtn" id="outPrev" aria-label="Previous 7 days">‹</button>
+      <div class="date-rail" id="outRail" role="tablist" aria-label="Select outbound date"></div>
+      <button class="navbtn" id="outNext" aria-label="Next 7 days">›</button>
+    </div>
+    <div id="outDayLabel" class="k" style="margin-bottom:8px"></div>
+
+    <article class="flight" id="flightCard0" aria-label="Outbound option">
+      <div class="flight-hdr">
+        <div class="times" style="flex:1" aria-label="Times">
+          <div><span class="k">Departure:&nbsp;</span><span id="depClock0">—</span></div>
+          <div class="divider" aria-hidden="true"></div>
+          <div><span class="k">Arrival:&nbsp;</span><span id="arrClock0">—</span></div>
+        </div>
+        <div class="farebox">
+          <div class="k">From</div>
+          <div class="price" id="fromPrice0">KWD —</div>
+          <button class="expand" id="expandBtn0" title="Show fares" aria-expanded="true">▾</button>
+        </div>
+      </div>
+      <div class="meta">
+        <div class="cell"><div class="k" id="fromCode0">—</div><div class="v" id="fromCity0">—</div></div>
+        <div class="cell"><div class="k" id="toCode0">—</div><div class="v" id="toCity0">—</div></div>
+        <div class="cell"><div class="k">Travel time</div><div class="v" id="dur0">—</div></div>
+        <div class="cell"><div class="k">Experience</div><div class="v" id="exp0">—</div></div>
+      </div>
+      <div class="tiers" id="tiers0"></div>
+      <div class="k" id="sel0Note" style="padding:0 16px 16px;display:none"><span class="selNote">Selected.</span></div>
+    </article>
+
+    <!-- ===== RETURN (auto-shown for round-trip) ===== -->
+    <section id="returnBlock" hidden>
+      <h2>Available return flights</h2>
+      <div class="datebar">
+        <button class="navbtn" id="retPrev" aria-label="Previous 7 days">‹</button>
+        <div class="date-rail" id="retRail" role="tablist" aria-label="Select return date"></div>
+        <button class="navbtn" id="retNext" aria-label="Next 7 days">›</button>
+      </div>
+      <div id="retDayLabel" class="k" style="margin-bottom:8px"></div>
+
+      <article class="flight" id="flightCard1" aria-label="Return option">
+        <div class="flight-hdr">
+          <div class="times" style="flex:1" aria-label="Times">
+            <div><span class="k">Departure:&nbsp;</span><span id="depClock1">—</span></div>
+            <div class="divider" aria-hidden="true"></div>
+            <div><span class="k">Arrival:&nbsp;</span><span id="arrClock1">—</span></div>
+          </div>
+          <div class="farebox">
+            <div class="k">From</div>
+            <div class="price" id="fromPrice1">KWD —</div>
+            <button class="expand" id="expandBtn1" title="Show fares" aria-expanded="true">▾</button>
+          </div>
+        </div>
+        <div class="meta">
+          <div class="cell"><div class="k" id="fromCode1">—</div><div class="v" id="fromCity1">—</div></div>
+          <div class="cell"><div class="k" id="toCode1">—</div><div class="v" id="toCity1">—</div></div>
+          <div class="cell"><div class="k">Travel time</div><div class="v" id="dur1">—</div></div>
+          <div class="cell"><div class="k">Experience</div><div class="v" id="exp1">—</div></div>
+        </div>
+        <div class="tiers" id="tiers1"></div>
+        <div class="k" id="sel1Note" style="padding:0 16px 16px;display:none"><span class="selNote">Selected.</span></div>
+      </article>
+    </section>
+
+    <div class="cta-bar">
+      <button class="btn ghost" id="backBtn" type="button">Back</button>
+      <button class="btn primary" id="continueBtn" type="button" disabled>Continue</button>
+    </div>
+  </main>
+
+  <!-- ===== Modify Search Overlay ===== -->
+  <div id="msBackdrop" class="modal-backdrop" aria-hidden="true"></div>
+  <section id="msSheet" class="modal-sheet" role="dialog" aria-modal="true" aria-labelledby="msTitle">
+    <div class="sheet-header">
+      <div class="sheet-title" id="msTitle">Modify search</div>
+      <button id="msClose" class="ms-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div class="ms-tabs" role="tablist" aria-label="Trip type">
+        <button id="msTabRound" class="active" role="tab" aria-selected="true">Round-trip</button>
+        <button id="msTabOne" role="tab" aria-selected="false">One-way</button>
+      </div>
+
+      <div class="ms-grid">
+        <div>
+          <label for="msFrom">From</label>
+          <select id="msFrom"></select>
+        </div>
+
+        <div class="ms-swap" aria-hidden="true">
+          <button id="msSwap" title="Swap From/To">↔</button>
+        </div>
+
+        <div>
+          <label for="msTo">To</label>
+          <select id="msTo"></select>
+        </div>
+
+        <div>
+          <label for="msDep" id="msDepLabel">Departure</label>
+          <input id="msDep" type="date"/>
+        </div>
+
+        <div id="msRetCol">
+          <label for="msRet">Return</label>
+          <input id="msRet" type="date"/>
+        </div>
+
+        <!-- Passengers counters -->
+        <div style="grid-column:1 / span 2">
+          <label>Passengers</label>
+          <div class="passengers-grid">
+            <div class="counter">
+              <label for="msAdults">Adults</label>
+              <div class="ctrl">
+                <button type="button" data-dec="msAdults" aria-label="Decrease adults">−</button>
+                <output id="msAdults" aria-live="polite">1</output>
+                <button type="button" data-inc="msAdults" aria-label="Increase adults">+</button>
+              </div>
+            </div>
+            <div class="counter">
+              <label for="msChildren">Children <span class="small-hint">(2–11)</span></label>
+              <div class="ctrl">
+                <button type="button" data-dec="msChildren" aria-label="Decrease children">−</button>
+                <output id="msChildren" aria-live="polite">0</output>
+                <button type="button" data-inc="msChildren" aria-label="Increase children">+</button>
+              </div>
+            </div>
+            <div class="counter">
+              <label for="msInfants">Infants <span class="small-hint">(0–1)</span></label>
+              <div class="ctrl">
+                <button type="button" data-dec="msInfants" aria-label="Decrease infants">−</button>
+                <output id="msInfants" aria-live="polite">0</output>
+                <button type="button" data-inc="msInfants" aria-label="Increase infants">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ms-actions" style="grid-column:4 / -1">
+          <button id="msCancel" class="ms-btn">Cancel</button>
+          <button id="msSearch" class="ms-btn primary">Search</button>
+        </div>
+      </div>
+
+      <div class="ms-hint">Kuwait hub rule: either the origin or destination must be Kuwait (KWI).</div>
+      <div id="msErr" class="ms-err" role="alert" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="elite-footer">
+    <svg class="elite-mesh" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="eaGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C7A98C"/><stop offset="1" stop-color="#FFD479"/></linearGradient></defs>
+      <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+        <path d="M-120,840 C 220,690 560,640 980,620 1310,605 1670,560 1880,490"/>
+        <path d="M-120,760 C 220,620 560,580 980,560 1310,545 1670,510 1880,450"/>
+        <path d="M-120,680 C 220,550 560,520 980,500 1310,490 1670,470 1880,415"/>
+        <path d="M-120,600 C 220,480 560,460 980,440 1310,430 1670,440 1880,385"/>
+        <path d="M-120,520 C 220,420 560,400 980,380 1310,370 1670,410 1880,360"/>
+      </g>
+      <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+        <path d="M 0,900 C 360,760 720,700 1120,660 1520,620 1920,560 2320,520"/>
+        <path d="M 0,820 C 360,700 720,640 1120,600 1520,560 1920,540 2320,500"/>
+        <path d="M 0,740 C 360,640 720,600 1120,560 1520,520 1920,520 2320,480"/>
+        <path d="M 0,660 C 360,580 720,560 1120,520 1520,500 1920,500 2320,460"/>
+      </g>
+    </svg>
+    <div class="footer-inner">
+      <div class="copy">© Elite Air</div>
+      <div class="links">
+        <a href="../privacy-policy.html">Privacy</a>
+        <a href="../Terms-And-Conditions.html">Terms</a>
+        <a href="../contact.html">Help</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================
+       SCRIPTS
+       ========================= -->
+<script>
+/* =========================
+   Helpers + Data
+   ========================= */
+const DEFAULT_CURRENCY = 'KWD';
+const qs  = (s,el=document)=>el.querySelector(s);
+const qsa = (s,el=document)=>Array.from(el.querySelectorAll(s));
+
+/* Airports */
+const AIRPORTS = {
+  KWI:{city:'Kuwait', tz:'Asia/Kuwait',   lat:29.226, lon:47.968},
+  LHR:{city:'London Heathrow', tz:'Europe/London', lat:51.470, lon:-0.454},
+  LGW:{city:'London Gatwick', tz:'Europe/London', lat:51.153, lon:-0.182},
+  ORY:{city:'Paris Orly', tz:'Europe/Paris',   lat:48.726, lon:2.364},
+  RAK:{city:'Marrakesh', tz:'Africa/Casablanca', lat:31.606, lon:-8.036},
+  CAI:{city:'Cairo', tz:'Africa/Cairo',    lat:30.121, lon:31.406},
+  IST:{city:'Istanbul', tz:'Europe/Istanbul', lat:41.276, lon:28.752},
+  DXB:{city:'Dubai', tz:'Asia/Dubai',      lat:25.253, lon:55.365},
+  RUH:{city:'Riyadh', tz:'Asia/Riyadh',    lat:24.959, lon:46.702},
+  DOH:{city:'Doha', tz:'Asia/Qatar',       lat:25.273, lon:51.608},
+  BAH:{city:'Bahrain', tz:'Asia/Bahrain',  lat:26.270, lon:50.633},
+  JED:{city:'Jeddah',  tz:'Asia/Riyadh',   lat:21.680, lon:39.153}
+};
+
+/* Route base fares (in KWD) */
+function routeData(key){
+  const base = {
+    'KWI-ORY': 180, 'KWI-LHR': 195, 'KWI-LGW': 190, 'KWI-RAK': 120, 'KWI-CAI': 100, 'KWI-IST': 115,
+    'KWI-DXB': 40,  'KWI-RUH': 55,  'KWI-DOH': 45,  'KWI-BAH': 35,  'KWI-JED': 70,
+    'ORY-KWI': 175, 'LHR-KWI': 190, 'LGW-KWI': 185, 'RAK-KWI': 110, 'CAI-KWI': 95,  'IST-KWI': 108,
+    'DXB-KWI': 38,  'RUH-KWI': 52,  'DOH-KWI': 44,  'BAH-KWI': 34,  'JED-KWI': 68
+  }[key] || 150;
+
+  return {
+    basePriceKWD: base,
+    fares: [
+      {code:'SR', name:'Serene',  priceKWD: base,      perks:['20kg checked baggage','1 cabin bag','Seat selection (paid)']},
+      {code:'HR', name:'Harmony', priceKWD: base+15,   perks:['30kg checked baggage','Fast track','Premium seat selection','Lounge access']},
+      {code:'MJ', name:'Majesty', priceKWD: base+35,   perks:['40kg checked baggage','Chauffeur pickup','Complimentary premium seat','Lounge + spa']}
+    ]
+  };
+}
+
+/* Exchange rates (base KWD) + fallback */
+let rates = {KWD:1, GBP:2.6, EUR:3.0, AED:11.9, EGP:150, TRY:105, MAD:31, SAR:12.2, QAR:11.9};
+async function fetchRates(){
+  try{
+    const res = await fetch('https://api.exchangerate.host/latest?base=KWD&symbols=KWD,GBP,EUR,AED,EGP,TRY,MAD,SAR,QAR');
+    if(!res.ok) throw new Error('rate fetch failed');
+    const json = await res.json();
+    if(json && json.rates){ rates = {...rates, ...json.rates}; }
+  }catch(e){ /* fallback stays */ }
+}
+function convertFromKWD(amountKWD, toCur){ return (rates[toCur] || 1) * amountKWD; }
+function fmtAmount(n, cur){
+  const codePrefix = ['AED','EGP','TRY','MAD','SAR','QAR','KWD'].includes(cur);
+  const num = new Intl.NumberFormat(undefined,{maximumFractionDigits:0}).format(n);
+  return codePrefix ? `${cur} ${num}` : num;
+}
+
+/* Time & distance calc */
+const CRUISE_KMPH = 850; // avg cruise
+const TAXI_BUFFER_MIN = 25;
+function toRad(x){ return x*Math.PI/180; }
+function gcDistanceKm(aFrom, aTo){
+  const R=6371;
+  const dLat = toRad(aTo.lat - aFrom.lat);
+  const dLon = toRad(aTo.lon - aFrom.lon);
+  const s1 = Math.sin(dLat/2)**2 + Math.cos(toRad(aFrom.lat))*Math.cos(toRad(aTo.lat))*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(s1));
+}
+function addMinutes(date, mins){ return new Date(date.getTime() + mins*60000); }
+function formatLocal(date, tz){
+  return new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:tz}).format(date);
+}
+/* Local wall-time → UTC for given timezone; DEPARTURE AT 02:00 local (both sectors) */
+function utcFromLocal(dateISO, tz, hh=2, mm=0){
+  const midnightUTC = new Date(dateISO + 'T00:00:00Z');
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: tz, hour12:false,
+    year:'numeric', month:'2-digit', day:'2-digit',
+    hour:'2-digit', minute:'2-digit', second:'2-digit'
+  }).formatToParts(midnightUTC);
+  const get = k => Number(parts.find(p=>p.type===k).value);
+  const localRenderedUTCms = Date.UTC(get('year'), get('month')-1, get('day'), get('hour'), get('minute'), get('second'));
+  const desiredLocalUTCms = Date.UTC(Number(dateISO.slice(0,4)), Number(dateISO.slice(5,7))-1, Number(dateISO.slice(8,10)), hh, mm, 0);
+  const tzOffsetMs = localRenderedUTCms - midnightUTC.getTime();
+  return new Date(desiredLocalUTCms - tzOffsetMs);
+}
+
+function computeTimes(p){
+  const from = AIRPORTS[p.from], to = AIRPORTS[p.to];
+  if(!from || !to) return {dep:'—', arr:'—', durLabel:'—', minutes:0};
+
+  const distKm = gcDistanceKm(from, to);
+  const blockMinutes = Math.round((distKm / CRUISE_KMPH) * 60 + TAXI_BUFFER_MIN);
+
+  // Departure 02:00 local origin (per requirement)
+  const depUtc = utcFromLocal(p.date, from.tz, 2, 0);
+  const arrUtc = addMinutes(depUtc, blockMinutes);
+
+  const depLocal = formatLocal(depUtc, from.tz);
+  const arrLocal = formatLocal(arrUtc, to.tz);
+
+  const h = Math.floor(blockMinutes/60), m = blockMinutes%60;
+  return {dep:depLocal, arr:arrLocal, durLabel:`${h} hrs ${m} min`, minutes:blockMinutes};
+}
+
+/* Params + helpers */
+function clamp(n,min,max){ return Math.max(min,Math.min(max,n)); }
+function params(){
+  const u = new URL(location.href);
+  const p = Object.fromEntries(u.searchParams.entries());
+
+  // defaults
+  if(!(p.from && p.to)){ p.from='KWI'; p.to='ORY'; }
+  if(!p.date){ const d = new Date(); d.setDate(d.getDate()+3); p.date = d.toISOString().slice(0,10); }
+  p.trip = (p.trip==='oneway') ? 'oneway' : 'round'; // default round
+  if(p.trip==='round' && !p.returnDate){
+    const d2 = new Date(p.date); d2.setDate(d2.getDate()+3); p.returnDate = d2.toISOString().slice(0,10);
+  }
+
+  // passengers (supports a/c/i or pax)
+  let a = Number(p.a ?? NaN), c = Number(p.c ?? NaN), i = Number(p.i ?? NaN);
+  if(Number.isNaN(a) && Number.isNaN(c) && Number.isNaN(i)){
+    const pax = clamp(Number(p.pax||1),1,9);
+    a = pax; c = 0; i = 0;
+  }
+  a = clamp(a||1,1,9);
+  c = clamp(c||0,0,9);
+  i = clamp(i||0,0,9);
+  i = Math.min(i,a); // infants <= adults
+  const total = Math.min(9, a+c+i);
+
+  p.a=a; p.c=c; p.i=i; p.pax=String(total);
+  return p;
+}
+function dstr(d){ return new Date(d).toLocaleDateString(undefined,{weekday:'short', day:'2-digit', month:'short', year:'numeric'}); }
+function makeDateRange(centerISO, pageOffsetDays=0){
+  const base = new Date(centerISO); base.setDate(base.getDate()+pageOffsetDays);
+  const list = [];
+  for(let i=-3;i<=3;i++){ const d = new Date(base); d.setDate(base.getDate()+i); list.push(d.toISOString().slice(0,10)); }
+  return list;
+}
+function seededDayPriceKWD(routeKey, iso){
+  const seed = Array.from(routeKey + iso).reduce((a, c) => a + c.charCodeAt(0), 0);
+  const base = routeData(routeKey).basePriceKWD;
+  const swing = (seed % 9) * 1.5;
+  return Math.round(base + swing);
+}
+
+/* === Selection helpers (name, total, toast, summary) === */
+function fareNameByCode(routeKey, code){
+  const d = routeData(routeKey);
+  const f = d.fares.find(x=>x.code===code);
+  return f ? f.name : code;
+}
+function legRouteKey(leg){
+  const from = (leg===0)? P.from : P.to;
+  const to   = (leg===0)? P.to   : P.from;
+  return `${from}-${to}`;
+}
+function legDateISO(leg){
+  return (leg===0)? P.date : P.returnDate;
+}
+function legPriceKWD(leg){
+  const sel = (leg===0)? sel0 : sel1;
+  return sel ? Number(sel.priceKWD||0) : 0;
+}
+function totalPriceKWD(){
+  return legPriceKWD(0) + (P.trip==='round' && P.returnDate ? legPriceKWD(1) : 0);
+}
+function convLabelFromKWD(kwd){
+  const n = convertFromKWD(kwd, selectedCurrency);
+  return fmtAmount(n, selectedCurrency);
+}
+function announce(msg){
+  const live = document.getElementById('ariaLive');
+  live.textContent = '';
+  setTimeout(()=> live.textContent = msg, 10);
+}
+function showToast(msg, sub){
+  const box = document.getElementById('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = sub ? `<div style="font-size:13px;opacity:.8">${sub}</div><div style="margin-top:2px">${msg}</div>` : msg;
+  box.appendChild(t);
+  setTimeout(()=>{ t.style.opacity = '0'; t.style.transform='translateY(6px)';
+                   setTimeout(()=> t.remove(), 180); }, 2600);
+}
+function updateSummaryChips(){
+  const bar = document.getElementById('selSummary');
+  const chip0 = document.getElementById('chip0');
+  const chip1 = document.getElementById('chip1');
+  const totalEl = document.getElementById('totalLabel');
+
+  let any = false;
+
+  if(sel0){
+    const name0 = fareNameByCode(legRouteKey(0), sel0.code);
+    chip0.textContent = `Outbound: ${name0} — ${convLabelFromKWD(sel0.priceKWD)} (${dstr(legDateISO(0))})`;
+    chip0.hidden = false;
+    any = true;
+  }else{
+    chip0.hidden = true;
+  }
+
+  if(P.trip==='round' && P.returnDate && sel1){
+    const name1 = fareNameByCode(legRouteKey(1), sel1.code);
+    chip1.textContent = `Return: ${name1} — ${convLabelFromKWD(sel1.priceKWD)} (${dstr(legDateISO(1))})`;
+    chip1.hidden = false;
+    any = true;
+  }else{
+    chip1.hidden = true;
+  }
+
+  if(any){
+    totalEl.textContent = convLabelFromKWD(totalPriceKWD());
+    bar.hidden = false;
+  }else{
+    bar.hidden = true;
+  }
+
+  const cta = document.getElementById('continueBtn');
+  if(!cta.disabled && totalPriceKWD()>0){
+    cta.textContent = `Continue — ${convLabelFromKWD(totalPriceKWD())}`;
+  }else{
+    cta.textContent = 'Continue';
+  }
+}
+
+/* State */
+let P = params();
+let selectedCurrency = localStorage.getItem('EA_CURRENCY') || DEFAULT_CURRENCY;
+let outPaging = 0, retPaging = 0;
+let sel0 = null, sel1 = null; // {code, priceKWD}
+
+/* UI wiring */
+function setHeader(){
+  qs('#paxSummary').textContent = `Adult ${P.a} · Child ${P.c} · Infant ${P.i}`;
+  const rt = (P.trip==='round' && P.returnDate);
+  qs('#routeTitle').textContent = rt ? `${P.from} → ${P.to} → ${P.from}` : `${P.from} → ${P.to}`;
+  const subFrom = AIRPORTS[P.from]?.city || P.from;
+  const subTo   = AIRPORTS[P.to]?.city   || P.to;
+  qs('#routeSub').textContent = rt
+    ? `${subFrom} to ${subTo}, then back to ${subFrom}`
+    : `${subFrom} to ${subTo}`;
+  qs('#returnBlock').hidden = !rt;
+  qs('#outTitle').textContent = 'Available departure flights';
+}
+
+/* Date strips */
+function buildDateStrip(railId, iso, paging, onPick, routeKey){
+  const rail = qs(railId); if(!rail) return;
+  rail.innerHTML = '';
+  const dates = makeDateRange(iso, paging);
+  dates.forEach(d => {
+    const pill = document.createElement('button');
+    pill.className = 'date-pill';
+    pill.type = 'button';
+    pill.setAttribute('role','tab');
+    pill.setAttribute('aria-selected', String(d === iso));
+    if (d === iso) pill.classList.add('sel');
+
+    const dayKWD = seededDayPriceKWD(routeKey, d);
+    const dayConv = convertFromKWD(dayKWD, selectedCurrency);
+
+    pill.innerHTML = `
+      <span class="d1">${new Date(d).toLocaleDateString(undefined,{weekday:'short'})}</span>
+      <span class="d2">${new Date(d).toLocaleDateString(undefined,{day:'2-digit', month:'short'})}</span>
+      <span class="d3">${fmtAmount(dayConv, selectedCurrency)}</span>
+    `;
+    pill.addEventListener('click', () => { if(d!==iso){ onPick(d); } });
+
+    rail.appendChild(pill);
+  });
+}
+
+/* Render one leg (0 outbound, 1 return) */
+function renderLeg(leg){
+  const from = (leg===0) ? P.from : P.to;
+  const to   = (leg===0) ? P.to   : P.from;
+  const date = (leg===0) ? P.date : P.returnDate;
+  const key  = `${from}-${to}`;
+
+  const dayLabel = qs(leg===0 ? '#outDayLabel' : '#retDayLabel');
+  if(dayLabel) dayLabel.textContent = dstr(date);
+
+  // date strips
+  if(leg===0){
+    buildDateStrip('#outRail', P.date, outPaging, (d)=>{ P.date=d; renderLeg(0); updateSummaryChips(); }, key);
+  }else{
+    buildDateStrip('#retRail', P.returnDate, retPaging, (d)=>{ P.returnDate=d; renderLeg(1); updateSummaryChips(); }, key);
+  }
+
+  // times + meta
+  const t = computeTimes({from, to, date});
+  qs(`#depClock${leg}`).textContent = t.dep;
+  qs(`#arrClock${leg}`).textContent = t.arr;
+  qs(`#dur${leg}`).textContent = t.durLabel;
+  qs(`#fromCode${leg}`).textContent = from;
+  qs(`#toCode${leg}`).textContent = to;
+  qs(`#fromCity${leg}`).textContent = AIRPORTS[from]?.city || from;
+  qs(`#toCity${leg}`).textContent   = AIRPORTS[to]?.city   || to;
+
+  // min price (date-pill seed)
+  const dayKWD = seededDayPriceKWD(key, date);
+  const dayConv = convertFromKWD(dayKWD, selectedCurrency);
+  qs(`#fromPrice${leg}`).textContent = fmtAmount(dayConv, selectedCurrency);
+
+  // fares
+  const data = routeData(key);
+  const tiers = qs(`#tiers${leg}`); tiers.innerHTML='';
+  data.fares.forEach(f=>{
+    const priceConv = convertFromKWD(f.priceKWD, selectedCurrency);
+    const el = document.createElement('div'); el.className = 'tier';
+    el.innerHTML = `
+      <h4>${f.name} experience</h4>
+      <div class="k">From <b>${fmtAmount(priceConv, selectedCurrency)}</b></div>
+      <ul style="margin:0;padding-left:18px;color:var(--ea-muted);font-size:13px">${f.perks.map(x=>`<li>${x}</li>`).join('')}</ul>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+        <button class="btn primary" data-leg="${leg}" data-fare="${f.code}" data-price-kwd="${f.priceKWD}">Select</button>
+        <button class="btn ghost" type="button">Fare rules</button>
+      </div>`;
+    tiers.appendChild(el);
+  });
+
+  // expand toggle
+  const expandBtn = qs(`#expandBtn${leg}`);
+  if(expandBtn){
+    expandBtn.onclick = () => {
+      const hidden = tiers.hasAttribute('hidden') && tiers.hidden;
+      tiers.hidden = !hidden ? true : false; // toggle
+      expandBtn.textContent = tiers.hidden ? '▾' : '▴';
+      expandBtn.setAttribute('aria-expanded', String(!tiers.hidden));
+    };
+    tiers.hidden = false;
+  }
+
+  // selection note visibility
+  qs(`#sel${leg}Note`).style.display = (leg===0 ? !!sel0 : !!sel1) ? 'block' : 'none';
+}
+
+/* Global render */
+function renderAll(){
+  setHeader();
+  // currency control
+  const curSel = qs('#currencySel'); if(curSel) curSel.value = selectedCurrency;
+  // legs
+  renderLeg(0);
+  if(P.trip==='round' && P.returnDate){ renderLeg(1); }
+  updateContinueBtn();
+  updateSummaryChips();
+}
+
+/* Selection handling */
+function clearSelStyles(leg){
+  qsa(`#tiers${leg} .btn.primary`).forEach(b=> b.classList.remove('selected'));
+}
+function updateContinueBtn(){
+  const needSecond = (P.trip==='round' && P.returnDate);
+  const ok = sel0 && (needSecond ? !!sel1 : true);
+  qs('#continueBtn').disabled = !ok;
+}
+
+/* Events for fares (delegate) — with notifications + summary */
+document.addEventListener('click', (e)=>{
+  const selBtn = e.target.closest('button[data-leg][data-fare][data-price-kwd]');
+  if(!selBtn) return;
+
+  const leg = Number(selBtn.getAttribute('data-leg'));
+  const code = selBtn.getAttribute('data-fare');
+  const priceKWD = Number(selBtn.getAttribute('data-price-kwd'));
+
+  // Save + visuals
+  if(leg===0){
+    sel0 = {code, priceKWD};
+    clearSelStyles(0); selBtn.classList.add('selected'); qs('#sel0Note').style.display='block';
+  }else{
+    sel1 = {code, priceKWD};
+    clearSelStyles(1); selBtn.classList.add('selected'); qs('#sel1Note').style.display='block';
+  }
+
+  // Notify
+  const legLabel = (leg===0) ? 'Outbound' : 'Return';
+  const routeKey = legRouteKey(leg);
+  const fareName = fareNameByCode(routeKey, code);
+  const priceLabel = convLabelFromKWD(priceKWD);
+
+  showToast(`${legLabel} · ${fareName} selected`, `${priceLabel}`);
+  announce(`${legLabel} fare selected: ${fareName}, price ${priceLabel}.`);
+
+  // If both legs selected on round-trip, quick combined toast
+  if(P.trip==='round' && P.returnDate && sel0 && sel1){
+    showToast(`Both legs selected`, `Total ${convLabelFromKWD(totalPriceKWD())}`);
+  }
+
+  updateContinueBtn();
+  updateSummaryChips();
+});
+
+/* Paging */
+qs('#outPrev').onclick = ()=>{ outPaging -= 7; renderLeg(0); };
+qs('#outNext').onclick = ()=>{ outPaging += 7; renderLeg(0); };
+qs('#retPrev') && (qs('#retPrev').onclick = ()=>{ retPaging -= 7; renderLeg(1); });
+qs('#retNext') && (qs('#retNext').onclick = ()=>{ retPaging += 7; renderLeg(1); });
+
+/* Continue → ./personal-details.html with full state (embedded linking) */
+qs('#backBtn').onclick = ()=>history.back();
+qs('#continueBtn').onclick = ()=>{
+  const u = new URL('./personal-details.html', location.href);
+  const sp = u.searchParams;
+  sp.set('from', P.from);
+  sp.set('to', P.to);
+  sp.set('date', P.date);
+  if(P.trip==='round' && P.returnDate){ sp.set('returnDate', P.returnDate); }
+  sp.set('trip', P.trip);
+  sp.set('a', P.a); sp.set('c', P.c); sp.set('i', P.i); sp.set('pax', P.pax);
+  if(sel0){ sp.set('fare0', sel0.code); sp.set('price0', String(sel0.priceKWD)); }
+  if(sel1){ sp.set('fare1', sel1.code); sp.set('price1', String(sel1.priceKWD)); }
+  sp.set('cur', selectedCurrency);
+  location.href = u.toString();
+};
+
+/* ========== Modify search overlay (round/one-way, Kuwait hub rule, pax) ========== */
+const $ms = {
+  sheet: document.getElementById('msSheet'),
+  backdrop: document.getElementById('msBackdrop'),
+  close: document.getElementById('msClose'),
+  cancel: document.getElementById('msCancel'),
+  tabRound: document.getElementById('msTabRound'),
+  tabOne: document.getElementById('msTabOne'),
+  from: document.getElementById('msFrom'),
+  to: document.getElementById('msTo'),
+  dep: document.getElementById('msDep'),
+  ret: document.getElementById('msRet'),
+  retCol: document.getElementById('msRetCol'),
+  swap: document.getElementById('msSwap'),
+  search: document.getElementById('msSearch'),
+  err: document.getElementById('msErr'),
+  aOut: document.getElementById('msAdults'),
+  cOut: document.getElementById('msChildren'),
+  iOut: document.getElementById('msInfants'),
+};
+function airportLabel(code){ const a=AIRPORTS[code]; return a?`${a.city} (${code})`:code; }
+function fillAirportSelect(sel, value){
+  const options = Object.keys(AIRPORTS)
+    .sort((a,b)=> a==='KWI'?-1 : b==='KWI'?1 : airportLabel(a).localeCompare(airportLabel(b)))
+    .map(k=>`<option value="${k}">${airportLabel(k)}</option>`).join('');
+  sel.innerHTML = options;
+  sel.value = AIRPORTS[value] ? value : 'KWI';
+}
+function msSetTrip(mode){
+  const round = (mode==='round');
+  $ms.tabRound.classList.toggle('active', round);
+  $ms.tabOne.classList.toggle('active', !round);
+  $ms.retCol.style.display = round ? 'block' : 'none';
+  $ms.tabRound.setAttribute('aria-selected', String(round));
+  $ms.tabOne.setAttribute('aria-selected', String(!round));
+  $ms.sheet.dataset.trip = round ? 'round' : 'oneway';
+}
+function openModify(){
+  fillAirportSelect($ms.from, P.from);
+  fillAirportSelect($ms.to,   P.to);
+  $ms.dep.value = P.date;
+
+  // passengers -> outputs
+  $ms.aOut.textContent = P.a;
+  $ms.cOut.textContent = P.c;
+  $ms.iOut.textContent = P.i;
+
+  msSetTrip(P.trip);
+  if(P.trip==='round'){
+    $ms.ret.value = P.returnDate || '';
+    if(P.date) $ms.ret.min = P.date;
+  }else{ $ms.ret.value = ''; }
+
+  $ms.err.style.display='none'; $ms.err.textContent='';
+  $ms.backdrop.classList.add('show');
+  $ms.sheet.classList.add('show');
+}
+function closeModify(){
+  $ms.backdrop.classList.remove('show');
+  $ms.sheet.classList.remove('show');
+}
+qs('#modifySearch').onclick = openModify;
+$ms.close.onclick = closeModify;
+$ms.cancel.onclick = closeModify;
+$ms.backdrop.addEventListener('click', closeModify);
+window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModify(); });
+$ms.tabRound.addEventListener('click', ()=> msSetTrip('round'));
+$ms.tabOne .addEventListener('click', ()=> msSetTrip('oneway'));
+$ms.swap.addEventListener('click', ()=>{ const t=$ms.from.value; $ms.from.value=$ms.to.value; $ms.to.value=t; });
+
+// Passenger counters logic in modal
+function totalNow(){ return Number($ms.aOut.textContent)+Number($ms.cOut.textContent)+Number($ms.iOut.textContent); }
+function applyPassengerRules(){
+  // infants <= adults
+  if(Number($ms.iOut.textContent) > Number($ms.aOut.textContent)){
+    $ms.iOut.textContent = $ms.aOut.textContent;
+  }
+  // total <= 9 (reduce children first, then infants)
+  let t = totalNow();
+  if(t>9){
+    let over=t-9;
+    let c=Number($ms.cOut.textContent), i=Number($ms.iOut.textContent);
+    const dc=Math.min(c,over); c-=dc; over-=dc;
+    const di=Math.min(i,over); i-=di; over-=di;
+    $ms.cOut.textContent=c; $ms.iOut.textContent=i;
+  }
+}
+document.querySelectorAll('[data-inc]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const id = btn.getAttribute('data-inc');
+    const out = document.getElementById(id);
+    if(id==='msAdults' || id==='msChildren'){
+      if(totalNow()<9){ out.textContent = Number(out.textContent)+1; }
+    }else if(id==='msInfants'){
+      const next = Number(out.textContent)+1;
+      if(next <= Number($ms.aOut.textContent) && totalNow()<9){ out.textContent = next; }
+    }
+    applyPassengerRules();
+  });
+});
+document.querySelectorAll('[data-dec]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const id = btn.getAttribute('data-dec');
+    const out = document.getElementById(id);
+    if(id==='msAdults'){
+      out.textContent = Math.max(1, Number(out.textContent)-1);
+      if(Number($ms.iOut.textContent) > Number(out.textContent)){
+        $ms.iOut.textContent = out.textContent;
+      }
+    }else{
+      out.textContent = Math.max(0, Number(out.textContent)-1);
+    }
+    applyPassengerRules();
+  });
+});
+
+function validateKuwaitRule(from,to){ return from==='KWI' || to==='KWI'; }
+$ms.search.addEventListener('click', ()=>{
+  const trip = ($ms.sheet.dataset.trip === 'oneway') ? 'oneway' : 'round';
+  const from = $ms.from.value;
+  const to   = $ms.to.value;
+  const dep  = $ms.dep.value;
+  const ret  = $ms.ret.value;
+  const a = Number($ms.aOut.textContent);
+  const c = Number($ms.cOut.textContent);
+  const i = Number($ms.iOut.textContent);
+
+  $ms.err.style.display='none'; $ms.err.textContent='';
+
+  if(!dep){ $ms.err.textContent='Please choose a departure date.'; $ms.err.style.display='block'; return; }
+  if(trip==='round' && !ret){ $ms.err.textContent='Please choose a return date for round-trip.'; $ms.err.style.display='block'; return; }
+  if(!validateKuwaitRule(from,to)){
+    $ms.err.textContent='For Elite Air routes, either the origin or the destination must be Kuwait (KWI).';
+    $ms.err.style.display='block'; return;
+  }
+
+  // Update state + URL + rerender (without reload)
+  P.from = from; P.to = to; P.date = dep; P.trip=trip; P.a=a; P.c=c; P.i=i;
+  P.returnDate = (trip==='round') ? ret : '';
+  sel0 = null; sel1 = null; // reset selections
+
+  const sp = new URLSearchParams(location.search);
+  sp.set('from', from); sp.set('to', to); sp.set('date', dep);
+  sp.set('a', String(a)); sp.set('c', String(c)); sp.set('i', String(i));
+  sp.set('trip', trip);
+  if(trip==='oneway'){ sp.delete('returnDate'); } else { sp.set('returnDate', ret); }
+  history.replaceState(null,'', `${location.pathname}?${sp.toString()}`);
+
+  closeModify();
+  renderAll();
+});
+
+/* Currency change */
+qs('#currencySel').addEventListener('change', ()=>{
+  selectedCurrency = qs('#currencySel').value || DEFAULT_CURRENCY;
+  localStorage.setItem('EA_CURRENCY', selectedCurrency);
+  renderAll();
+});
+
+/* Init */
+renderAll();
+fetchRates().then(()=> renderAll());
+</script>
+</body>
+</html>

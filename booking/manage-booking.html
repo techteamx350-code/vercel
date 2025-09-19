@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Elite Air | Full Ticket Editor (Restricted + Seat Selector)</title>
+  <meta name="description" content="Retrieve ticket by PNR/BNR, lock all non-editable fields, allow seat change via availability selector with surcharges, allow departure change with surcharge, and show estimated totals subject to approval." />
+  <style>
+    :root{ --brand-bg:#f8f6ef; --brand-primary:#0f172a; --brand-accent:#b08968; --link:#2563eb; --muted:#64748b; --success:#16a34a; --warn:#b45309; --radius:20px; --card:#fff; --danger:#dc2626; }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--brand-bg);color:var(--brand-primary);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial}
+    a{color:var(--link);text-decoration:none}
+    .container{max-width:1100px;margin:0 auto;padding:24px}
+    header{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo-badge{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--brand-accent),#dcbfa6);display:grid;place-items:center;color:#fff;font-weight:900}
+    .brand-title{font-weight:800}
+    .sub{font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+    .hero{background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0));border-radius:24px;padding:18px 20px;margin:10px 0 18px}
+    .hero h1{margin:0 0 6px;font-size:24px}
+    .hero p{margin:0;color:var(--muted)}
+    .grid{display:grid;grid-template-columns: 1.05fr .95fr;gap:22px}
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:0 10px 30px rgba(2,8,23,.08);overflow:hidden}
+    .card .hd{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #eef2f7}
+    .card .bd{padding:18px}
+    label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:6px}
+    input,select,textarea{width:100%;padding:12px 14px;border:1px solid #e5e7eb;border-radius:12px;background:#fff}
+    input[readonly]{background:#f8fafc}
+    select:disabled, input:disabled{background:#f3f4f6;color:#6b7280}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    .btn{appearance:none;border:none;background:var(--brand-primary);color:#fff;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer}
+    .btn.secondary{background:#f1f5f9;color:var(--brand-primary)}
+    .btn.link{background:transparent;color:var(--link)}
+    .btn.ghost{background:#fff;border:1px solid #e5e7eb;color:var(--brand-primary)}
+    .status{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:#ecfdf5;color:var(--success);font-weight:700;font-size:12px;letter-spacing:.3px;text-transform:uppercase}
+    .status .dot{width:8px;height:8px;background:var(--success);border-radius:50%}
+    .warn{background:#fffbeb;border-left:4px solid var(--warn);padding:12px 14px;border-radius:12px}
+    .ticketView{display:grid;grid-template-columns: 1fr 60px 1fr;align-items:center;gap:12px;margin-top:14px;padding:14px;border:1px solid #eef2f7;border-radius:16px;background:linear-gradient(180deg,#fff,#fafafa)}
+    .iata{font-size:26px;font-weight:900}
+    .city{font-size:12px;color:var(--muted)}
+    .plane{display:grid;place-items:center;opacity:.7}
+    .qrwrap{border:1px dashed #e5e7eb;border-radius:16px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:10px}
+    .qrwrap img{width:200px;height:200px}
+    .muted{color:var(--muted)}
+    footer{margin-top:30px;border-top:1px solid #e5e7eb;padding:18px 0;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center}
+    .surcharges{margin-top:12px;padding:12px 14px;border-radius:12px;background:#fff;border:1px dashed #f4d6b0}
+    .surcharges h4{margin:0 0 8px}
+    .surcharges ul{margin:0 0 6px 18px}
+    .totals{margin-top:6px;font-weight:800}
+
+    /* Seat selector modal */
+    .modal{position:fixed;inset:0;background:rgba(2,8,23,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+    .modal.open{display:flex}
+    .sheet{background:#fff;border-radius:20px;max-width:720px;width:100%;box-shadow:0 20px 60px rgba(2,8,23,.25);overflow:hidden}
+    .sheet .hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #eef2f7}
+    .seatgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding:16px}
+    .seat{padding:10px;border:1px solid #e5e7eb;border-radius:12px;text-align:center;cursor:pointer}
+    .seat[disabled]{opacity:.45;cursor:not-allowed;background:#f3f4f6}
+    .seat.selected{outline:2px solid var(--brand-accent)}
+    .legend{display:flex;gap:14px;padding:0 16px 16px;font-size:12px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-badge" aria-hidden="true">EA</div>
+        <div>
+          <div class="sub">Elite Air</div>
+          <div class="brand-title">Full Ticket Editor (Restricted)</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#" class="muted">Support</a>
+      </nav>
+    </header>
+
+    <section class="hero" role="banner">
+      <h1 id="pageTitle">Modify Ticket</h1>
+      <p>Retrieve by <strong>PNR/BNR</strong>. Only <strong>Seat</strong> and <strong>Departure Date/Time</strong> can be modified. Changes may incur surcharges and are subject to Elite Air approval.</p>
+    </section>
+
+    <section class="grid">
+      <!-- Left: Ticket (restricted) -->
+      <div class="card" aria-labelledby="edit-title">
+        <div class="hd">
+          <div id="edit-title" style="font-weight:800">Ticket Details</div>
+          <span class="status"><span class="dot"></span> Editable Fields Limited</span>
+        </div>
+        <div class="bd">
+          <div class="row3">
+            <div>
+              <label for="first">First Name</label>
+              <input id="first" readonly />
+            </div>
+            <div>
+              <label for="last">Last Name</label>
+              <input id="last" readonly />
+            </div>
+            <div>
+              <label for="seat">Seat</label>
+              <div style="display:flex;gap:8px">
+                <input id="seat" placeholder="2A" readonly />
+                <button class="btn ghost" id="btnSeat" type="button" aria-label="Change seat">Change</button>
+              </div>
+              <small class="muted">Seat change may add a surcharge.</small>
+            </div>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <div>
+              <label for="pnr">PNR (BNR)</label>
+              <input id="pnr" maxlength="8" readonly />
+            </div>
+            <div>
+              <label for="ticket">Ticket No.</label>
+              <input id="ticket" readonly />
+            </div>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <div>
+              <label for="from">From (IATA)</label>
+              <input id="from" readonly />
+            </div>
+            <div>
+              <label for="to">To (IATA)</label>
+              <input id="to" readonly />
+            </div>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <div>
+              <label for="fromCity">From City</label>
+              <input id="fromCity" readonly />
+            </div>
+            <div>
+              <label for="toCity">To City</label>
+              <input id="toCity" readonly />
+            </div>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <div>
+              <label for="dep">Departure (YYYY-MM-DD HH:mm)</label>
+              <input id="dep" placeholder="2025-09-01 08:30" />
+              <small class="muted">Changing departure may add a surcharge.</small>
+            </div>
+            <div>
+              <label for="arr">Arrival (auto)</label>
+              <input id="arr" readonly />
+            </div>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <div>
+              <label for="fare">Fare Status</label>
+              <select id="fare" disabled>
+                <option>Paid</option>
+                <option>Unpaid</option>
+                <option>Refunded</option>
+              </select>
+            </div>
+            <div>
+              <label for="status">Ticket Status</label>
+              <select id="status" disabled>
+                <option>Confirmed</option>
+                <option>On Hold</option>
+                <option>Cancelled</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="warn" style="margin-top:14px"><strong>Note:</strong> All modifications are <em>requests</em> and are subject to Elite Air approval. Surcharges must be settled before re‑issuing.</div>
+
+          <div class="actions">
+            <button class="btn" id="btnSave">Submit Change Request (Demo)</button>
+            <button class="btn secondary" id="btnPreview">Preview Confirmation</button>
+            <button class="btn link" id="btnPrint">Print</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Live Preview, QR, & Surcharges -->
+      <aside class="card" aria-labelledby="preview-title">
+        <div class="hd"><div id="preview-title" style="font-weight:800">Live Preview & Surcharges</div></div>
+        <div class="bd">
+          <div class="ticketView" aria-label="Flight segment preview">
+            <div>
+              <div class="iata" id="fromIata">KWI</div>
+              <div class="city" id="fromCityTxt">Kuwait</div>
+              <div class="city"><small id="depTxt">—</small></div>
+            </div>
+            <div class="plane">✈️</div>
+            <div style="text-align:right">
+              <div class="iata" id="toIata">LHR</div>
+              <div class="city" id="toCityTxt">London</div>
+              <div class="city"><small id="arrTxt">—</small></div>
+            </div>
+          </div>
+          <div class="qrwrap" style="margin-top:14px">
+            <img id="qr" alt="Ticket QR" src="" />
+            <div class="muted" style="font-size:12px"><span id="qrtext"></span></div>
+          </div>
+          <div class="surcharges" id="surchargeBox">
+            <h4>Estimated Surcharges</h4>
+            <ul id="surchargeList"><li>No surcharges expected with current changes.</li></ul>
+            <div class="totals">Estimated Total: <span id="surchargeTotal">0</span> KWD</div>
+            <div class="muted" style="font-size:12px;margin-top:6px">Final amounts and approval depend on fare rules and seat availability.</div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <footer>
+      <div>© <span id="year"></span> Elite Air • Kuwait • Ivory Series</div>
+      <div>Terms • Privacy • Security</div>
+    </footer>
+  </div>
+
+  <!-- Seat Selector Modal -->
+  <div class="modal" id="seatModal" role="dialog" aria-modal="true" aria-labelledby="seatTitle">
+    <div class="sheet">
+      <div class="hd">
+        <div id="seatTitle" style="font-weight:800">Select a Seat</div>
+        <button class="btn ghost" id="seatClose" type="button">Close</button>
+      </div>
+      <div class="legend">
+        <div>Only available seats are clickable.</div>
+        <div>Standard seat surcharge: <strong id="seatSurchargeLabel">20</strong> KWD</div>
+      </div>
+      <div class="seatgrid" id="seatGrid"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;padding:0 16px 16px">
+        <button class="btn secondary" id="seatCancel" type="button">Cancel</button>
+        <button class="btn" id="seatApply" type="button" disabled>Apply Seat</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Configurable surcharge amounts
+    const SURCHARGES = { seat: 20, departure: 20 }; // KWD
+
+    // --- Mock datastore (demo only). Replace with API lookup by PNR/BNR.
+    const DB_BY_PNR = {
+      'EA1KWD': {
+        pnr:'EA1KWD', first:'SALMAN', last:'ALENEZI', seat:'2A',
+        from:'KWI', fromCity:'Kuwait', to:'LHR', toCity:'London',
+        dep:'2025-09-01 08:30', arr:'2025-09-01 12:45',
+        ticket:'229-1234567890', fare:'Paid', status:'Confirmed',
+        occupied:['1A','1B','1C','1D','2B','3A','3C','4D'] // demo taken seats
+      }
+    };
+
+    const $ = (s)=>document.querySelector(s);
+    const surchargeList = $('#surchargeList');
+    const surchargeTotal = $('#surchargeTotal');
+
+    let original = null; // original snapshot
+    let selectedSeatCandidate = null;
+
+    function minutesBetween(a,b){ return Math.round((b-a)/60000); }
+    function parseDT(s){ const [d,t] = s.split(' '); if(!d||!t) return NaN; const [Y,M,D] = d.split('-').map(Number); const [h,m] = t.split(':').map(Number); return new Date(Y,(M-1),D,h,m,0,0); }
+    function fmt(dt){ const pad=n=>String(n).padStart(2,'0'); return `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())} ${pad(dt.getHours())}:${pad(dt.getMinutes())}`; }
+
+    function buildQR(rec){
+      const payload = `ELITEAIR|PNR:${rec.pnr}|TKT:${rec.ticket}|NAME:${rec.first} ${rec.last}|FROM:${rec.from}|TO:${rec.to}|DEP:${rec.dep}`;
+      $('#qrtext').innerText = payload;
+      const url = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(payload)}`;
+      const img = new Image(); img.alt = 'Ticket QR'; img.onload = ()=>{ $('#qr').src = img.src; }; img.onerror = ()=>{ $('#qr').replaceWith(Object.assign(document.createElement('div'), {style:'padding:12px;border:1px dashed #e5e7eb;border-radius:12px;textAlign:"center"', innerText:'[QR unavailable]
+'+payload})); }; img.src = url;
+    }
+
+    function syncPreview(){
+      $('#fromIata').innerText = $('#from').value || 'KWI';
+      $('#toIata').innerText = $('#to').value || 'LHR';
+      $('#fromCityTxt').innerText = $('#fromCity').value || 'Kuwait';
+      $('#toCityTxt').innerText = $('#toCity').value || 'London';
+      $('#depTxt').innerText = 'Departs: ' + ($('#dep').value || '—');
+      $('#arrTxt').innerText = 'Arrives: ' + ($('#arr').value || '—');
+      buildQR(collect());
+      updateSurcharges();
+    }
+
+    function collect(){
+      return {
+        first: $('#first').value, last: $('#last').value, seat: $('#seat').value.trim(),
+        pnr: $('#pnr').value.toUpperCase(), ticket: $('#ticket').value,
+        from: $('#from').value, to: $('#to').value,
+        fromCity: $('#fromCity').value, toCity: $('#toCity').value,
+        dep: $('#dep').value, arr: $('#arr').value,
+        fare: $('#fare').value, status: $('#status').value
+      };
+    }
+
+    function fill(rec){
+      $('#first').value = rec.first; $('#last').value = rec.last; $('#seat').value = rec.seat;
+      $('#pnr').value = rec.pnr; $('#ticket').value = rec.ticket;
+      $('#from').value = rec.from; $('#to').value = rec.to;
+      $('#fromCity').value = rec.fromCity; $('#toCity').value = rec.toCity;
+      $('#dep').value = rec.dep; $('#arr').value = rec.arr;
+      $('#fare').value = rec.fare; $('#status').value = rec.status || 'Confirmed';
+      $('#seatSurchargeLabel').innerText = SURCHARGES.seat;
+    }
+
+    function updateArrivalFromDeparture(){
+      if(!original) return;
+      const origDep = parseDT(original.dep);
+      const origArr = parseDT(original.arr);
+      const durationMin = minutesBetween(origDep, origArr);
+      const newDep = parseDT($('#dep').value);
+      if(isNaN(newDep)) return;
+      const newArr = new Date(newDep.getTime() + durationMin*60000);
+      $('#arr').value = fmt(newArr);
+    }
+
+    function updateSurcharges(){
+      if(!original) return;
+      const now = collect();
+      let items = [];
+      let total = 0;
+      if(now.seat && now.seat.toUpperCase() !== (original.seat||'').toUpperCase()){
+        items.push(`Seat reassignment surcharge: +${SURCHARGES.seat} KWD`);
+        total += SURCHARGES.seat;
+      }
+      if(now.dep !== original.dep){
+        items.push(`Departure date/time change: +${SURCHARGES.departure} KWD (fare difference may apply)`);
+        total += SURCHARGES.departure;
+      }
+      if(items.length===0){ surchargeList.innerHTML = '<li>No surcharges expected with current changes.</li>'; }
+      else { surchargeList.innerHTML = items.map(i=>`<li>${i}</li>`).join(''); }
+      surchargeTotal.innerText = total.toString();
+    }
+
+    // Save (demo): show approval notice
+    $('#btnSave').addEventListener('click', ()=>{
+      const changes = [];
+      const now = collect();
+      if(now.seat !== original.seat) changes.push('Seat');
+      if(now.dep !== original.dep) changes.push('Departure');
+      if(changes.length===0){ alert('No changes to submit.'); return; }
+      updateSurcharges();
+      alert('Your change request ('+changes.join(', ')+') has been submitted for Elite Air approval. Estimated surcharges shown will apply upon approval.');
+    });
+
+    // Preview confirmation (navigate to confirmation page)
+    $('#btnPreview').addEventListener('click', ()=>{
+      const r = collect();
+      const q = new URLSearchParams({
+        name: `${r.first} ${r.last}`,
+        pnr: r.pnr, ticket: r.ticket,
+        from: r.from, to: r.to, fromCity: r.fromCity, toCity: r.toCity,
+        dep: r.dep, arr: r.arr, seat: r.seat, status: r.status, fare: r.fare
+      }).toString();
+      window.location.href = 'confirm.html?' + q;
+    });
+
+    $('#btnPrint').addEventListener('click', ()=> window.print());
+
+    // --- Seat selector modal logic ---
+    const seatModal = $('#seatModal');
+    const seatGrid = $('#seatGrid');
+    const seatApply = $('#seatApply');
+
+    function buildSeatGrid(record){
+      seatGrid.innerHTML = '';
+      const occupied = new Set([...(record.occupied||[]), record.seat]); // current seat treated as occupied until changed
+      const rows = 10; const letters = ['A','B','C','D','E','F'];
+      for(let r=1; r<=rows; r++){
+        for(const L of letters){
+          const code = `${r}${L}`;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'seat';
+          btn.textContent = `${code}
++${SURCHARGES.seat} KWD`;
+          if(occupied.has(code)){
+            btn.setAttribute('disabled','');
+            btn.title = 'Unavailable';
+          } else {
+            btn.addEventListener('click', ()=>{
+              [...seatGrid.querySelectorAll('.seat')].forEach(b=>b.classList.remove('selected'));
+              btn.classList.add('selected');
+              selectedSeatCandidate = code;
+              seatApply.disabled = false;
+            });
+          }
+          seatGrid.appendChild(btn);
+        }
+      }
+    }
+
+    $('#btnSeat').addEventListener('click', ()=>{
+      buildSeatGrid(original);
+      selectedSeatCandidate = null;
+      seatApply.disabled = true;
+      seatModal.classList.add('open');
+    });
+    $('#seatClose').addEventListener('click', ()=> seatModal.classList.remove('open'));
+    $('#seatCancel').addEventListener('click', ()=> seatModal.classList.remove('open'));
+    seatApply.addEventListener('click', ()=>{
+      if(!selectedSeatCandidate) return;
+      $('#seat').value = selectedSeatCandidate;
+      seatModal.classList.remove('open');
+      syncPreview();
+    });
+
+    // Init from params — prefer PNR-only lookup (retrieve name/ticket by BNR)
+    function loadFromParams(){
+      const q = new URLSearchParams(location.search);
+      const pnr = (q.get('pnr')||'').toUpperCase();
+      let rec = DB_BY_PNR[pnr];
+      if(!rec){
+        // fallback to previous behavior if combined key was used
+        const last = (q.get('last')||'').toUpperCase();
+        const key = `${pnr}|${last}`;
+        // try reconstruct from params if not found
+        rec = DB_BY_PNR[pnr] || {
+          pnr: pnr || 'EA1KWD', first: q.get('first') || 'SALMAN', last: last || 'ALENEZI', seat: q.get('seat') || '2A',
+          from: (q.get('from') || 'KWI').toUpperCase(), to: (q.get('to') || 'LHR').toUpperCase(),
+          fromCity: q.get('fromCity') || 'Kuwait', toCity: q.get('toCity') || 'London',
+          dep: q.get('dep') || '2025-09-01 08:30', arr: q.get('arr') || '2025-09-01 12:45',
+          ticket: q.get('ticket') || '229-1234567890', fare: q.get('fare') || 'Paid', status: q.get('status') || 'Confirmed',
+          occupied:['1A','1B','1C','1D','2B','3A','3C','4D']
+        };
+        $('#pageTitle').innerText = 'Modify Ticket (Custom Input)';
+      } else {
+        $('#pageTitle').innerText = `Modify Ticket • ${rec.first} ${rec.last} • ${rec.pnr}`;
+      }
+      original = JSON.parse(JSON.stringify(rec));
+      fill(rec);
+      syncPreview();
+    }
+
+    // Wire limited editable fields
+    $('#dep').addEventListener('input', ()=>{ updateArrivalFromDeparture(); syncPreview(); });
+
+    // Footer year & load
+    document.getElementById('year').textContent = new Date().getFullYear();
+    loadFromParams();
+  </script>
+<script src="../lang.js"></script>
+</body>
+</html>
