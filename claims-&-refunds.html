@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — Refund Claim (Post-travel)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ================= Brand tokens ================= */
+  :root{
+    --ea-charcoal:#161A1F;      /* dark header/footer */
+    --ea-navy:#0f172a;
+    --ea-ink:#111827;           /* main text */
+    --ea-ivory:#F7F4EE;         /* page background */
+    --ea-pearl:#FDFDFC;         /* cards */
+    --ea-gold:#C7A98C;          /* accents/borders */
+    --ea-gold-2:#E8D9C7;        /* soft gold */
+    --ea-gold-hi:#FFD479;       /* hover highlight */
+    --muted:#6b7280;
+
+    --radius:18px;
+    --shadow:0 18px 60px rgba(15,23,42,.12);
+    --nav-h:72px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+    color:var(--ea-ink); background:linear-gradient(180deg,#FFF, var(--ea-ivory));
+    line-height:1.55; padding-top:calc(var(--nav-h) + 18px);
+  }
+  .container{max-width:1100px;margin:0 auto;padding:0 20px}
+
+  /* ================= Header (Elite) ================= */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;align-items:center;gap:18px;
+       padding:26px 56px;background:linear-gradient(90deg,#D5D7DB 0%, #C7A98C 44%, #F7F6F3 78%, #FDFDFC 100%);
+       box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)}
+  .logo{font-family:"Playfair Display",serif;font-size:28px;font-weight:600;color:#1e1e1e;letter-spacing:.06em}
+  .nav-links{display:flex;align-items:center;gap:40px;flex-wrap:wrap}
+  .nav a{text-decoration:none;color:#222;font-weight:600;font-size:15px;letter-spacing:.03em}
+  .nav a:hover{color:#c7a98c}
+  .spacer{flex:1}
+  .btn-book{padding:12px 20px;border-radius:999px;border:1px solid #c7a98c;background:rgba(255,255,255,.35);
+            font-weight:700;cursor:pointer;transition:.25s;color:#1e1e1e;text-decoration:none}
+  .btn-book:hover{background:#c7a98c;color:#fff;box-shadow:0 10px 22px rgba(199,169,140,.35)}
+  .hamburger{display:none;border:0;background:transparent;padding:8px;border-radius:10px}
+  .ham-bars{display:inline-grid;gap:5px}
+  .ham-bars span{display:block;width:22px;height:2px;background:#1e1e1e;border-radius:2px}
+  .nav-panel{display:none;position:fixed;top:var(--nav-h);left:0;right:0;background:#fff;box-shadow:0 22px 60px rgba(0,0,0,.16);z-index:9999;padding:12px 14px 16px;border-bottom:1px solid #eee}
+  .nav.open .nav-panel{display:block}
+  .nav-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:9998}
+  .nav.open + .nav-backdrop{display:block}
+  @media (max-width:900px){
+    :root{--nav-h:64px}
+    body{padding-top:calc(var(--nav-h) + 8px)}
+    .nav{padding:12px 16px}
+    .nav-links,.btn-book{display:none}
+    .hamburger{display:inline-flex;margin-left:auto}
+  }
+
+  /* ================= Hero ================= */
+  .hero{background:linear-gradient(180deg,#fff, #faf6ef)}
+  .hero-inner{max-width:1100px;margin:0 auto;padding:clamp(16px,5vw,36px) 20px}
+  .breadcrumb{font-size:14px;color:#6b7280;margin-bottom:18px;display:flex;gap:8px;align-items:center}
+  .breadcrumb a{color:#6b7280;text-decoration:none}
+  .breadcrumb .current{color:#111827}
+  .hero-title{color:#000;text-shadow:0 8px 26px rgba(0,0,0,.25);font-size:clamp(32px,5vw,56px);line-height:1.04;margin:12px 0 8px}
+
+  /* ================= Claim Types section ================= */
+  .section{max-width:1100px;margin:0 auto;padding: 0 20px 12px}
+  .claim-types{
+    background:var(--ea-pearl); border:1px solid var(--ea-gold-2); border-radius:var(--radius);
+    padding:22px; box-shadow:0 10px 26px rgba(15,23,42,.06); margin-bottom:22px;
+  }
+  .claim-types h2{margin:0 0 10px; font-size:22px}
+  .types-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px}
+  .type-card{
+    border:1px solid var(--ea-gold-2); border-radius:14px; padding:14px; background:#fff;
+  }
+  .type-card strong{display:block;margin-bottom:6px}
+  .type-card p{margin:0;color:#4b5563;font-size:14px}
+
+  /* ================= Form card ================= */
+  .card{
+    background:#fff; border:1px solid var(--ea-gold-2); border-radius:var(--radius);
+    padding:28px; box-shadow:var(--shadow);
+  }
+  .form-title{font-size:34px;margin:0 0 14px}
+  label{font-weight:700;color:#433b2e;display:block;margin:16px 0 8px}
+  select,input[type="text"],input[type="email"],input[type="date"],input[type="file"]{
+    width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--ea-gold-2);background:#fff;font-size:16px;outline:0
+  }
+  .row{display:flex;gap:16px;align-items:center}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid-1{grid-template-columns:1fr}
+  .radio-group{display:flex;gap:28px;margin:10px 0 4px}
+  .radio{display:flex;align-items:center;gap:8px}
+  .help{color:#786a55;font-size:13px;margin-top:4px}
+  .hint{font-size:12px;color:#6b7280}
+  .actions{display:flex;justify-content:center;margin-top:28px}
+  .btn-send{
+    background:linear-gradient(180deg,#c7a98c,#b6906c);
+    border:1px solid #b6906c;color:#fff;font-weight:800;letter-spacing:.06em;
+    padding:14px 28px;border-radius:999px;cursor:pointer;min-width:190px;
+    box-shadow:0 10px 24px rgba(199,169,140,.35);
+  }
+  .btn-send:hover{filter:brightness(1.05)}
+  .req{color:#7b5a37;font-weight:700}
+  .small{font-size:12px;color:#6b7280}
+
+  /* ================= Footer ================= */
+  .elite-footer{position:relative;background:linear-gradient(180deg,#1C2128, var(--ea-charcoal));color:var(--ea-pearl);
+                padding:64px 40px 36px;margin-top:36px}
+  .elite-footer__inner{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));max-width:1200px;margin:0 auto}
+  .elite-col h4{margin:0 0 14px;font:600 14px/1.2 Inter,system-ui;letter-spacing:.08em;text-transform:uppercase}
+  .elite-col a{display:block;margin:8px 0;color:#B9C1CC;text-decoration:none;font:500 14px/1.6 Inter,system-ui}
+  .elite-col a:hover{color:#FFD479}
+  .elite-copy{margin:42px 0 0;padding-top:18px;border-top:1px solid rgba(255,255,255,.14);color:#9FA6B2;font:400 14px/1.6 Inter,system-ui;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<nav class="nav" aria-label="Primary">
+  <div class="logo">ELITE&nbsp;AIR</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="destinations.html">Destinations</a>
+    <a href="offers.html">Offers</a>
+    <a href="experience.html">Experience</a>
+    <a href="news.html">Latest news</a>
+    <a href="cargo.html">Cargo</a>
+    <a href="membership.html">Membership</a>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn-book" type="button" onclick="location.href='members'" data-i18n="cta.login">Members Login</button>
+  <button class="hamburger" id="nav-toggle" aria-expanded="false" aria-controls="nav-panel" aria-label="Open menu">
+    <span class="ham-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+  </button>
+  <div class="nav-panel" id="nav-panel" hidden>
+    <a href="index.html">Home</a>
+    <a href="destinations.html">Destinations</a>
+    <a href="offers.html">Offers</a>
+    <a href="experience.html">Experience</a>
+    <a href="news.html">Latest news</a>
+    <a href="cargo.html">Cargo</a>
+    <a href="membership.html">Membership</a>
+    <a class="btn-book" href="members-login.html">Members Login</a>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop" hidden></div>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="hero-inner">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="claims.html">Claims & refunds</a><span aria-hidden="true">/</span>
+      <span class="current">Refund claim</span>
+    </nav>
+    <h1 class="hero-title">Refund Claim (Post-travel)</h1>
+  </div>
+</section>
+
+<!-- ================= “Claim types” section ================= -->
+<section class="section">
+  <div class="claim-types" aria-labelledby="claimTypesTitle">
+    <h2 id="claimTypesTitle">Claim types</h2>
+    <div class="types-grid">
+      <div class="type-card">
+        <strong>Flight cancelled</strong>
+        <p>Refund for tickets and ancillary services if your flight didn’t operate.</p>
+      </div>
+      <div class="type-card">
+        <strong>Schedule change</strong>
+        <p>Refund due to significant time change or missed connections.</p>
+      </div>
+      <div class="type-card">
+        <strong>Duplicate booking</strong>
+        <p>Accidental duplicate purchase of the same itinerary.</p>
+      </div>
+      <div class="type-card">
+        <strong>Medical/Other</strong>
+        <p>Serious illness or other exceptional circumstances (docs required).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FORM ================= -->
+<main class="container" role="main">
+  <!-- Update the action to your real API endpoint if different -->
+  <form class="card" id="refundForm" action="/api/claims/refund" method="post" enctype="multipart/form-data" novalidate>
+    <h2 class="form-title">Refund Claim Form</h2>
+
+    <label for="reason">Reason for Refund Request:<span class="req"> *</span></label>
+    <select id="reason" name="reason" required>
+      <option value="" selected disabled>Select a reason</option>
+      <option>Flight cancelled</option>
+      <option>Schedule change</option>
+      <option>Duplicate booking</option>
+      <option>Baggage not provided service</option>
+      <option>Medical reason</option>
+      <option>Other</option>
+    </select>
+
+    <label for="pnr">Flight Reservation Number<span class="req"> *</span></label>
+    <input type="text" id="pnr" name="pnr" placeholder="e.g., ABC123" minlength="5" maxlength="8" required>
+
+    <label>Is this a one way booking?<span class="req"> *</span></label>
+    <div class="radio-group" role="radiogroup" aria-label="One way booking">
+      <label class="radio"><input type="radio" name="oneway" value="yes" required> <span>Yes</span></label>
+      <label class="radio"><input type="radio" name="oneway" value="no"> <span>No</span></label>
+    </div>
+
+    <label>Is this a return booking?<span class="req"> *</span></label>
+    <div class="radio-group" role="radiogroup" aria-label="Return booking">
+      <label class="radio"><input type="radio" name="return" value="yes" required> <span>Yes</span></label>
+      <label class="radio"><input type="radio" name="return" value="no"> <span>No</span></label>
+    </div>
+
+    <label for="flightNo">Affected Flight Number<span class="req"> *</span></label>
+    <input type="text" id="flightNo" name="flightNo" placeholder="e.g., EA 123" required>
+
+    <label for="date">Date of disrupted flight<span class="req"> *</span></label>
+    <input type="date" id="date" name="date" required>
+
+    <div class="grid">
+      <div>
+        <label for="firstName">Customer Name<span class="req"> *</span></label>
+        <div class="row">
+          <input type="text" id="firstName" name="firstName" placeholder="First" required>
+          <input type="text" id="lastName" name="lastName" placeholder="Last" required>
+        </div>
+      </div>
+      <div>
+        <label for="email">Email<span class="req"> *</span></label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+      </div>
+    </div>
+
+    <!-- ===== Attachments ===== -->
+    <h3 style="margin:22px 0 6px">Attachments</h3>
+    <p class="hint">Upload supporting documents. Accepted types: PDF, JPG, PNG (max 10MB each).</p>
+    <div class="grid">
+      <div>
+        <label for="receipt">Receipt / Proof of payment</label>
+        <input type="file" id="receipt" name="receipt" accept=".pdf,.jpg,.jpeg,.png">
+      </div>
+      <div>
+        <label for="boarding">Boarding pass (if available)</label>
+        <input type="file" id="boarding" name="boarding" accept=".pdf,.jpg,.jpeg,.png">
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <label for="idDoc">ID/Passport (for verification)</label>
+        <input type="file" id="idDoc" name="idDoc" accept=".pdf,.jpg,.jpeg,.png">
+      </div>
+      <div>
+        <label for="otherDoc">Other supporting document</label>
+        <input type="file" id="otherDoc" name="otherDoc" accept=".pdf,.jpg,.jpeg,.png">
+      </div>
+    </div>
+
+    <!-- ===== Payout details ===== -->
+    <h3 style="margin:22px 0 6px">Refund payout details</h3>
+    <div class="grid">
+      <div>
+        <label for="iban">IBAN<span class="req"> *</span></label>
+        <input type="text" id="iban" name="iban" placeholder="KWxx xxxx xxxx xxxx xxxx xxxx xxxx" required>
+        <div class="hint">Enter your full IBAN with country code.</div>
+      </div>
+      <div>
+        <label for="swift">SWIFT / BIC<span class="req"> *</span></label>
+        <input type="text" id="swift" name="swift" placeholder="e.g., ABCDKWKW" required>
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <label for="accName">Account holder name<span class="req"> *</span></label>
+        <input type="text" id="accName" name="accName" required>
+      </div>
+      <div>
+        <label for="bankName">Bank name</label>
+        <input type="text" id="bankName" name="bankName">
+      </div>
+    </div>
+
+    <label for="notes">Additional information</label>
+    <input type="text" id="notes" name="notes" placeholder="Explain anything relevant to your claim…">
+
+    <div class="radio-group" style="margin-top:16px">
+      <label class="radio">
+        <input type="checkbox" id="consent" name="consent" required>
+        <span>I confirm the details are accurate and consent to Elite Air processing my claim according to the Terms & Conditions.<span class="req"> *</span></span>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button class="btn-send" type="submit">SEND</button>
+    </div>
+  </form>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="elite-footer">
+  <div class="elite-footer__inner">
+    <div class="elite-col">
+      <h4>Popular flights</h4>
+      <a href="#">Kuwait → London</a>
+      <a href="#">Kuwait → Paris</a>
+      <a href="#">Kuwait → Dubai</a>
+      <a href="#">Kuwait → Cairo</a>
+      <a href="#">Kuwait → Istanbul</a>
+      <a href="#">Kuwait → Marrakesh</a>
+      <a href="#">Kuwait → Riyadh</a>
+      <a href="#">Kuwait → Doha</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Navigation</h4>
+      <a href="index.html" data-i18n="nav.home">Home</a>
+      <a href="destinations.html" data-i18n="nav.destinations">Destinations</a>
+      <a href="offers.html" data-i18n="nav.offers">Offers</a>
+      <a href="experience.html" data-i18n="nav.experience">Experience</a>
+      <a href="news.html" data-i18n="nav.news">Latest News</a>
+      <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+      <a href="membership.html" data-i18n="nav.membership">Membership</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>About us</h4>
+      <a href="why-elite-air.html">Why Elite Air</a>
+      <a href="careers.html">Careers</a>
+      <a href="contact.html">Contact</a>
+      <a href="imprint.html">Imprint</a>
+      <a href="meda.html">Medical Assistance</a>
+      <a href="/investor/Investors-Index.html">Investors</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Policies</h4>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="Cookie-Policy.html">Cookie Policy</a>
+      <a href="membership-terms.html">Membership Terms</a>
+    </div>
+
+    <div class="elite-col">
+       <h4>Policies</h4>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="Cookie-Policy.html">Cookie Policy</a>
+      <a href="membership-terms.html">Membership Terms</a>
+    </div>
+  </div>
+  <p class="elite-copy">© 2025 Elite Airline Company K.S.C. (Public). All Rights Reserved.</p>
+</footer>
+
+<script>
+  // ===== Header interactions =====
+  const navEl=document.querySelector('.nav');
+  const navToggle=document.getElementById('nav-toggle');
+  const navPanel=document.getElementById('nav-panel');
+  const backdrop=document.querySelector('.nav-backdrop');
+  function openMenu(){navEl.classList.add('open');navPanel.hidden=false;backdrop.hidden=false;navToggle?.setAttribute('aria-expanded','true');document.body.style.overflow='hidden'}
+  function closeMenu(){navEl.classList.remove('open');navPanel.hidden=true;backdrop.hidden=true;navToggle?.setAttribute('aria-expanded','false');document.body.style.overflow=''}
+  navToggle?.addEventListener('click',()=>navEl.classList.contains('open')?closeMenu():openMenu());
+  backdrop?.addEventListener('click',closeMenu);
+
+  // ===== Basic client-side validation =====
+  const form=document.getElementById('refundForm');
+  form.addEventListener('submit', (e)=>{
+    if(!form.checkValidity()){
+      e.preventDefault();
+      alert('Please complete required fields and attach relevant documents.');
+      return;
+    }
+    // Light formatting checks
+    const swift=document.getElementById('swift').value.trim();
+    if(swift && !/^[A-Za-z0-9]{8}([A-Za-z0-9]{3})?$/.test(swift)){
+      e.preventDefault(); alert('Please enter a valid SWIFT/BIC (8 or 11 characters).');
+      return;
+    }
+    const iban=document.getElementById('iban').value.replace(/\s+/g,'');
+    if(iban.length < 15){
+      e.preventDefault(); alert('Please enter a full IBAN.');
+      return;
+    }
+    // On success, the form will POST with multipart/form-data to your backend.
+  });
+</script>
+</body>
+</html>

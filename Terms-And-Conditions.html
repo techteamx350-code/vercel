@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — Terms & Conditions</title>
+<link rel="icon" type="image/x-icon" href="img/elite.ico">
+<meta name="description" content="Elite Air Terms & Conditions. Your contract when booking, traveling, and using our services."/>
+
+<!-- Leaflet (optional) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"/>
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+
+<style>
+  /* =========================
+     Brand tokens (unified)
+     ========================= */
+  :root{
+    --ea-charcoal:#161A1F;
+    --ea-gold:#C7A98C;
+    --ea-gold-hi:#FFD479;
+    --ea-pearl:#FDFDFC;
+    --ea-text-sub:#B9C1CC;
+    --ea-navy:#0f172a;
+    --ea-ink:#111827;
+    --ea-ivory:#f7f4ee;
+    --ea-panel:#ffffff;
+    --ea-muted:#6b7280;
+    --shadow:0 18px 60px rgba(15,23,42,.12);
+    --radius:18px;
+    --nav-h:72px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+    color:var(--ea-ink); background:var(--ea-ivory); line-height:1.6;
+    padding-top: calc(var(--nav-h) + 18px);
+  }
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* =========================
+     Luxury Gradient Fixed Header + Mobile Hamburger (MATCH EXPERIENCE)
+     ========================= */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10000;
+    display: flex; align-items: center; gap: 18px;
+    padding: 26px 56px;
+    background: linear-gradient(90deg, #D5D7DB 0%, #C7A98C 44%, #F7F6F3 78%, #FDFDFC 100%);
+    box-shadow: 0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45);
+    border: none;
+  }
+  .logo { font-family: "Playfair Display", serif; font-size: 28px; font-weight: 600; color: #1e1e1e; letter-spacing: .06em; }
+  .nav-links{display:flex; align-items:center; gap:40px; flex-wrap:wrap}
+  .nav a { text-decoration: none; color: #222; font-weight: 600; font-size: 15px; letter-spacing:.03em; position: relative; }
+  .nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -10px; height: 2px; background: linear-gradient(90deg,#C7A98C,#E7D9C7); opacity: 0; transform: scaleX(.6); transition: opacity .2s, transform .2s; }
+  .nav a:hover { color: #c7a98c; }
+  .nav a:hover::after { opacity: 1; transform: scaleX(1); }
+  .spacer{flex:1}
+  .btn-book { padding: 12px 20px; border-radius: 999px; border: 1px solid #c7a98c; background: rgba(255,255,255,.35); font-weight: 700; cursor: pointer; transition: all .25s; color: #1e1e1e; box-shadow: 0 4px 14px rgba(0,0,0,.05); text-decoration:none; display:inline-block; }
+  .btn-book:hover { background:#c7a98c; color:#ffffff; box-shadow:0 10px 22px rgba(199,169,140,.35); }
+
+  /* Hamburger */
+  .hamburger{ display:none; border:0; background:transparent; padding:8px; border-radius:10px; }
+  .hamburger:focus{ outline:2px solid #c7a98c; outline-offset:2px; }
+  .ham-bars{ display:inline-grid; gap:5px; }
+  .ham-bars span{ display:block; width:22px; height:2px; background:#1e1e1e; border-radius:2px; transition:transform .25s, opacity .25s; }
+
+  /* Dropdown panel */
+  .nav-panel{ display:none; position:fixed; top:var(--nav-h); left:0; right:0; background:#fff; box-shadow:0 22px 60px rgba(0,0,0,.16); z-index:9999; padding:12px 14px 16px; border-bottom:1px solid #eee; }
+  .nav-panel a{ display:block; margin:10px 6px; font-weight:700; color:#222; text-decoration:none; }
+  .nav-panel a:hover{ color:#c7a98c; }
+  .nav-panel .row-actions{ display:grid; gap:10px; margin-top:6px; }
+
+  /* Backdrop */
+  .nav-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.28); z-index:9998; }
+
+  /* Open state */
+  .nav.open .nav-panel{ display:block; animation:slideDown .18s ease-out; }
+  .nav.open + .nav-backdrop{ display:block; }
+  .nav.open .ham-bars span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .nav.open .ham-bars span:nth-child(2){ opacity:0; }
+  .nav.open .ham-bars span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  @keyframes slideDown{ from{ transform:translateY(-8px); opacity:.6 } to{ transform:translateY(0); opacity:1 } }
+
+  /* Language switcher */
+  .ea-actions{display:flex;align-items:center;gap:10px}
+  .lang-switch{position:relative}
+  .lang-btn{ display:inline-flex;align-items:center;gap:6px;padding:8px 10px; border:1px solid #e6e8ee;border-radius:999px;background:#fff;color:#111; cursor:pointer;font-weight:700;letter-spacing:.04em }
+  .lang-btn .chev{transition:transform .15s}
+  .lang-switch.open .lang-btn .chev{transform:rotate(180deg)}
+  .lang-list{ position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #e6e8ee; border-radius:12px;box-shadow:0 12px 26px rgba(0,0,0,.08);padding:6px;list-style:none;margin:0;display:none;min-width:92px;z-index:50 }
+  .lang-switch.open .lang-list{display:block}
+  .lang-list li{padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:700}
+  .lang-list li:hover{background:#f4f5f7}
+
+  @media (max-width:900px){
+    :root{ --nav-h:64px }
+    body{ padding-top: calc(var(--nav-h) + 8px); }
+    .nav{ padding:12px 16px; }
+    .nav-links, .btn-book, .ea-actions{ display:none; }
+    .hamburger{ display:inline-flex; }
+  }
+
+  /* =========================
+     HERO (LIGHT, HIGH CONTRAST)
+     ========================= */
+  .hero-legal{ position:relative; isolation:isolate; overflow:hidden; background:linear-gradient(180deg,#f8f6f1,#ffffff); border:1px solid #eee; }
+  .hero-legal .content{ position:relative; z-index:1; min-height:32vh; display:block; align-items:left; padding:32px 20px; }
+  .ea-breadcrumb{ font-size:14px; color:#6b7280; margin-bottom:12px; display:flex; gap:8px; align-items:center; }
+  .ea-breadcrumb .crumb{ text-decoration:none; color:#6b7280; }
+  .ea-breadcrumb .current{ color:#111827; }
+  .badge{ display:inline-block; background:#fff; color:#111827; border:1px solid #e6e8ee; border-radius:999px; padding:8px 12px; font-weight:700; letter-spacing:.04em; }
+  .hero-title{ color:#111827; font-size:clamp(30px,4.6vw,48px); line-height:1.1; margin:8px 0 8px; }
+  .hero-sub{ color:#4b5563; max-width:75ch }
+
+  /* =========================
+     CONTENT LAYOUT
+     ========================= */
+  .wrap{ max-width:1120px; margin:0 auto; padding:32px 20px 56px; display:grid; grid-template-columns:300px 1fr; gap:24px }
+  @media (max-width:1024px){ .wrap{ grid-template-columns:1fr } }
+  @media (max-width:900px){ .toc{ display:none } }
+
+  .toc{ position:sticky; top:18px; background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid #eceef3; padding:16px }
+  .toc h3{ margin:0 0 10px; color:#0f172a; font-size:16px }
+  .toc a{ display:block; color:#0f4c81; text-decoration:none; font-size:14px; padding:6px 0 }
+  .toc a:hover{ color:#0b3b63 }
+  .toc .small{ color:var(--ea-muted); font-size:12px; margin-top:10px }
+
+  .card{ background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid #eceef3; padding:22px }
+  .card h2{ color:#0f172a; margin:1.2em 0 .5em }
+  .card h3{ color:#0f172a; margin:1.1em 0 .35em }
+  .card p{ margin:.55em 0; color:#374151 }
+  .card ul{ padding-left:1.2em; color:#374151 }
+  .pill{ display:inline-block; background:#f7f4ee; border:1px solid #e8e2d7; border-radius:999px; padding:4px 10px; font-size:12px; margin:0 6px 6px 0 }
+  .note{ background:#fff7e8; border:1px solid #f1e1bf; border-radius:12px; padding:10px 12px; color:#6a541f; font-size:14px }
+
+  /* =========================
+     FOOTER (MATCH EXPERIENCE)
+     ========================= */
+  .elite-footer{ position:relative; background:linear-gradient(180deg,#1C2128, var(--ea-charcoal)); color:var(--ea-pearl); padding:64px 40px 36px; overflow:hidden; }
+  .elite-mesh{ position:absolute; inset:-10% -6% -18% -6%; transform:rotate(-6deg); width:120%; height:140%; pointer-events:none; }
+  .elite-footer__inner{ position:relative; z-index:1; display:grid; gap:8px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
+  .elite-col h4{ margin:0 0 14px; font:600 14px/1.2 "Inter",system-ui; letter-spacing:.08em; text-transform:uppercase; color:var(--ea-pearl); }
+  .elite-col a{ display:block; margin:8px 0; color:var(--ea-text-sub); text-decoration:none; font:500 14px/1.6 "Inter",system-ui; transition:color .2s ease; }
+  .elite-col a:hover{ color:var(--ea-gold-hi); }
+  .elite-copy{ position:relative; z-index:1; margin:42px 0 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.14); color:#9FA6B2; font:400 14px/1.6 "Inter",system-ui; text-align:center; }
+</style>
+</head>
+<body>
+
+<!-- =========================
+     HEADER (same as Experience)
+     ========================= -->
+<nav class="nav" aria-label="Primary">
+  <div class="logo">ELITE&nbsp;AIR</div>
+
+  <div class="nav-links">
+    <a href="index.html" data-i18n="nav.home">Home</a>
+    <a href="destinations.html" data-i18n="nav.destinations">Destinations</a>
+    <a href="offers.html" data-i18n="nav.offers">Offers</a>
+    <a href="experience.html" data-i18n="nav.experience">Experience</a>
+    <a href="news.html" data-i18n="nav.news">Latest news</a>
+    <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+    <a href="membership.html" data-i18n="nav.membership">Membership</a>
+  </div>
+
+  <div class="spacer"></div>
+
+  <button class="btn-book" type="button" onclick="location.href='members'">Members Login</button>
+
+  <!-- Desktop language switcher -->
+  <div class="ea-actions">
+    <div class="lang-switch" id="lang-switch">
+      <button class="lang-btn" id="lang-btn" aria-haspopup="listbox" aria-expanded="false">
+        <span id="lang-current">EN</span>
+        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <ul class="lang-list" id="lang-list" role="listbox" aria-label="Choose language">
+        <li role="option" data-lang="en">EN</li>
+        <li role="option" data-lang="ar">AR</li>
+        <li role="option" data-lang="fr">FR</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Hamburger (mobile only) -->
+  <button class="hamburger" id="nav-toggle" aria-expanded="false" aria-controls="nav-panel" aria-label="Open menu">
+    <span class="ham-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+  </button>
+
+  <!-- Mobile dropdown panel -->
+  <div class="nav-panel" id="nav-panel" hidden>
+    <a href="index.html">Home</a>
+    <a href="destinations.html">Destinations</a>
+    <a href="offers.html">Offers</a>
+    <a href="experience.html">Experience</a>
+    <a href="news.html">Latest news</a>
+    <a href="cargo.html">Cargo</a>
+    <a href="membership.html">Membership</a>
+    <div class="row-actions">
+       <button class="btn-book" type="button" onclick="location.href='members'">Members Login</button>
+      <!-- Mobile language switcher -->
+      <div class="ea-actions">
+        <div class="lang-switch" id="lang-switch-m">
+          <button class="lang-btn" id="lang-btn-m" aria-haspopup="listbox" aria-expanded="false">
+            <span id="lang-current-m">EN</span>
+            <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <ul class="lang-list" id="lang-list-m" role="listbox" aria-label="Choose language">
+            <li role="option" data-lang="en">EN</li>
+            <li role="option" data-lang="ar">AR</li>
+            <li role="option" data-lang="fr">FR</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop" hidden></div>
+
+<!-- =========================
+     HERO (light so text is never white on white)
+     ========================= -->
+<section class="hero-legal" role="banner">
+  <div class="content">
+    <div class="wrap" style="display:block; padding:0">
+      <nav class="ea-breadcrumb" aria-label="Breadcrumb">
+        <a href="/" class="crumb">Home</a>
+        <span aria-hidden="true">/</span>
+        <span class="crumb current">Terms &amp; Conditions</span>
+      </nav>
+      <span class="badge">Legal</span>
+      <h1 class="hero-title">Terms &amp; Conditions</h1>
+      <p class="hero-sub">Your contract with Elite Air when booking and traveling on our services. Please read these terms carefully before you purchase a ticket or fly with us.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =========================
+     CONTENT
+     ========================= -->
+<main class="wrap" id="content">
+  <!-- ToC -->
+  <aside class="toc" aria-labelledby="toc-title">
+    <h3 id="toc-title">Contents</h3>
+    <a href="#scope">1. Scope &amp; definitions</a>
+    <a href="#contract">2. Contract of carriage</a>
+    <a href="#booking">3. Booking &amp; tickets</a>
+    <a href="#fares">4. Fares, taxes &amp; fees</a>
+    <a href="#changes">5. Schedules, changes &amp; cancellations</a>
+    <a href="#checkin">6. Check-in &amp; boarding</a>
+    <a href="#baggage">7. Baggage rules</a>
+    <a href="#assistance">8. Special assistance</a>
+    <a href="#refusal">9. Refusal of carriage</a>
+    <a href="#conduct">10. Conduct on board</a>
+    <a href="#liability">11. Liability</a>
+    <a href="#refunds">12. Refunds</a>
+    <a href="#documents">13. Travel documents</a>
+    <a href="#privacy">14. Data protection</a>
+    <a href="#law">15. Governing law &amp; venue</a>
+    <a href="#contact">16. Contact</a>
+    <div class="small">Summary only. Local laws and mandatory regulations prevail where applicable.</div>
+  </aside>
+
+  <!-- Body -->
+  <article class="card">
+    <section id="scope">
+      <h2>1) Scope &amp; definitions</h2>
+      <p>These Terms &amp; Conditions (“Terms”) govern air transportation provided by <strong>Elite Airline Company K.S.C. (Public)</strong> (“Elite Air”, “we”, “us”, “our”). They apply to tickets purchased directly or via authorized agents, and to travel on flights operated by Elite Air. If your itinerary includes other airlines, their terms may also apply.</p>
+      <p><span class="pill">Ticket</span><span class="pill">PNR</span><span class="pill">Coupon</span><span class="pill">Checked baggage</span><span class="pill">Carry‑on</span> are used with their standard aviation meanings.</p>
+    </section>
+
+    <section id="contract">
+      <h2>2) Contract of carriage</h2>
+      <p>Your contract of carriage consists of (i) the ticket/PNR, (ii) these Terms, (iii) applicable fare rules, and (iv) our policies referenced herein. By completing a purchase, you accept the contract of carriage.</p>
+      <p class="note">Note: If a route involves a partner airline or a refuelling stop, that partner’s terms or local regulations may also apply.</p>
+    </section>
+
+    <section id="booking">
+      <h2>3) Booking &amp; tickets</h2>
+      <ul>
+        <li>Provide accurate guest details and ensure names match travel documents.</li>
+        <li>Tickets are valid only for the named passenger and may not be transferred.</li>
+        <li>Fare rules determine change/refund options; charges may apply.</li>
+        <li>We may cancel unpaid, fraudulent, or fare‑rule‑violating bookings.</li>
+      </ul>
+    </section>
+
+    <section id="fares">
+      <h2>4) Fares, taxes &amp; fees</h2>
+      <p>Fares generally exclude government taxes, airport charges, and service fees unless expressly stated. The final price is displayed before payment. Your issuer may apply currency/FX charges.</p>
+    </section>
+
+    <section id="changes">
+      <h2>5) Schedules, changes &amp; cancellations</h2>
+      <p>Flight times are planned carefully but not guaranteed. We may adjust schedules for operational, safety, or regulatory reasons. If we cancel or significantly change a flight, we will offer re‑accommodation or a refund in line with law and fare rules.</p>
+    </section>
+
+    <section id="checkin">
+      <h2>6) Check‑in &amp; boarding</h2>
+      <ul>
+        <li>Arrive with sufficient time to complete formalities; deadlines vary by airport.</li>
+        <li>Boarding may be denied if deadlines or documentation are not met.</li>
+        <li>Seat assignments may change for safety/operational reasons.</li>
+      </ul>
+    </section>
+
+    <section id="baggage">
+      <h2>7) Baggage rules</h2>
+      <ul>
+        <li>Carry‑on/checked allowances depend on fare and route.</li>
+        <li>Prohibited/dangerous items are not permitted; declare restricted items.</li>
+        <li>For loss or damage, report immediately upon arrival and in writing within legal time limits.</li>
+      </ul>
+    </section>
+
+    <section id="assistance">
+      <h2>8) Special assistance</h2>
+      <p>If you require mobility or medical assistance, please notify us during booking or at least 48 hours prior to departure so we can prepare. Some medical devices/oxygen require documentation.</p>
+    </section>
+
+    <section id="refusal">
+      <h2>9) Refusal of carriage</h2>
+      <p>We may refuse carriage or remove a guest for reasons including safety, security, invalid travel documents, disruptive behavior, intoxication, non‑payment, or non‑compliance with crew instructions, or if carriage would contravene law.</p>
+    </section>
+
+    <section id="conduct">
+      <h2>10) Conduct on board</h2>
+      <p>Guests must follow crew instructions at all times. Smoking (including e‑cigarettes) is prohibited. Tampering with smoke detectors is a criminal offense. We may take reasonable measures, including restraint, where necessary to ensure safety.</p>
+    </section>
+
+    <section id="liability">
+      <h2>11) Liability</h2>
+      <p>Our liability is governed by applicable conventions and laws (including the Montreal Convention, where applicable) and may be limited or excluded. We are not liable for indirect or consequential loss except as required by law. For baggage claims, statutory limits and timeframes apply.</p>
+    </section>
+
+    <section id="refunds">
+      <h2>12) Refunds</h2>
+      <p>Refund eligibility depends on the fare rules and applicable regulations. Refunds are made to the original form of payment or as a travel credit where permitted. Service fees may be non‑refundable unless required by law.</p>
+    </section>
+
+    <section id="documents">
+      <h2>13) Travel documents</h2>
+      <p>You are responsible for obtaining valid passports, visas, health documents, and any other entry requirements. We are not responsible for losses due to failure to comply with governmental requirements.</p>
+    </section>
+
+    <section id="privacy">
+      <h2>14) Data protection</h2>
+      <p>We process personal data in accordance with our <a href="privacy-policy.html" class="pill" style="text-decoration:none">Privacy Policy</a>. Border agencies may require sharing Advance Passenger Information (API/PNR). By traveling with us, you consent to such processing as permitted by law.</p>
+    </section>
+
+    <section id="law">
+      <h2>15) Governing law &amp; venue</h2>
+      <p>Unless mandatory law states otherwise, these Terms are governed by the laws of the State of Kuwait. Courts in Kuwait have exclusive jurisdiction over disputes arising out of or in connection with these Terms and your contract of carriage.</p>
+    </section>
+
+    <section id="contact">
+      <h2>16) Contact</h2>
+      <p><strong>Elite Airline Company K.S.C. (Public)</strong><br>
+         Registered address: <em>[Building 900008, Unit 9, Al-Dajeej Area, Farwaniya City, State of Kuwait]</em><br>
+         Email: <a href="mailto:support@eliteair.com.kw">support@eliteair.com.kw</a> • Phone: <em>[+965 6600 6909]</em></p>
+      <p>If your itinerary includes a partner airline, you may need to contact that airline for certain service matters.</p>
+    </section>
+  </article>
+</main>
+
+<!-- =========================
+     FOOTER (same as Experience)
+     ========================= -->
+<footer class="elite-footer">
+  <svg class="elite-mesh" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="eaGold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#C7A98C"/>
+        <stop offset="1" stop-color="#FFD479"/>
+      </linearGradient>
+    </defs>
+    <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+      <path d="M-120,840 C 220,690 560,640 980,620 1310,605 1670,560 1880,490"/>
+      <path d="M-120,760 C 220,620 560,580 980,560 1310,545 1670,510 1880,450"/>
+      <path d="M-120,680 C 220,550 560,520 980,500 1310,490 1670,470 1880,415"/>
+      <path d="M-120,600 C 220,480 560,460 980,440 1310,430 1670,440 1880,385"/>
+      <path d="M-120,520 C 220,420 560,400 980,380 1310,370 1670,410 1880,360"/>
+    </g>
+    <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+      <path d="M 0,900 C 360,760 720,700 1120,660 1520,620 1920,560 2320,520"/>
+      <path d="M 0,820 C 360,700 720,640 1120,600 1520,560 1920,540 2320,500"/>
+      <path d="M 0,740 C 360,640 720,600 1120,560 1520,520 1920,520 2320,480"/>
+      <path d="M 0,660 C 360,580 720,560 1120,520 1520,500 1920,500 2320,460"/>
+    </g>
+  </svg>
+
+  <div class="elite-footer__inner container">
+    <div class="elite-col">
+      <h4>Popular flights</h4>
+      <a href="#">Kuwait → London</a>
+      <a href="#">Kuwait → Paris</a>
+      <a href="#">Kuwait → Dubai</a>
+      <a href="#">Kuwait → Cairo</a>
+      <a href="#">Kuwait → Istanbul</a>
+      <a href="#">Kuwait → Marrakesh</a>
+      <a href="#">Kuwait → Riyadh</a>
+      <a href="#">Kuwait → Doha</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Navigation</h4>
+      <a href="index.html" data-i18n="nav.home">Home</a>
+      <a href="destinations.html" data-i18n="nav.destinations">Destinations</a>
+      <a href="offers.html" data-i18n="nav.offers">Offers</a>
+      <a href="experience.html" data-i18n="nav.experience">Experience</a>
+      <a href="news.html" data-i18n="nav.news">Latest News</a>
+      <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+      <a href="membership.html" data-i18n="nav.membership">Membership</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>About us</h4>
+      <a href="why-elite-air.html">Why Elite Air</a>
+      <a href="careers.html">Careers</a>
+      <a href="contact.html">Contact</a>
+      <a href="imprint.html">Imprint</a>
+      <a href="meda.html">Medical Assistance</a>
+      <a href="/investors-index.html">Investors</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Policies</h4>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="Cookie-Policy.html">Cookie Policy</a>
+      <a href="membership-terms.html">Membership Terms</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Legal</h4>
+      <a href="Terms-And-Conditions.html" aria-current="page">Terms &amp; Conditions</a>
+      <a href="Conditions-of-Carriage.html">Conditions of Carriage</a>
+      <a href="notice-of-Passenger-Rights.html">Notice of Passenger Rights</a>
+    </div>
+  </div>
+
+  <p class="elite-copy">© 2025 Elite Airline Company K.S.C. (Public). All Rights Reserved.</p>
+</footer>
+
+<!-- =========================
+     SCRIPTS (hamburger + language)
+     ========================= -->
+<script>
+/* ===== Hamburger / Mobile menu ===== */
+const navEl = document.querySelector('.nav');
+const navToggle = document.getElementById('nav-toggle');
+const navPanel = document.getElementById('nav-panel');
+const backdrop = document.getElementById('nav-backdrop');
+
+function openMenu(){
+  navEl.classList.add('open');
+  navPanel.hidden = false;
+  backdrop.hidden = false;
+  navToggle?.setAttribute('aria-expanded','true');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu(){
+  navEl.classList.remove('open');
+  navPanel.hidden = true;
+  backdrop.hidden = true;
+  navToggle?.setAttribute('aria-expanded','false');
+  document.body.style.overflow = '';
+}
+navToggle?.addEventListener('click', ()=>{
+  const isOpen = navEl.classList.contains('open');
+  isOpen ? closeMenu() : openMenu();
+});
+window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeMenu(); });
+navPanel?.addEventListener('click', (e)=>{ const el = e.target.closest('a, button'); if(el){ closeMenu(); } });
+</script>
+
+<script>
+/* ===== Language Switcher — Desktop ===== */
+(() => {
+  const wrap = document.getElementById('lang-switch');
+  if(!wrap) return;
+  const btn  = document.getElementById('lang-btn');
+  const list = document.getElementById('lang-list');
+  const cur  = document.getElementById('lang-current');
+
+  btn.addEventListener('click', () => {
+    const open = wrap.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e)=>{
+    if(!wrap.contains(e.target)){
+      wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+    }
+  });
+  list.addEventListener('click', (e)=>{
+    const li = e.target.closest('li'); if(!li) return;
+    cur.textContent = li.dataset.lang.toUpperCase();
+    wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+    document.documentElement.dir = (li.dataset.lang==='ar') ? 'rtl' : 'ltr';
+  });
+})();
+
+/* ===== Language Switcher — Mobile ===== */
+(() => {
+  const wrap = document.getElementById('lang-switch-m');
+  if(!wrap) return;
+  const btn  = document.getElementById('lang-btn-m');
+  const list = document.getElementById('lang-list-m');
+  const cur  = document.getElementById('lang-current-m');
+
+  btn.addEventListener('click', () => {
+    const open = wrap.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e)=>{
+    if(!wrap.contains(e.target)){
+      wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+    }
+  });
+  list.addEventListener('click', (e)=>{
+    const li = e.target.closest('li'); if(!li) return;
+    cur.textContent = li.dataset.lang.toUpperCase();
+    wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+    document.documentElement.dir = (li.dataset.lang==='ar') ? 'rtl' : 'ltr';
+  });
+})();
+</script>
+<script src="assets/language-switcher.js" defer></script>
+</body>
+</html>

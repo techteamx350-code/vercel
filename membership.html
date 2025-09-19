@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Join Elite Air Membership</title>
+<link rel="icon" type="image/x-icon" href="img/elite.ico">
+
+<!-- PDF libs for contract export -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<style>
+  /* =========================
+     Brand tokens (unified)
+     ========================= */
+  :root{
+    --ea-charcoal:#161A1F;
+    --ea-gold:#C7A98C;      /* champagne */
+    --ea-gold-hi:#FFD479;   /* highlight */
+    --ea-pearl:#FDFDFC;
+    --ea-text-sub:#B9C1CC;
+    --ea-navy:#0f172a;
+    --ea-ink:#111827;
+    --ea-ivory:#f7f4ee;
+    --ea-panel:#ffffff;
+    --ea-muted:#6b7280;
+    --shadow:0 18px 60px rgba(15,23,42,.18);
+    --radius:18px;
+    --nav-h:72px;           /* fixed header height */
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+    color:var(--ea-ink); background:var(--ea-ivory); line-height:1.55;
+    padding-top: calc(var(--nav-h) + 18px);   /* space for fixed header */
+  }
+
+  /* =========================
+     FIXED Top nav (from Home)
+     ========================= */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10000;
+    display: flex; align-items: center; gap: 5px;
+    padding: 26px 56px;
+    background: linear-gradient(90deg, #D5D7DB 0%, #C7A98C 44%, #F7F6F3 78%, #FDFDFC 100%);
+    box-shadow: 0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45);
+    border: none;
+  }
+  .logo { font-family: "Playfair Display", serif; font-size: 28px; font-weight: 600; color: #1e1e1e; letter-spacing: .06em; }
+  .nav-group{ display:flex; align-items:center; gap:5px; margin-left:auto; }
+  .nav a {
+    margin: 0 18px; text-decoration: none; color: #222; font-weight: 600; font-size: 15px; letter-spacing:.03em; position: relative;
+  }
+  .nav a::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -10px; height: 2px;
+    background: linear-gradient(90deg,#C7A98C,#E7D9C7); opacity: 0; transform: scaleX(.6); transition: opacity .2s, transform .2s;
+  }
+  .nav a:hover { color: #c7a98c; }
+  .nav a:hover::after { opacity: 1; transform: scaleX(1); }
+  .btn-book {
+    padding: 12px 24px; border-radius: 999px; border: 1px solid var(--ea-gold); background: rgba(255,255,255,.35);
+    font-weight: 700; cursor: pointer; transition: all .25s; color: #1e1e1e; box-shadow: 0 4px 14px rgba(0,0,0,.05); text-decoration:none;
+  }
+  .btn-book:hover { background:#c7a98c; color:#fff; box-shadow:0 10px 22px rgba(199,169,140,.35); }
+
+  /* Hamburger + mobile panel */
+  .hamburger{ display:none; border:0; background:transparent; padding:8px; margin-right:4px; border-radius:10px; }
+  .hamburger:focus{ outline:2px solid #c7a98c; outline-offset:2px; }
+  .ham-bars{ display:inline-grid; gap:5px; }
+  .ham-bars span{ display:block; width:22px; height:2px; background:#1e1e1e; border-radius:2px; transition:transform .25s, opacity .25s; }
+  .nav-panel{ display:none; position:fixed; top:var(--nav-h); left:0; right:0; background:#fff; box-shadow:0 22px 60px rgba(0,0,0,.16); z-index:9999; padding:12px 14px 16px; border-bottom:1px solid #eee; }
+  .nav-panel a{ display:block; margin:10px 6px; font-weight:700; color:#222; text-decoration:none; }
+  .nav-panel a:hover{ color:#c7a98c; }
+  .nav-panel .row-actions{ display:grid; gap:10px; margin-top:6px; }
+  .nav-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.28); z-index:9998; }
+  .nav.open .nav-panel{ display:block; animation:slideDown .18s ease-out; }
+  .nav.open + .nav-backdrop{ display:block; }
+  .nav.open .ham-bars span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .nav.open .ham-bars span:nth-child(2){ opacity:0; }
+  .nav.open .ham-bars span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  @keyframes slideDown{ from{ transform:translateY(-8px); opacity:.6 } to{ transform:translateY(0); opacity:1 } }
+
+  /* Language switcher (from Home) */
+  .ea-actions{display:flex;align-items:center;gap:14px;margin-left:6px}
+  .lang-switch{position:relative}
+  .lang-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #e6e8ee;border-radius:999px;background:#fff;color:#111;cursor:pointer;font-weight:700;letter-spacing:.04em}
+  .lang-btn .chev{transition:transform .15s}
+  .lang-switch.open .lang-btn .chev{transform:rotate(180deg)}
+  .lang-list{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #e6e8ee;border-radius:12px;box-shadow:0 12px 26px rgba(0,0,0,.08);padding:6px;list-style:none;margin:0;display:none;min-width:92px;z-index:50}
+  .lang-switch.open .lang-list{display:block}
+  .lang-list li{padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:700}
+  .lang-list li:hover{background:#f4f5f7}
+  .lang-list li[aria-selected="true"]{background:#f1ebe5;color:#8a6a47}
+
+  @media (max-width:900px){
+    :root{ --nav-h:64px }
+    body{ padding-top: calc(var(--nav-h) + 8px); }
+    .nav{ padding:10px 14px; }
+    .logo{ letter-spacing:.18em }
+    .hamburger{ display:inline-flex; margin-left:auto; }
+    .nav-group{ display:none; } /* hide inline links on mobile */
+  }
+
+  /* =========================
+     Membership page UI
+     ========================= */
+  .container{max-width:1100px;margin:34px auto;padding:0 16px}
+  .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .back{color:var(--ea-navy);text-decoration:none;font-weight:700}
+  .title{margin:0;font-size:28px}
+  .grid{display:grid;grid-template-columns:1fr;gap:16px}
+  .card{background:#fff;border-radius:22px;box-shadow:var(--shadow);padding:18px}
+  h2{margin:4px 0 8px;font-size:20px}
+  p,li,small{color:var(--ea-muted)}
+  .terms-box{max-height:220px;overflow:auto;border:1px solid #eee;border-radius:12px;padding:14px;line-height:1.7}
+  .row{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+  .field{grid-column:span 6}
+  .field.third{grid-column:span 4}
+  .field.full{grid-column:span 12}
+  label{display:block;font-size:12px;color:var(--ea-muted);font-weight:800;margin:0 0 6px}
+  input,select,textarea{width:100%;padding:12px;border:1px solid #e5e7eb;border-radius:12px;font-size:14px}
+  textarea{min-height:90px;resize:vertical}
+  .note{font-size:12px;color:var(--ea-muted)}
+  .bar{display:flex;gap:10px;align-items:center;justify-content:flex-end;margin-top:12px}
+  .kv{display:grid;grid-template-columns:140px 1fr;gap:6px 12px}
+  .k{color:#555}
+  .contract{border:1px solid #eee;border-radius:14px;padding:16px;background:#fff}
+  .mono{font-family:ui-monospace,SFMono-Regular,Consolas,Monaco,monospace}
+  .sig-box{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:900px){
+    .row{grid-template-columns:1fr}
+    .field,.field.third,.field.full{grid-column:span 1}
+    .sig-box{grid-template-columns:1fr}
+    .kv{grid-template-columns:1fr}
+  }
+
+  /* =========================
+     Luxury Mesh Footer (from Home)
+     ========================= */
+  .elite-footer{ position:relative; background:linear-gradient(180deg,#1C2128, var(--ea-charcoal)); color:var(--ea-pearl); padding:64px 40px 36px; overflow:hidden; }
+  .elite-mesh{ position:absolute; inset:-10% -6% -18% -6%; transform:rotate(-6deg); width:120%; height:140%; pointer-events:none; }
+  .elite-footer__inner{ position:relative; z-index:1; display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
+  .elite-col h4{ margin:0 0 14px; font:600 14px/1.3 "Inter",system-ui; letter-spacing:.08em; text-transform:uppercase; color:var(--ea-pearl); }
+  .elite-col a{ display:block; margin:8px 0; color:var(--ea-text-sub); text-decoration:none; font:500 14px/1.6 "Inter",system-ui; transition:color .2s ease; }
+  .elite-col a:hover{ color:var(--ea-gold-hi); }
+  .elite-copy{ position:relative; z-index:1; margin:42px 0 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.14); color:#9FA6B2; font:400 14px/1.6 "Inter",system-ui; text-align:center; }
+  .elite-footer, .elite-mesh{ -webkit-font-smoothing:antialiased }
+
+  /* =========================
+     Index-style Buttons (override)
+     ========================= */
+  .btn,
+  .book-btn,
+  .ea-btn,
+  .drawer-book,
+  .ghost,
+  .pill {
+    padding: 12px 24px;
+    border-radius: 999px;
+    border: 1px solid var(--ea-gold);
+    background: rgba(255,255,255,.35);
+    backdrop-filter: saturate(120%);
+    font-weight: 700;
+    cursor: pointer;
+    color: #1e1e1e;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(0,0,0,.05);
+    transition: all .25s;
+  }
+  .btn:hover,
+  .book-btn:hover,
+  .ea-btn:hover,
+  .drawer-book:hover,
+  .ghost:hover,
+  .pill:hover {
+    background: var(--ea-gold);
+    color: #fff;
+    border-color: var(--ea-gold);
+    box-shadow: 0 10px 22px rgba(199,169,140,.35);
+  }
+  .btn.secondary{
+    background:#fff;
+    border:1px solid var(--ea-gold);
+    color:#111;
+  }
+  .btn.secondary:hover{
+    background:var(--ea-gold);
+    color:#fff;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== FIXED Top Nav (index-style) ===== -->
+<nav class="nav" aria-label="Primary">
+  <div class="logo">ELITE&nbsp;AIR</div>
+
+  <!-- Hamburger (visible on mobile) -->
+  <button class="hamburger" id="nav-toggle" aria-expanded="false" aria-controls="nav-panel" aria-label="Open menu">
+    <span class="ham-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+  </button>
+
+  <!-- Desktop inline links/actions -->
+  <div class="nav-group" id="nav-group">
+    <a href="index.html" data-i18n="nav.home">Home</a>
+    <a href="destinations.html" data-i18n="nav.destinations">Destinations</a>
+    <a href="offers.html" data-i18n="nav.offers">Offers</a>
+    <a href="experience.html" data-i18n="nav.experience">Experience</a>
+    <a href="news.html" data-i18n="nav.news">Latest news</a>
+    <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+    <a href="membership.html" data-i18n="nav.membership">Membership</a>
+    <button class="btn-book" type="button" onclick="location.href='members'" data-i18n="cta.login">Members Login</button>
+
+    <!-- Language switcher -->
+    <div class="ea-actions">
+      <div class="lang-switch" id="lang-switch">
+        <button class="lang-btn" id="lang-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="lang-current">EN</span>
+          <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <ul class="lang-list" id="lang-list" role="listbox" aria-label="Choose language">
+          <li role="option" data-lang="en">EN</li>
+          <li role="option" data-lang="ar">AR</li>
+          <li role="option" data-lang="fr">FR</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile dropdown panel -->
+  <div class="nav-panel" id="nav-panel" hidden>
+    <a href="index.html">Home</a>
+    <a href="destinations.html">Destinations</a>
+    <a href="offers.html">Offers</a>
+    <a href="experience.html">Experience</a>
+    <a href="news.html">Latest news</a>
+    <a href="cargo.html">Cargo</a>
+    <a href="membership.html" aria-current="page">Membership</a>
+    <div class="row-actions">
+      <button class="btn-book" type="button" onclick="location.href='members'">Members Login</button>
+      <!-- Mobile language switcher cloned here -->
+      <div class="ea-actions" id="lang-mobile-slot"></div>
+    </div>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop" hidden></div>
+
+<!-- ===== PAGE CONTENT ===== -->
+<main class="container">
+  <div class="header">
+    <a class="back" href="./index.html">← Back</a>
+    <h1 class="title">Join Elite Air Membership</h1>
+  </div>
+
+  <div class="grid">
+    <!-- TERMS -->
+    <section class="card" id="terms">
+      <h2>Terms & Conditions</h2>
+      <div class="terms-box" id="termsBox" tabindex="0" aria-label="Terms and Conditions">
+        <h3>Membership overview</h3>
+        <ul>
+          <li>Membership grants access to Elite Air member benefits for the validity period shown on the member ID.</li>
+          <li>Member bookings must follow Elite Air booking rules and fare conditions.</li>
+          <li>Membership is personal; transfer rules apply only where listed for the selected tier.</li>
+        </ul>
+        <h3>Booking & travel rules</h3>
+        <ul>
+          <li>Bookings are subject to seat availability and operational constraints.</li>
+          <li>Advance-purchase window applies by tier (e.g., Tier 1: ≥ 3 days; Tier 2: ≥ 6 days).</li>
+          <li>No-show or late changes may result in fees per the Membership Schedule.</li>
+        </ul>
+        <h3>Fees & payments</h3>
+        <ul>
+          <li>Annual fee by tier is due upfront. Taxes and surcharges may apply.</li>
+          <li>Additional services (e.g., chauffeur, lounge partners) may have separate terms.</li>
+        </ul>
+        <h3>Data & privacy</h3>
+        <ul>
+          <li>Your data is processed to operate the program, verify identity, and comply with law.</li>
+          <li>You may request access, correction, or deletion subject to regulatory requirements.</li>
+        </ul>
+        <h3>Cancellation & termination</h3>
+        <ul>
+          <li>Elite Air may suspend benefits in case of misuse or breach of terms.</li>
+          <li>Refunds (if any) follow the Refund Policy published with the Membership Schedule.</li>
+        </ul>
+        <p class="note">This is a summary. The binding program rules are the Membership Schedule and Elite Air Policies published from time to time.</p>
+      </div>
+      <div style="margin-top:10px">
+        <label style="display:flex;gap:10px;align-items:center">
+          <input type="checkbox" id="agree"/> I have read and agree to the Terms & Conditions.
+        </label>
+      </div>
+    </section>
+
+    <!-- MEMBER DATA -->
+    <section class="card" id="member-data">
+      <h2>Member information</h2>
+
+      <!-- ✅ Proper form wrapper (no visual change) -->
+      <form action="/api/membership_create.php" method="post" id="membershipForm" novalidate>
+        <!-- (Optional) CSRF token: server pe session se set karein -->
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+
+        <div class="row">
+          <div class="field">
+            <label for="fullName">Full name</label>
+            <input id="fullName" name="full_name" placeholder="First Last" required autocomplete="name">
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="name@example.com" required autocomplete="email">
+          </div>
+
+          <div class="field third">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" type="tel" placeholder="+965 0000 0000" required autocomplete="tel">
+          </div>
+
+          <div class="field third">
+            <label for="nationality">Nationality</label>
+            <input id="nationality" name="nationality" placeholder="e.g., Kuwaiti" autocomplete="country-name">
+          </div>
+
+          <div class="field third">
+            <label for="dob">Date of birth</label>
+            <input id="dob" name="dob" type="date" required>
+          </div>
+
+          <div class="field third">
+            <label for="civil">Civil ID</label>
+            <input id="civil" name="civil_id" placeholder="Civil ID">
+          </div>
+
+          <div class="field third">
+            <label for="passport">Passport No.</label>
+            <input id="passport" name="passport_no" placeholder="Passport number">
+          </div>
+
+          <div class="field third">
+            <label for="address">City / Address</label>
+            <input id="address" name="address" placeholder="City, Country">
+          </div>
+
+          <div class="field third">
+            <label for="tier">Membership Tier</label>
+            <select id="tier" name="tier" required>
+              <option value="tier1">Tier 1 — 10,000 KWD</option>
+              <option value="tier2">Tier 2 — 5,000 KWD</option>
+            </select>
+          </div>
+
+          <div class="field third">
+            <label for="start">Start date</label>
+            <input id="start" name="start_date" type="date" required>
+          </div>
+
+          <div class="field third">
+            <label for="ref">Referral / Promo (optional)</label>
+            <input id="ref" name="referral" placeholder="PROMO2025">
+          </div>
+
+          <div class="field third">
+            <label for="pay">Payment method</label>
+            <select id="pay" name="payment_method" required>
+              <option value="bank">Bank transfer</option>
+              <option value="card">Credit / Debit card</option>
+              <option value="invoice">Corporate invoice</option>
+            </select>
+          </div>
+
+          <div class="field third">
+            <label for="ecname">Emergency contact (name)</label>
+            <input id="ecname" name="emergency_name" placeholder="Contact name">
+          </div>
+
+          <div class="field third">
+            <label for="ecphone">Emergency contact (phone)</label>
+            <input id="ecphone" name="emergency_phone" placeholder="+965 0000 0000">
+          </div>
+
+          <div class="field full">
+            <label for="notes">Notes (optional)</label>
+            <textarea id="notes" name="notes" placeholder="Anything we should know?"></textarea>
+          </div>
+        </div>
+
+        <div class="bar">
+          <button class="btn secondary" id="previewBtn" type="button">Generate Contract Preview</button>
+          <button class="btn" id="submitBtn" type="submit">Submit & Continue</button>
+        </div>
+      </form>
+
+      <small class="note">We’ll never share your personal information without your consent.</small>
+    </section>
+
+    <!-- CONTRACT -->
+    <section class="card" id="contract">
+      <h2>Membership Contract</h2>
+      <div id="contractBody" class="contract">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <strong>Elite Air — Membership Agreement</strong>
+          <span class="mono" id="contractNo" style="margin-left:auto">Contract: —</span>
+        </div>
+        <div class="kv" style="margin-bottom:10px">
+          <div class="k">Member</div><div id="cName">—</div>
+          <div class="k">Tier</div><div id="cTier">—</div>
+          <div class="k">Membership No.</div><div id="cMemberNo">—</div>
+          <div class="k">Valid From</div><div id="cFrom">—</div>
+          <div class="k">Valid Thru</div><div id="cThru">—</div>
+          <div class="k">Email</div><div id="cEmail">—</div>
+          <div class="k">Phone</div><div id="cPhone">—</div>
+        </div>
+
+        <p>
+          This Membership Agreement (“Agreement”) is between <strong id="cName2">—</strong> (“Member”) and Elite Air Company K.S.C. (Public) (“Elite Air”).
+          Member is purchasing the membership tier indicated above for the term stated, subject to the Terms & Conditions and Elite Air policies.
+        </p>
+        <ol>
+          <li><strong>Scope of Benefits.</strong> Access to member fare inventory, priority services, and lounge access where included by tier.</li>
+          <li><strong>Booking Rules.</strong> Advance notice window applies by tier; travel subject to availability and operational limitations.</li>
+          <li><strong>Fees.</strong> Annual fee is due in full prior to activation. Taxes/charges may apply.</li>
+          <li><strong>Transfer & Guests.</strong> Transferability and guest policies are defined by the selected tier and the Membership Schedule.</li>
+          <li><strong>Data & Privacy.</strong> Processing of personal data is necessary for program operation and compliance.</li>
+          <li><strong>Termination.</strong> Misuse, fraud, or breach may result in suspension or termination without refund.</li>
+          <li><strong>Governing Law.</strong> As per Elite Air policy; disputes handled in the competent courts.</li>
+        </ol>
+
+        <div class="sig-box" style="margin-top:12px">
+          <div>
+            <label for="sig">Member signature (type your full name)</label>
+            <input id="sig" placeholder="Type your full name as signature">
+          </div>
+          <div>
+            <label for="sigDate">Signature date</label>
+            <input id="sigDate" type="date">
+          </div>
+        </div>
+      </div>
+
+      <label style="display:flex;gap:10px;align-items:center;margin-top:10px">
+        <input type="checkbox" id="finalAgree">
+        I confirm that the information I provided is accurate and I agree to the Membership Agreement.
+      </label>
+
+      <div class="bar">
+        <button class="btn secondary" id="printBtn">Print</button>
+        <button class="btn secondary" id="pdfBtn">Download PDF</button>
+        <button class="btn" id="finishBtn">Finish & Create Membership</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- ===== Footer (index-style luxury mesh) ===== -->
+<footer class="elite-footer">
+  <!-- Curved gold mesh overlay (SVG) -->
+  <svg class="elite-mesh" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="eaGold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#C7A98C"/>
+        <stop offset="1" stop-color="#FFD479"/>
+      </linearGradient>
+    </defs>
+
+    <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+      <path d="M-120,840 C 220,690 560,640 980,620 1310,605 1670,560 1880,490"/>
+      <path d="M-120,760 C 220,620 560,580 980,560 1310,545 1670,510 1880,450"/>
+      <path d="M-120,680 C 220,550 560,520 980,500 1310,490 1670,470 1880,415"/>
+      <path d="M-120,600 C 220,480 560,460 980,440 1310,430 1670,440 1880,385"/>
+      <path d="M-120,520 C 220,420 560,400 980,380 1310,370 1670,410 1880,360"/>
+    </g>
+
+    <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+      <path d="M 0,900 C 360,760 720,700 1120,660 1520,620 1920,560 2320,520"/>
+      <path d="M 0,820 C 360,700 720,640 1120,600 1520,560 1920,540 2320,500"/>
+      <path d="M 0,740 C 360,640 720,600 1120,560 1520,520 1920,520 2320,480"/>
+      <path d="M 0,660 C 360,580 720,560 1120,520 1520,500 1920,500 2320,460"/>
+    </g>
+  </svg>
+
+  <div class="elite-footer__inner">
+    <div class="elite-col">
+      <h4>Popular flights</h4>
+      <a href="#">Kuwait → London</a>
+      <a href="#">Kuwait → Paris</a>
+      <a href="#">Kuwait → Dubai</a>
+      <a href="#">Kuwait → Cairo</a>
+      <a href="#">Kuwait → Istanbul</a>
+      <a href="#">Kuwait → Casablanca</a>
+      <a href="#">Kuwait → Riyadh</a>
+      <a href="#">Kuwait → Doha</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Navigation</h4>
+      <a href="index.html" data-i18n="nav.home">Home</a>
+      <a href="destinations.html" data-i18n="nav.destinations">Destinations</a>
+      <a href="offers.html" data-i18n="nav.offers">Offers</a>
+      <a href="experience.html" data-i18n="nav.experience">Experience</a>
+      <a href="news.html" data-i18n="nav.news">Latest News</a>
+      <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+      <a href="membership.html" data-i18n="nav.membership">Membership</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>About us</h4>
+      <a href="why-elite-air.html">Why Elite Air</a>
+      <a href="careers.html">Careers</a>
+      <a href="contact.html">Contact</a>
+      <a href="imprint.html">Imprint</a>
+      <a href="meda.html">Medical Assistance</a>
+      <a href="investor/investors-index.html">Investors</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Policies</h4>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="Cookie-Policy.html">Cookie Policy</a>
+      <a href="#">Membership Terms</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Legal</h4>
+      <a href="Terms-And-Conditions.html">Terms & Conditions</a>
+      <a href="Conditions-of-Carriage.html">Conditions of Carriage</a>
+      <a href="notice-of-Passenger-Rights.html">Notice of Passenger Rights</a>
+    </div>
+  </div>
+
+  <p class="elite-copy">© 2025 Elite Airline Company K.S.C. (Public). All Rights Reserved.</p>
+</footer>
+
+<!-- ===== Scripts ===== -->
+<script>
+/* ===== Fixed-nav polish ===== */
+const onScroll = () =>
+  document.documentElement.classList.toggle('nav-scrolled', window.scrollY > 2);
+window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+/* ===== Hamburger / Mobile menu ===== */
+const navEl = document.querySelector('.nav');
+const navToggle = document.getElementById('nav-toggle');
+const navPanel = document.getElementById('nav-panel');
+const backdrop = document.querySelector('.nav-backdrop');
+
+function openMenu(){
+  navEl.classList.add('open');
+  navPanel.hidden = false;
+  backdrop.hidden = false;
+  navToggle.setAttribute('aria-expanded','true');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu(){
+  navEl.classList.remove('open');
+  navPanel.hidden = true;
+  backdrop.hidden = true;
+  navToggle.setAttribute('aria-expanded','false');
+  document.body.style.overflow = '';
+}
+navToggle.addEventListener('click', ()=> navEl.classList.contains('open') ? closeMenu() : openMenu());
+backdrop.addEventListener('click', closeMenu);
+window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeMenu(); });
+// Close on link/button inside panel
+navPanel.addEventListener('click', (e)=>{ const el = e.target.closest('a, button'); if(el){ closeMenu(); } });
+
+/* ===== Clone language switcher into mobile panel ===== */
+(function cloneLangSwitcher(){
+  const desktopLang = document.getElementById('lang-switch');
+  if(!desktopLang) return;
+  const clone = desktopLang.cloneNode(true);
+  clone.id = 'lang-switch-mobile';
+  document.getElementById('lang-mobile-slot').appendChild(clone);
+})();
+</script>
+
+<script>
+/* ===== Language switcher with simple locale handling ===== */
+(function(){
+  const SUPPORTED = ['en','ar','fr'];
+  const DEFAULT = 'en';
+
+  const wrap = document.getElementById('lang-switch');
+  if(!wrap) return;
+  const btn  = wrap.querySelector('#lang-btn');
+  const list = wrap.querySelector('#lang-list');
+  const cur  = wrap.querySelector('#lang-current');
+
+  function applyLocale(lang){
+    document.documentElement.lang = lang;
+    const rtl = (lang==='ar'); document.documentElement.dir = rtl?'rtl':'ltr'; document.body.style.direction = rtl?'rtl':'ltr';
+  }
+
+  const saved = localStorage.getItem('ea_locale') || DEFAULT;
+  cur.textContent = saved.toUpperCase();
+  applyLocale(saved);
+
+  btn.addEventListener('click', ()=>{
+    const open = wrap.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e)=>{ if(!wrap.contains(e.target)){ wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false'); } });
+
+  list.addEventListener('click', (e)=>{
+    const li = e.target.closest('li'); if(!li) return;
+    const lang = li.dataset.lang;
+    localStorage.setItem('ea_locale', lang);
+    cur.textContent = lang.toUpperCase();
+    applyLocale(lang);
+    wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+  });
+})();
+</script>
+
+<script>
+/* ===== MEMBERSHIP LOGIC (design preserved) ===== */
+const $ = s => document.querySelector(s);
+const fmt = d => d ? new Date(d).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'}) : '—';
+function addMonths(date, n){ const x=new Date(date); x.setMonth(x.getMonth()+n); return x; }
+function genId(prefix='EA'){ const t=Date.now().toString(36).toUpperCase(); const r=Math.floor(Math.random()*999).toString().padStart(3,'0'); return `${prefix}-${t}-${r}`; }
+
+/* Elements */
+const agree = $('#agree');
+const inputs = {
+  name: $('#fullName'), email: $('#email'), phone: $('#phone'), nationality: $('#nationality'),
+  dob: $('#dob'), civil: $('#civil'), passport: $('#passport'), address: $('#address'),
+  tier: $('#tier'), start: $('#start'), ref: $('#ref'), pay: $('#pay'),
+  ecname: $('#ecname'), ecphone: $('#ecphone'), notes: $('#notes')
+};
+
+const c = {
+  no: $('#contractNo'), name: $('#cName'), name2: $('#cName2'), tier: $('#cTier'),
+  memberNo: $('#cMemberNo'), from: $('#cFrom'), thru: $('#cThru'),
+  email: $('#cEmail'), phone: $('#cPhone')
+};
+const memberNo = genId('MEM');
+c.memberNo.textContent = memberNo;
+
+/* Build contract preview */
+function buildContract(){
+  if(!agree.checked){ alert('Please agree to the Terms & Conditions first.'); return; }
+  if(!inputs.name.value || !inputs.email.value || !inputs.start.value){
+    alert('Please enter at least Full name, Email, and Start date.'); return;
+  }
+  c.no.textContent   = 'Contract: ' + genId('CTR');
+  c.name.textContent = inputs.name.value || '—';
+  c.name2.textContent= inputs.name.value || '—';
+  c.tier.textContent = inputs.tier.value || '—';
+  c.email.textContent= inputs.email.value || '—';
+  c.phone.textContent= inputs.phone.value || '—';
+  c.memberNo.textContent = memberNo;
+
+  const from = inputs.start.value ? new Date(inputs.start.value) : null;
+  c.from.textContent = fmt(from);
+  c.thru.textContent = from ? fmt(addMonths(from,12)) : '—';
+  alert('Contract preview generated below.');
+}
+
+/* Print */
+document.getElementById('printBtn').addEventListener('click', ()=> window.print());
+
+/* Download PDF (contract only) */
+async function downloadPDF(){
+  const el = document.getElementById('contractBody');
+  const { jsPDF } = window.jspdf;
+  const canvas = await html2canvas(el, {scale:2, background:'#ffffff'});
+  const imgData = canvas.toDataURL('image/png');
+
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const pageWidth  = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const imgWidth = pageWidth - 20;
+  const imgHeight = canvas.height * imgWidth / canvas.width;
+
+  let y = 10;
+  if (imgHeight <= pageHeight - 20) {
+    pdf.addImage(imgData, 'PNG', 10, y, imgWidth, imgHeight);
+  } else {
+    let heightLeft = imgHeight;
+    let position = 10;
+    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+    heightLeft -= (pageHeight - 20);
+    while (heightLeft > 0) {
+      pdf.addPage();
+      position = 10 - (imgHeight - heightLeft);
+      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      heightLeft -= (pageHeight - 20);
+    }
+  }
+
+  const filename = (inputs.name.value ? inputs.name.value.replace(/\s+/g,'_') : 'Member') + '_Contract.pdf';
+  pdf.save(filename);
+}
+document.getElementById('pdfBtn').addEventListener('click', downloadPDF);
+
+/* Finalize (demo alert unchanged) */
+document.getElementById('finishBtn').addEventListener('click', ()=>{
+  const sig = document.getElementById('sig').value.trim();
+  const sigDate = document.getElementById('sigDate').value;
+  const finalAgree = document.getElementById('finalAgree').checked;
+  if(!sig || !sigDate || !finalAgree){
+    alert('Please sign, add signature date, and confirm the Agreement.');
+    return;
+  }
+  alert(`Membership created for ${inputs.name.value || 'Member'}.\nMember No.: ${memberNo}\nTier: ${inputs.tier.value || ''}`);
+});
+
+/* ===== Submit hookup to backend (design unchanged) ===== */
+function submitData(){
+  if(!agree.checked){ alert('Please agree to the Terms & Conditions first.'); return; }
+  const req = ['name','email','start','tier'];
+  for(const k of req){ if(!inputs[k].value){ alert('Please complete all required fields.'); return; } }
+
+  buildContract(); // keep your existing preview flow
+
+  const form = document.getElementById('membershipForm');
+  if(!form.reportValidity()) return;
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  const oldText = submitBtn.textContent;
+  submitBtn.textContent = 'Submitting...';
+
+  const fd = new FormData(form);
+
+  fetch(form.action, { method: 'POST', body: fd, headers: { 'Accept': 'text/html,application/json;q=0.9' }})
+    .then(async (r) => {
+      if (r.redirected) { window.location.href = r.url; return; }
+      const ct = r.headers.get('content-type') || '';
+      if (ct.includes('application/json')) {
+        const data = await r.json();
+        if (r.ok) {
+          alert('Membership created successfully.');
+        } else {
+          alert(data.message || 'Submission failed.');
+        }
+      } else {
+        const text = await r.text();
+        if (r.ok) {
+          alert('Membership created successfully.');
+          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        } else {
+          alert(text || 'Submission failed.');
+        }
+      }
+    })
+    .catch(() => alert('Network error. Please try again.'))
+    .finally(() => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = oldText;
+    });
+}
+
+/* Wire buttons */
+document.getElementById('previewBtn').addEventListener('click', buildContract);
+document.getElementById('submitBtn').addEventListener('click', (e)=>{ e.preventDefault(); submitData(); });
+</script>
+
+<script src="assets/language-switcher.js" defer></script>
+</body>
+</html>

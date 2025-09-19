@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — Conditions of Carriage</title>
+<link rel="icon" type="image/x-icon" href="img/elite.ico">
+<meta name="description" content="Elite Air Conditions of Carriage. This page summarizes key rules for your journey. If there is any conflict, the official PDF prevails."/>
+
+<style>
+  /* =========================
+     Brand tokens (unified)
+     ========================= */
+  :root{
+    --ea-charcoal:#161A1F;
+    --ea-gold:#C7A98C;
+    --ea-gold-hi:#FFD479;
+    --ea-pearl:#FDFDFC;
+    --ea-text-sub:#B9C1CC;
+    --ea-navy:#0f172a;
+    --ea-ink:#111827;
+    --ea-ivory:#f7f4ee;
+    --ea-panel:#ffffff;
+    --ea-muted:#6b7280;
+    --ea-link:#0f4c81;
+    --ea-line:#ececec;
+    --shadow:0 18px 60px rgba(15,23,42,.12);
+    --shadow-lg:0 18px 60px rgba(15,23,42,.15);
+    --radius:18px;
+    --nav-h:72px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+    color:var(--ea-ink); background:var(--ea-ivory); line-height:1.6;
+    padding-top: calc(var(--nav-h) + 18px);
+  }
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* =========================
+     Header (matches Experience)
+     ========================= */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10000;
+    display: flex; align-items: center; gap: 18px;
+    padding: 26px 56px;
+    background: linear-gradient(90deg, #D5D7DB 0%, #C7A98C 44%, #F7F6F3 78%, #FDFDFC 100%);
+    box-shadow: 0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45);
+    border: none;
+  }
+  .logo { font-family: "Playfair Display", serif; font-size: 28px; font-weight: 600; color: #1e1e1e; letter-spacing: .06em; }
+  .nav-links{display:flex; align-items:center; gap:40px; flex-wrap:wrap}
+  .nav a { text-decoration: none; color: #222; font-weight: 600; font-size: 15px; letter-spacing:.03em; position: relative; }
+  .nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -10px; height: 2px; background: linear-gradient(90deg,#C7A98C,#E7D9C7); opacity: 0; transform: scaleX(.6); transition: opacity .2s, transform .2s; }
+  .nav a:hover { color: #c7a98c; }
+  .nav a:hover::after { opacity: 1; transform: scaleX(1); }
+  .spacer{flex:1}
+  .btn-book { padding: 12px 20px; border-radius: 999px; border: 1px solid #c7a98c; background: rgba(255,255,255,.35); font-weight: 700; cursor: pointer; transition: all .25s; color: #1e1e1e; box-shadow: 0 4px 14px rgba(0,0,0,.05); text-decoration:none; display:inline-block; }
+  .btn-book:hover { background:#c7a98c; color:#ffffff; box-shadow:0 10px 22px rgba(199,169,140,.35); }
+
+  /* Hamburger + mobile panel */
+  .hamburger{ display:none; border:0; background:transparent; padding:8px; border-radius:10px; }
+  .hamburger:focus{ outline:2px solid #c7a98c; outline-offset:2px; }
+  .ham-bars{ display:inline-grid; gap:5px; }
+  .ham-bars span{ display:block; width:22px; height:2px; background:#1e1e1e; border-radius:2px; transition:transform .25s, opacity .25s; }
+  .nav-panel{ display:none; position:fixed; top:var(--nav-h); left:0; right:0; background:#fff; box-shadow:0 22px 60px rgba(0,0,0,.16); z-index:9999; padding:12px 14px 16px; border-bottom:1px solid #eee; }
+  .nav-panel a{ display:block; margin:10px 6px; font-weight:700; color:#222; text-decoration:none; }
+  .nav-panel a:hover{ color:#c7a98c; }
+  .nav-panel .row-actions{ display:grid; gap:10px; margin-top:6px; }
+  .nav-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.28); z-index:9998; }
+  .nav.open .nav-panel{ display:block; animation:slideDown .18s ease-out; }
+  .nav.open + .nav-backdrop{ display:block; }
+  .nav.open .ham-bars span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .nav.open .ham-bars span:nth-child(2){ opacity:0; }
+  .nav.open .ham-bars span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  @keyframes slideDown{ from{ transform:translateY(-8px); opacity:.6 } to{ transform:translateY(0); opacity:1 } }
+
+  /* Language switcher */
+  .ea-actions{display:flex;align-items:center;gap:10px}
+  .lang-switch{position:relative}
+  .lang-btn{ display:inline-flex;align-items:center;gap:6px;padding:8px 10px; border:1px solid #e6e8ee;border-radius:999px;background:#fff;color:#111; cursor:pointer;font-weight:700;letter-spacing:.04em }
+  .lang-btn .chev{transition:transform .15s}
+  .lang-switch.open .lang-btn .chev{transform:rotate(180deg)}
+  .lang-list{ position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #e6e8ee; border-radius:12px;box-shadow:0 12px 26px rgba(0,0,0,.08);padding:6px;list-style:none;margin:0;display:none;min-width:92px;z-index:50 }
+  .lang-switch.open .lang-list{display:block}
+  .lang-list li{padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:700}
+  .lang-list li:hover{background:#f4f5f7}
+
+  @media (max-width:900px){
+    :root{ --nav-h:64px }
+    body{ padding-top: calc(var(--nav-h) + 8px); }
+    .nav{ padding:12px 16px; }
+    .nav-links, .btn-book, .ea-actions{ display:none; }
+    .hamburger{ display:inline-flex; }
+  }
+
+  /* =========================
+     HERO (legal, light like Privacy)
+     ========================= */
+  .hero-legal{ position:relative; isolation:isolate; overflow:hidden; background:linear-gradient(180deg,#f8f6f1,#ffffff); border:1px solid #eee; }
+  .hero-legal .content{ position:relative; z-index:1; min-height:32vh; display:block; padding:32px 20px; text-align:left; }
+  .ea-breadcrumb{ font-size:14px; color:#6b7280; margin-bottom:12px; display:flex; gap:8px; align-items:center; }
+  .ea-breadcrumb .crumb{ text-decoration:none; color:#6b7280; }
+  .ea-breadcrumb .current{ color:#111827; }
+  .badge{ display:inline-block; background:#fff; color:#111827; border:1px solid #e6e8ee; border-radius:999px; padding:8px 12px; font-weight:700; letter-spacing:.04em; }
+  .hero-title{ color:#111827; font-size:clamp(30px,4.6vw,48px); line-height:1.1; margin:8px 0 8px; }
+  .hero-sub{ color:#4b5563; max-width:75ch }
+
+  /* =========================
+     CONTENT
+     ========================= */
+  .wrap{ max-width:1120px; margin:0 auto; padding:28px 16px 60px }
+  .card{ background:var(--ea-panel); border:1px solid var(--ea-line); border-radius:var(--radius); box-shadow:var(--shadow-lg); }
+  .card .inner{ padding:22px }
+  .pill{ display:inline-block; background:#eef2ff; color:#3730a3; border:1px solid #c7d2fe; padding:.25rem .6rem; border-radius:999px; font-size:.78rem }
+  .facts{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px }
+  .facts .f{ background:#f9fafb; border:1px dashed var(--ea-line); border-radius:12px; padding:10px }
+  h2{ color:var(--ea-navy); margin:1.2em 0 .55em }
+  h3{ color:var(--ea-navy); margin:1.1em 0 .4em }
+  p{ margin:.55em 0 }
+  a.link{ color:var(--ea-link); text-decoration:none }
+  .footnote{ font-size:.92rem; color:var(--ea-muted) }
+
+  /* Accordion */
+  details{ border-top:1px dashed var(--ea-line) }
+  summary{ cursor:pointer; list-style:none; padding:16px 22px; font-weight:800 }
+  summary::-webkit-details-marker{ display:none }
+  .content{ padding:0 22px 18px }
+  .content ul{ margin:.35rem 0 .75rem 1.15rem }
+
+  /* =========================
+     Footer (matches Experience)
+     ========================= */
+  .elite-footer{ position:relative; background:linear-gradient(180deg,#1C2128, var(--ea-charcoal)); color:var(--ea-pearl); padding:64px 40px 36px; overflow:hidden; margin-top:24px; }
+  .elite-mesh{ position:absolute; inset:-10% -6% -18% -6%; transform:rotate(-6deg); width:120%; height:140%; pointer-events:none; }
+  .elite-footer__inner{ position:relative; z-index:1; display:grid; gap:8px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); max-width:1200px; margin:0 auto; }
+  .elite-col h4{ margin:0 0 14px; font:600 14px/1.2 "Inter",system-ui; letter-spacing:.08em; text-transform:uppercase; color:var(--ea-pearl); }
+  .elite-col a{ display:block; margin:8px 0; color:var(--ea-text-sub); text-decoration:none; font:500 14px/1.6 "Inter",system-ui; transition:color .2s ease; }
+  .elite-col a:hover{ color:var(--ea-gold-hi); }
+  .elite-copy{ position:relative; z-index:1; margin:42px 0 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.14); color:#9FA6B2; font:400 14px/1.6 "Inter",system-ui; text-align:center; }
+</style>
+</head>
+<body>
+
+<!-- =========================
+     HEADER
+     ========================= -->
+<nav class="nav" aria-label="Primary">
+  <div class="logo">ELITE&nbsp;AIR</div>
+
+  <div class="nav-links">
+    <a href="index.html" data-i18n="nav.home">Home</a>
+    <a href="destinations.html" data-i18n="nav.destinations">Destinations</a>
+    <a href="offers.html" data-i18n="nav.offers">Offers</a>
+    <a href="experience.html" data-i18n="nav.experience">Experience</a>
+    <a href="news.html" data-i18n="nav.news">Latest news</a>
+    <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+    <a href="membership.html" data-i18n="nav.membership">Membership</a>
+  </div>
+
+  <div class="spacer"></div>
+
+  <button class="btn-book" type="button" onclick="location.href='members'">Members Login</button>
+
+  <!-- Desktop language -->
+  <div class="ea-actions">
+    <div class="lang-switch" id="lang-switch">
+      <button class="lang-btn" id="lang-btn" aria-haspopup="listbox" aria-expanded="false">
+        <span id="lang-current">EN</span>
+        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <ul class="lang-list" id="lang-list" role="listbox" aria-label="Choose language">
+        <li role="option" data-lang="en">EN</li>
+        <li role="option" data-lang="ar">AR</li>
+        <li role="option" data-lang="fr">FR</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Hamburger (mobile) -->
+  <button class="hamburger" id="nav-toggle" aria-expanded="false" aria-controls="nav-panel" aria-label="Open menu">
+    <span class="ham-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+  </button>
+
+  <!-- Mobile dropdown -->
+  <div class="nav-panel" id="nav-panel" hidden>
+    <a href="index.html">Home</a>
+    <a href="destinations.html">Destinations</a>
+    <a href="offers.html">Offers</a>
+    <a href="experience.html">Experience</a>
+    <a href="news.html">Latest news</a>
+    <a href="cargo.html">Cargo</a>
+    <a href="membership.html">Membership</a>
+    <div class="row-actions">
+      <button class="btn-book" type="button" onclick="location.href='members'">Members Login</button>
+      <!-- Language (mobile) -->
+      <div class="ea-actions">
+        <div class="lang-switch" id="lang-switch-m">
+          <button class="lang-btn" id="lang-btn-m" aria-haspopup="listbox" aria-expanded="false">
+            <span id="lang-current-m">EN</span>
+            <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <ul class="lang-list" id="lang-list-m" role="listbox" aria-label="Choose language">
+            <li role="option" data-lang="en">EN</li>
+            <li role="option" data-lang="ar">AR</li>
+            <li role="option" data-lang="fr">FR</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop" hidden></div>
+
+<!-- =========================
+     HERO (Privacy-style)
+     ========================= -->
+<section class="hero-legal" role="banner" aria-label="Conditions of Carriage">
+  <div class="content">
+    <div class="wrap" style="display:block; padding:0">
+      <nav class="ea-breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html" class="crumb">Home</a>
+        <span aria-hidden="true">/</span>
+        <span class="crumb current">Conditions of Carriage</span>
+      </nav>
+      <span class="badge">Legal</span>
+      <h1 class="hero-title">Conditions of Carriage</h1>
+      <p class="hero-sub">Key rules that govern your journey with Elite Air — tickets, refunds, baggage, assistance and liability. If anything here differs from our official PDF, the PDF prevails.</p>
+      <div class="badge" style="margin-top:10px">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--ea-gold);display:inline-block;margin-right:8px"></span>
+        Applies to Elite-operated flights
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================
+     PAGE BODY
+     ========================= -->
+<main class="wrap" id="content">
+  <!-- Quick facts -->
+  <section class="card" style="margin-top:22px">
+    <div class="inner">
+      <span class="pill">Quick facts</span>
+      <div class="facts" style="margin-top:10px">
+        <div class="f"><b>Ticket validity</b> Typically 1 year unused, or 1 year from first flight if travel commences within that year.</div>
+        <div class="f"><b>Check-in & boarding</b> Arrive early; local deadlines apply (counters often close ~60 min before departure).</div>
+        <div class="f"><b>Baggage</b> Allowances per fare/cabin; prohibited & dangerous goods not accepted.</div>
+        <div class="f"><b>Liability (Montreal)</b> Injury/death strict liability portion to 128,821 SDR; checked baggage to 1,288 SDR; passenger delay to 5,346 SDR.</div>
+        <div class="f"><b>Refunds</b> Involuntary for cancellations/denied carriage; voluntary per fare rules.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Collapsible sections -->
+  <section class="card" style="margin-top:16px">
+    <details open>
+      <summary>1) Scope & definitions</summary>
+      <div class="content">
+        <p>These Conditions apply when Elite Air is the operating carrier shown on your ticket. Definitions include Ticket, Passenger, Checked/Unchecked Baggage, Force Majeure, etc. Mandatory law prevails if it conflicts with these Conditions.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>2) Tickets, validity & changes</summary>
+      <div class="content">
+        <ul>
+          <li>Tickets are non-transferable; ensure your name and travel documents match the booking.</li>
+          <li>Standard validity as above; extensions may be available for medical reasons with evidence.</li>
+          <li>Changes/no-shows follow your fare rules; some fares are non-refundable.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>3) Fares, taxes & fees</summary>
+      <div class="content">
+        <p>Fares cover carriage between points on the ticket. Taxes/charges are collected as required and may change. Currency is usually the country of commencement; card-issuer fees may apply.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>4) Reservations, seating & personal data</summary>
+      <div class="content">
+        <ul>
+          <li>Seat selection isn’t guaranteed; we may reassign for safety/operations (fees adjusted if needed).</li>
+          <li>Special assistance and medical clearances should be requested in advance.</li>
+          <li>We process your data per our Privacy Policy and regulatory requirements.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>5) Check-in & boarding</summary>
+      <div class="content">
+        <p>Please observe airport deadlines. We may deny boarding if you miss cut-offs or lack required documents.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>6) Refusal of carriage & onboard conduct</summary>
+      <div class="content">
+        <p>We may refuse carriage or off-load for safety/security, unlawful documents, non-payment, disruptive behavior, intoxication, or refusal of screening. On board you must follow crew instructions. Smoking/vaping is prohibited; tampering with detectors is illegal.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>7) Fitness to fly, pregnancy, children & assistance</summary>
+      <div class="content">
+        <ul>
+          <li>Travel requires you to be medically fit; certain conditions need medical clearance (MEDIF).</li>
+          <li>Pregnancy: doctor’s note typically from 28 weeks; restrictions apply after 35 weeks and for multiples.</li>
+          <li>Unaccompanied minors and guests needing assistance should request services at booking.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>8) Baggage</summary>
+      <div class="content">
+        <ul>
+          <li>Checked/Carry-on allowances are published per fare/cabin. Oversize/overweight may be charged or refused.</li>
+          <li>Dangerous goods (e.g., certain batteries, flammables) are restricted by international rules.</li>
+          <li>Fragile or perishable items should not be in checked bags; declare high-value items where available.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>9) Schedules, disruptions & refunds</summary>
+      <div class="content">
+        <p>If we cancel, significantly delay, or cause a misconnection, you’re entitled to re-accommodation, reasonable re-routing, or a refund according to policy and law. Voluntary changes/refunds follow fare rules.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>10) Travel documents</summary>
+      <div class="content">
+        <p>You are responsible for passports, visas, health documents, and entry requirements. Fines or costs caused by document issues are your responsibility.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>11) Liability & claims (key limits)</summary>
+      <div class="content">
+        <ul>
+          <li><b>Passenger injury/death:</b> strict liability portion up to 128,821 SDR (defenses above that level per Convention).</li>
+          <li><b>Checked baggage:</b> up to 1,288 SDR per passenger unless a higher value is declared and paid.</li>
+          <li><b>Passenger delay:</b> up to 5,346 SDR; baggage delay subject to SDR limits.</li>
+          <li><b>Time limits:</b> damage notice usually 7 days; delay 21 days; legal action 2 years.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>12) Other notes & binding document</summary>
+      <div class="content">
+        <p>Third-party services (hotels, cars, surface transport, lounges) have their own terms. We may amend these Conditions; mandatory laws prevail where applicable.</p>
+        <p><a class="link" href="Conditions-of-Carriage.pdf">View the binding PDF</a></p>
+      </div>
+    </details>
+  </section>
+
+  <p class="footnote" style="margin-top:10px">
+    This summary is for clarity. If it differs from our official PDF Conditions of Carriage, the PDF controls.
+  </p>
+</main>
+
+<!-- =========================
+     FOOTER
+     ========================= -->
+<footer class="elite-footer">
+  <!-- Curved gold mesh overlay (SVG) -->
+  <svg class="elite-mesh" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="eaGold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#C7A98C"/>
+        <stop offset="1" stop-color="#FFD479"/>
+      </linearGradient>
+    </defs>
+    <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+      <path d="M-120,840 C 220,690 560,640 980,620 1310,605 1670,560 1880,490"/>
+      <path d="M-120,760 C 220,620 560,580 980,560 1310,545 1670,510 1880,450"/>
+      <path d="M-120,680 C 220,550 560,520 980,500 1310,490 1670,470 1880,415"/>
+      <path d="M-120,600 C 220,480 560,460 980,440 1310,430 1670,440 1880,385"/>
+      <path d="M-120,520 C 220,420 560,400 980,380 1310,370 1670,410 1880,360"/>
+    </g>
+    <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+      <path d="M 0,900 C 360,760 720,700 1120,660 1520,620 1920,560 2320,520"/>
+      <path d="M 0,820 C 360,700 720,640 1120,600 1520,560 1920,540 2320,500"/>
+      <path d="M 0,740 C 360,640 720,600 1120,560 1520,520 1920,520 2320,480"/>
+      <path d="M 0,660 C 360,580 720,560 1120,520 1520,500 1920,500 2320,460"/>
+    </g>
+  </svg>
+
+  <div class="elite-footer__inner container">
+    <div class="elite-col">
+      <h4>Popular flights</h4>
+      <a href="#">Kuwait → London</a>
+      <a href="#">Kuwait → Paris</a>
+      <a href="#">Kuwait → Dubai</a>
+      <a href="#">Kuwait → Cairo</a>
+      <a href="#">Kuwait → Istanbul</a>
+      <a href="#">Kuwait → Marrakesh</a>
+      <a href="#">Kuwait → Riyadh</a>
+      <a href="#">Kuwait → Doha</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Navigation</h4>
+     <a href="destinations.html" data-i18n="nav.destinations">Destinations</a>
+      <a href="offers.html" data-i18n="nav.offers">Offers</a>
+      <a href="experience.html" data-i18n="nav.experience">Experience</a>
+      <a href="news.html" data-i18n="nav.news">Latest News</a>
+      <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+      <a href="membership.html" data-i18n="nav.membership">Membership</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>About us</h4>
+      <a href="why-elite-air.html">Why Elite Air</a>
+      <a href="careers.html">Careers</a>
+      <a href="contact.html">Contact</a>
+      <a href="imprint.html">Imprint</a>
+      <a href="meda.html">Medical Assistance</a>
+      <a href="investor/investors-index.html">Investors</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Policies</h4>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="Cookie-Policy.html">Cookie Policy</a>
+      <a href="membership-terms.html">Membership Terms</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Legal</h4>
+      <a href="Terms-And-Conditions.html">Terms &amp; Conditions</a>
+      <a href="Conditions-of-Carriage.html" aria-current="page">Conditions of Carriage</a>
+      <a href="notice-of-Passenger-Rights.html">Notice of Passenger Rights</a>
+    </div>
+  </div>
+
+  <p class="elite-copy">© 2025 Elite Airline Company K.S.C. (Public). All Rights Reserved.</p>
+</footer>
+
+<!-- =========================
+     SCRIPTS (hamburger + language)
+     ========================= -->
+<script>
+/* ===== Hamburger / Mobile menu ===== */
+const navEl = document.querySelector('.nav');
+const navToggle = document.getElementById('nav-toggle');
+const navPanel = document.getElementById('nav-panel');
+const backdrop = document.getElementById('nav-backdrop');
+
+function openMenu(){
+  navEl.classList.add('open');
+  navPanel.hidden = false;
+  backdrop.hidden = false;
+  navToggle?.setAttribute('aria-expanded','true');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu(){
+  navEl.classList.remove('open');
+  navPanel.hidden = true;
+  backdrop.hidden = true;
+  navToggle?.setAttribute('aria-expanded','false');
+  document.body.style.overflow = '';
+}
+navToggle?.addEventListener('click', ()=>{
+  const isOpen = navEl.classList.contains('open');
+  isOpen ? closeMenu() : openMenu();
+});
+backdrop?.addEventListener('click', closeMenu);
+window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeMenu(); });
+navPanel?.addEventListener('click', (e)=>{ const el = e.target.closest('a, button'); if(el){ closeMenu(); } });
+</script>
+
+<script>
+/* ===== Language Switcher — Desktop ===== */
+(() => {
+  const wrap = document.getElementById('lang-switch');
+  if(!wrap) return;
+  const btn  = document.getElementById('lang-btn');
+  const list = document.getElementById('lang-list');
+  const cur  = document.getElementById('lang-current');
+
+  btn.addEventListener('click', () => {
+    const open = wrap.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e)=>{
+    if(!wrap.contains(e.target)){
+      wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+    }
+  });
+  list.addEventListener('click', (e)=>{
+    const li = e.target.closest('li'); if(!li) return;
+    cur.textContent = li.dataset.lang.toUpperCase();
+    wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+    document.documentElement.dir = (li.dataset.lang==='ar') ? 'rtl' : 'ltr';
+  });
+})();
+
+/* ===== Language Switcher — Mobile ===== */
+(() => {
+  const wrap = document.getElementById('lang-switch-m');
+  if(!wrap) return;
+  const btn  = document.getElementById('lang-btn-m');
+  const list = document.getElementById('lang-list-m');
+  const cur  = document.getElementById('lang-current-m');
+
+  btn.addEventListener('click', () => {
+    const open = wrap.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e)=>{
+    if(!wrap.contains(e.target)){
+      wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+    }
+  });
+  list.addEventListener('click', (e)=>{
+    const li = e.target.closest('li'); if(!li) return;
+    cur.textContent = li.dataset.lang.toUpperCase();
+    wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+    document.documentElement.dir = (li.dataset.lang==='ar') ? 'rtl' : 'ltr';
+  });
+})();
+</script>
+<script src="assets/language-switcher.js" defer></script>
+</body>
+</html>

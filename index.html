@@ -1,0 +1,1257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — Home</title>
+<link rel="icon" type="image/x-icon" href="img/elite.ico">
+
+<!-- Leaflet (for the routes map) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+
+<style>
+  /* =========================
+     Brand palette / tokens
+     ========================= */
+  :root{
+     --ea-charcoal:#161A1F;     /* tail black */
+    --ea-gold:#C7A98C;          /* champagne */
+    --ea-gold-hi:#FFD479;       /* highlight */
+    --ea-pearl:#FDFDFC;         /* pearl white */
+    --ea-text-sub:#B9C1CC;      /* soft steel */
+    --ea-navy:#0f172a;
+    --ea-ink:#111827;
+    --ea-ivory:#f7f4ee;
+    --ea-panel:#ffffff;
+    --ea-gold:#c9b89a;
+    --ea-muted:#6b7280;
+    --ea-shadow:0 18px 60px rgba(15,23,42,.18);
+    --radius:18px;
+
+    /* Fixed header height */
+    --nav-h: 72px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+    color:var(--ea-ink);
+    background:var(--ea-ivory);
+    padding-top: calc(var(--nav-h) + 18px);
+    line-height:1.55;
+  }
+
+  /* =========================
+     FIXED Top nav (with mobile hamburger)
+     ========================= */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 10000;
+    display: flex; align-items: center; gap: 5px;
+    padding: 26px 56px;
+    background: linear-gradient(90deg, #D5D7DB 0%, #C7A98C 44%, #F7F6F3 78%, #FDFDFC 100%);
+    box-shadow: 0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45);
+    border: none;
+  }
+
+  .logo {
+    font-family: "Playfair Display", serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1e1e1e;
+    letter-spacing: .06em;
+  }
+
+  /* inline links/actions container (desktop) */
+  .nav-group{ display:flex; align-items:center; gap:6px; margin-left:auto; }
+
+  .nav a {
+    margin: 0 18px;
+    text-decoration: none;
+    color: #222;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: .03em;
+    position: relative;
+  }
+  .nav a::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -10px;
+    height: 2px;
+    background: linear-gradient(90deg,#C7A98C,#E7D9C7);
+    opacity: 0;
+    transform: scaleX(.6);
+    transition: opacity .2s, transform .2s;
+  }
+  .nav a:hover { color: #c7a98c; }
+  .nav a:hover::after { opacity: 1; transform: scaleX(1); }
+
+  .btn-book {
+    padding: 12px 24px;
+    border-radius: 999px;
+    border: 1px solid #c7a98c;
+    background: rgba(255,255,255,.35);
+    backdrop-filter: saturate(120%);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .25s;
+    color: #1e1e1e;
+    box-shadow: 0 4px 14px rgba(0,0,0,.05);
+  }
+  .btn-book:hover { background:#c7a98c; color:#fff; box-shadow:0 10px 22px rgba(199,169,140,.35); }
+  .btn-login {
+    padding: 12px 24px;
+    border-radius: 999px;
+    border: 1px solid #c7a98c;
+    background: rgba(255,255,255,.35);
+    backdrop-filter: saturate(120%);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .25s;
+    color: #1e1e1e;
+    box-shadow: 0 4px 14px rgba(0,0,0,.05);
+  }
+  .btn-login:hover { background:#c7a98c; color:#fff; box-shadow:0 10px 22px rgba(199,169,140,.35); }
+
+  /* Hamburger button */
+  .hamburger{ display:none; border:0; background:transparent; padding:8px; margin-right:4px; border-radius:10px; }
+  .hamburger:focus{ outline:2px solid #c7a98c; outline-offset:2px; }
+  .ham-bars{ display:inline-grid; gap:5px; }
+  .ham-bars span{ display:block; width:22px; height:2px; background:#1e1e1e; border-radius:2px; transition:transform .25s, opacity .25s; }
+
+  /* Mobile panel */
+  .nav-panel{ display:none; position:fixed; top:var(--nav-h); left:0; right:0; background:#fff; box-shadow:0 22px 60px rgba(0,0,0,.16); z-index:9999; padding:12px 14px 16px; border-bottom:1px solid #eee; }
+  .nav-panel a{ display:block; margin:10px 6px; font-weight:700; }
+  .nav-panel .row-actions{ display:grid; gap:10px; margin-top:6px; }
+
+  /* Backdrop (click to close) */
+  .nav-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.28); z-index:9998; }
+
+  /* Open state */
+  .nav.open .nav-panel{ display:block; animation:slideDown .18s ease-out; }
+  .nav.open + .nav-backdrop{ display:block; }
+  .nav.open .ham-bars span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .nav.open .ham-bars span:nth-child(2){ opacity:0; }
+  .nav.open .ham-bars span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  @keyframes slideDown{ from{ transform:translateY(-8px); opacity:.6 } to{ transform:translateY(0); opacity:1 } }
+
+  @media (max-width:900px){
+    :root{ --nav-h:64px }
+    body{ padding-top: var(--nav-h); }
+    .nav{ padding:10px 14px; }
+    .logo{ letter-spacing:.18em }
+    .hamburger{ display:inline-flex; margin-left:auto; }
+    .nav-group{ display:none; } /* hide inline links on mobile */
+  }
+
+  /* =========================
+     HERO (SVG slides)
+     ========================= */
+  .hero{position:relative;isolation:isolate;overflow:hidden;background:var(--ea-ivory);}  
+  .slides{position:relative;height:62vh;min-height:460px;max-height:720px;}  
+  .slide{position:absolute;inset:0;opacity:0;transition:opacity .6s ease;display:grid;place-items:center;padding:0 16px;}  
+  .slide.active{opacity:1}  
+  .slide .content{max-width:1200px;width:100%;display:grid;grid-template-columns:1fr;gap:10px;z-index:2}  
+  .eyebrow{color:var(--ea-gold);text-transform:uppercase;letter-spacing:.16em;font-size:12px;font-weight:800}  
+  .headline{color:#fff;font-weight:800;line-height:1.05;font-size:clamp(28px,5.2vw,56px);text-shadow:0 6px 20px rgba(0,0,0,.35)}  
+  .sub{color:#f3f4f6;font-size:16px;max-width:60ch;text-shadow:0 4px 14px rgba(0,0,0,.25)}  
+  .bgsvg{position:absolute;inset:0;width:100%;height:100%;z-index:1}  
+  .dots{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:8px;z-index:3}  
+  .dot.active{background:var(--ea-gold);border-color:transparent}
+
+  /* =========================
+     Booking widget
+     ========================= */
+  .booking{ position:relative;max-width:1180px;margin:-64px auto 36px;background:var(--ea-panel); border-radius:22px;box-shadow:var(--ea-shadow);overflow:hidden;z-index:4 }
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #eee;background:#fff}
+  .tab{padding:14px 12px;text-align:center;font-weight:700;color:var(--ea-muted);cursor:pointer}
+  .tab.active{color:var(--ea-navy);box-shadow:inset 0 -3px 0 var(--ea-gold)}
+  .pad{padding:18px 16px 20px}
+  .row{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;align-items:center}
+  .field{grid-column:span 3}
+  .field.large{grid-column:span 4}
+  .field.wide{grid-column:span 6}
+  label{display:block;font-size:12px;color:var(--ea-muted);margin:0 0 6px;font-weight:700}
+  select,input{width:100%;padding:12px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;font-size:14px}
+  .trip{display:flex;gap:10px;margin-bottom:12px}
+  .pill{border-radius:999px;border:1px solid #c7a98c;background:#fff;padding:10px 14px;font-weight:700;cursor:pointer}
+  .pill:hover{ background:#c7a98c; color:#fff; box-shadow: 0 10px 22px rgba(199,169,140,.35); }
+  .pill.active{background:var(--ea-gold);border-color:var(--ea-gold);color:#111}
+  .right{display:flex;justify-content:flex-end}
+  .btn {padding:12px 24px; border-radius:999px; border:1px solid #c7a98c; background:rgba(255,255,255,.35); backdrop-filter:saturate(120%); font-weight:700; cursor:pointer; transition:all .25s; color:#1e1e1e; box-shadow:0 4px 14px rgba(0,0,0,.05); text-decoration:none; display:inline-block;}
+  .btn:hover {background:#c7a98c; color:#fff; box-shadow:0 10px 22px rgba(199,169,140,.35);}  
+  .note{font-size:12px;color:var(--ea-muted);margin-top:8px}
+
+  @media (max-width:900px){
+    .row{grid-template-columns:1fr 1fr}
+    .field,.field.large,.field.wide{grid-column:span 1}
+    .headline{font-size:clamp(26px,7vw,42px)}
+    .booking{margin:-40px 12px 24px}
+  }
+
+  /* =========================
+     Membership block (matches booking)
+     ========================= */
+  .membership{ position:relative;max-width:1180px;margin:0 auto 36px;background:var(--ea-panel); border-radius:22px;box-shadow:var(--ea-shadow);overflow:hidden;z-index:3 }
+  .membership .bar{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #eee;background:#fff}
+  .membership .bar h3{margin:0;font-size:16px;font-weight:800;color:var(--ea-navy)}
+  .badge {background:#fff; border: 1px solid #c7a98c; color:#111; padding:6px 10px; border-radius:999px; font-weight:800; font-size:12px;}
+  .small{font-size:12px;color:var(--ea-muted)}
+  .member-id{ background:linear-gradient(135deg,#111927 0%,#0f172a 60%); color:#fff;border-radius:16px;padding:16px;display:grid;gap:8px; box-shadow:0 14px 30px rgba(15,23,42,.25); }
+  .member-id .row2{display:flex;gap:18px;flex-wrap:wrap}
+  .member-id .stamp{margin-left:auto;border:2px solid rgba(201,184,154,.65);padding:6px 10px;border-radius:10px;font-weight:800;color:#c9b89a}
+  .kv{display:grid;grid-template-columns:120px 1fr;gap:6px 12px;font-size:14px}
+  .kv .k{color:#c9b89a}
+  .divider{height:1px;background:rgba(255,255,255,.08);margin:8px 0}
+  .ghost{background:#fff;border:2px solid var(--ea-gold);color:#111;border-radius:14px;padding:10px 18px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-block}
+  .stack{display:grid;gap:12px}
+  @media (max-width:900px){ .kv{grid-template-columns:1fr} }
+
+  /* =========================
+     Upper-mid & mid sections (brand SVGs)
+     ========================= */
+  .ea-upper-mid{ padding: clamp(36px,5vw,72px) 16px; background:#ffffff; color:#0f172a; }
+  .ea-container{ max-width:1200px; margin:0 auto; }
+  .ea-hero-row{ display:grid; grid-template-columns: 1fr 1fr; gap: clamp(20px,3.6vw,56px); align-items:center; }
+  .ea-hero-img{ border-radius:18px; overflow:hidden; box-shadow:0 16px 40px rgba(15,23,42,.15); }
+  .ea-hero-img svg{ width:100%; height:100%; display:block; }
+  .ea-hero-copy h2{ font-size: clamp(22px,2.3vw,30px); line-height:1.2; font-weight:800; margin:0 0 10px; }
+  .ea-hero-copy h2 span{ border-bottom: 6px solid var(--ea-gold); }
+  .ea-hero-copy p{ color:#46546b; line-height:1.8; margin:0; }
+
+  .ea-row-title{ display:flex; align-items:center; justify-content:space-between; margin: clamp(28px,4vw,52px) 0 14px; }
+  .ea-row-title h3{ font-size: clamp(18px,2vw,24px); font-weight:800; margin:0; }
+  .ea-chip{ background:fff#; color:#111;border: 1px solid #c7a98c; padding:8px 14px; border-radius:999px; text-decoration:none; font-weight:700; box-shadow:0 8px 20px rgba(201,184,154,.35); }
+  .ea-chip:hover{ background:#c7a98c; color:#fff; box-shadow:0 10px 22px rgba(199,169,140,.35); }
+  .ea-features{ display:grid; grid-template-columns: repeat(3,1fr); gap: clamp(16px,2vw,28px); }
+  .ea-card{ background:#fff; border:1px solid #e6e8ee; border-radius:16px; overflow:hidden; box-shadow:0 10px 24px rgba(15,23,42,.06); }
+  .ea-card-media{ background:#0f172a; border-radius: 18px;}
+  .ea-card-media svg{ width:100%; height:auto; display:block; }
+  .ea-card h4{ font-size:16px; margin:10px 14px 6px; font-weight:800; }
+  .ea-card p{ margin:0 14px 16px; color:#5b667a; line-height:1.7; }
+
+  @media (max-width: 980px){ .ea-hero-row{ grid-template-columns: 1fr; } .ea-features{ grid-template-columns: 1fr; } }
+
+  .ea-mid{ background:#1b2332; position:relative; overflow:hidden; padding: clamp(48px,6vw,96px) 16px 0; color:#e7e9ee; }
+  .ea-grid{ display:grid; align-items:center; gap: clamp(20px,4vw,64px); }
+  .ea-grid.a{ grid-template-columns: 1.1fr .9fr; }
+  .ea-grid.b{ grid-template-columns: .9fr 1.1fr; margin-top: clamp(32px,6vw,96px); }
+  .ea-copy h2, .ea-copy h3{ font-weight:800; line-height:1.1; margin:0 0 12px; }
+  .ea-copy h2{ font-size: clamp(26px,2.6vw,38px); }
+  .ea-copy h3{ font-size: clamp(22px,2.3vw,32px); }
+  .ea-copy h2 span, .ea-copy h3 span{ border-bottom: 6px solid var(--ea-gold); }
+  .ea-copy p{ color:#c8cfdb; line-height:1.8; margin:6px 0 14px; max-width:56ch; }
+  .ea-footnote{ font-size:.85rem; color:#9aa6bb; }
+  .ea-btn{ display:inline-block;border: 1px solid #c7a98c; background:#fff; color:#111; font-weight:700; padding:10px 18px; border-radius:999px; text-decoration:none; box-shadow:0 10px 20px rgba(201,184,154,.25); }
+  .ea-btn:hover{ background:#c7a98c; color:#fff; box-shadow: 0 10px 22px rgba(199,169,140,.35); }
+  .ea-mosaic{ display:grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 180px; gap:14px; }
+  .ea-mosaic .tile{ border-radius:20px; overflow:hidden; background:#0f172a; box-shadow:0 12px 30px rgba(0,0,0,.22); }
+  .tile.t1{ grid-row: span 2; } .tile.t3{ grid-row: span 2; }
+
+  /* =========================
+     Routes map
+     ========================= */
+  .wrap{ max-width:1120px; margin:0 auto; padding:48px 20px 72px; }
+  .section-head{ margin-bottom:22px; }
+  .kicker{ font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--ea-gold); font-weight:600; }
+  h1{ margin:6px 0 10px; font-size:clamp(28px,3.2vw,40px); line-height:1.15; font-weight:700; }
+  .lead{ max-width:760px; color:var(--ea-muted); font-size:16px; }
+
+  .map-card{ background:#fff; border-radius:var(--radius); box-shadow:var(--ea-shadow); overflow:hidden; }
+  #routes-map{ height:540px; width:100%; }
+  .legend{ display:grid; grid-template-columns:repeat(3,minmax(180px,1fr)); gap:10px 22px; padding:16px 18px 20px; border-top:1px solid #eee; font-size:14px; color:#404652; }
+  .legend-item{ display:flex; align-items:center; gap:10px; white-space:nowrap; }
+  .chip{ width:42px; height:6px; border-radius:999px; display:inline-block; position:relative; }
+  .chip.open{ background:#1b4f72; } .chip.via{ background:#b85c00; } .chip.planned{ background:#9298a1; }
+  .chip.planned::after{ content:""; position:absolute; inset:0; background:repeating-linear-gradient(90deg, rgba(255,255,255,0) 0 8px, rgba(255,255,255,.9) 8px 12px); border-radius:999px; mix-blend-mode:screen; opacity:.8; }
+
+  .routes-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin-top:18px; }
+  .route-tile{ background:#fff; border-radius:14px; box-shadow:var(--ea-shadow); padding:12px 14px; display:flex; flex-direction:column; gap:6px; font-size:15px; }
+  .route-title{ font-weight:700; } .route-meta{ color:#6b7280; font-size:13px; }
+
+  /* =========================
+   Footer (Luxury Gradient)
+   ========================= */
+.footer { background: linear-gradient(180deg, #1c2128 0%, #161a1f 100%); color: #dcdcdc; padding: 60px 40px; }
+.footer .container { max-width:1300px; margin:0 auto; }
+.footer-top { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:32px; margin-bottom:40px; }
+.footer h3, .footer h4 { margin:0 0 16px; font-size:15px; text-transform:uppercase; letter-spacing:.08em; color:#f0f0f0; }
+.footer ul { list-style:none; padding:0; margin:0; }
+.footer ul li a { display:block; text-decoration:none; color:#b9c1cc; margin:6px 0; transition:color .2s; font-size:14px; }
+.footer ul li a:hover { color:#ffffff; }
+
+.elite-footer{ position:relative; background:linear-gradient(180deg,#1C2128, var(--ea-charcoal)); color:var(--ea-pearl); padding:64px 40px 36px; overflow:hidden; }
+.elite-mesh{ position:absolute; inset:-10% -6% -18% -6%; transform:rotate(-6deg); width:120%; height:140%; pointer-events:none; }
+.elite-footer__inner{ position:relative; z-index:1; display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
+.elite-col h4{ margin:0 0 14px; font:600 14px/1.3 "Inter",system-ui; letter-spacing:.08em; text-transform:uppercase; color:var(--ea-pearl); }
+.elite-col a{ display:block; margin:8px 0; color:var(--ea-text-sub); text-decoration:none; font:500 14px/1.6 "Inter",system-ui; transition:color .2s ease; }
+.elite-col a:hover{ color:var(--ea-gold-hi); }
+.elite-copy{ position:relative; z-index:1; margin:42px 0 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.14); color:#9FA6B2; font:400 14px/1.6 "Inter",system-ui; text-align:center; }
+.elite-footer, .elite-mesh{ -webkit-font-smoothing:antialiased }
+
+/* Newsletter (footer form) */
+.newsletter { margin-bottom:30px; }
+.newsletter form { display:flex; flex-wrap:wrap; gap:10px; }
+.newsletter input { padding:10px; border:none; border-radius:6px; flex:1; }
+.newsletter button { padding:10px 20px; border:1px solid #c7a98c; background:rgba(255,255,255,.15); border-radius:6px; cursor:pointer; font-weight:700; }
+.newsletter button:hover { background:#c7a98c; color:#fff; }
+
+/* Socials + copyright strip */
+.socials { display:flex; flex-direction:column; align-items:flex-start; margin-bottom:30px; }
+.socials .icons a { margin-right:10px; color:#fff; text-decoration:none; }
+.socials .icons a:hover { color:#c7a98c; }
+.copyright { text-align:center; font-size:14px; color:#9fa6b2; margin-top:40px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1); }
+
+/* ---- Custom images/tiles from your snippet ---- */
+.slide { position: absolute; inset: 0; opacity: 0; transition: opacity .6s ease; display: grid; place-items: center; padding: 0 16px; }
+.slide.active { opacity: 1; }
+.slide img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+.slide .content { position: relative; z-index: 2; max-width: 1200px; width: 100%; display: grid; grid-template-columns: 1fr; gap: 10px; }
+.slide .eyebrow { color: var(--ea-gold); text-transform: uppercase; letter-spacing: .16em; font-size: 12px; font-weight: 800; }
+.slide .headline { display: block; font-size: clamp(28px, 5.2vw, 56px); font-weight: 800; line-height: 1.05; color: #fff; text-shadow: 0 6px 20px rgba(0,0,0,.35); }
+.slide .sub { display: block; margin-top: 8px; font-size: 16px; color: #f3f4f6; max-width: 60ch; text-shadow: 0 4px 14px rgba(0,0,0,.25); }
+.dots { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; gap: 8px; z-index: 3; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.6); border: 1px solid rgba(0,0,0,.15); cursor: pointer; }
+.dot.active { background: var(--ea-gold); border-color: transparent; }
+.slide .image { position:absolute; inset:0; z-index:0; overflow:hidden; }
+.slide .image img { width:100%; height:100%; object-fit:cover; object-position:center; display:block; }
+.slide::after { content:""; position:absolute; inset:0; background:rgba(0,0,0,.35); z-index:1; }
+.slide .content { position:relative; z-index:2; }
+.ea-card-media img { width:100%; height:300px; object-fit:cover; display:block; border-radius:20px; }
+.ea-hero-img img { width:100%; height:100%; object-fit:cover; display:block; border-radius:18px; }
+.tile.t1 img, .tile.t2 img, .tile.t3 img, .tile.t4 img { width:100%; height:100%; object-fit:cover; display:block; border-radius:20px; }
+.ea-actions{display:flex;align-items:center;gap:14px;margin-left:auto}
+.lang-switch{position:relative}
+.lang-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #e6e8ee;border-radius:999px;background:#fff;color:#111;cursor:pointer;font-weight:700;letter-spacing:.04em}
+.lang-btn .chev{transition:transform .15s}
+.lang-switch.open .lang-btn .chev{transform:rotate(180deg)}
+.lang-list{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #e6e8ee;border-radius:12px;box-shadow:0 12px 26px rgba(0,0,0,.08);padding:6px;list-style:none;margin:0;display:none;min-width:92px;z-index:50}
+.lang-switch.open .lang-list{display:block}
+.lang-list li{padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:700}
+.lang-list li:hover{background:#f4f5f7}
+.lang-list li[aria-selected="true"]{background:#f1ebe5;color:#8a6a47}
+/* Passengers row (responsive) */
+.passengers-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.counter{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border:1px solid #e5e7eb;     /* was var(--line) */
+  border-radius:12px;
+  background:#fff;
+  padding:12px 14px;
+  min-height:65px;
+  
+}
+.counter label{
+  font-weight:700;
+  color:#374151;
+  line-height:1.2;
+}
+.counter .ctrl{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.counter button{
+  border:1px solid #D6C3AE;
+  background:#fff;
+  border-radius:999px;
+  width:36px;
+  height:36px;
+  cursor:pointer;
+  font-weight:900;
+}
+.counter output{
+  min-width:1.5em;
+  text-align:center;
+  font-weight:800;
+}
+.small-hint{
+  font-size:11px;
+  color:#6B7280;
+  margin-left:2px;
+   white-space: nowrap;
+}
+
+/* Breakpoints */
+@media (max-width:1100px){
+  .passengers-grid{ grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:900px){
+  .passengers-grid{ grid-template-columns:1fr; }
+  .counter{ padding:12px 14px; }
+}
+@media (max-width:420px){
+  .counter{ padding:10px 12px; }
+  .counter button{ width:34px; height:34px; }
+  .counter label{ font-size:14px; }
+}
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+  }
+
+  .social-icons a svg {
+    width: 32px;
+    height: 32px;
+    fill: currentColor;
+    color: #fff; /* default neutral */
+    transition: color 0.3s ease;
+  }
+
+  .social-icons a:hover svg {
+    color: var(--ea-gold-hi);
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ===== FIXED Top Nav ===== -->
+<nav class="nav" aria-label="Primary">
+  <div class="logo">ELITE&nbsp;AIR</div>
+
+  <!-- Hamburger (visible only on mobile) -->
+  <button class="hamburger" id="nav-toggle" aria-expanded="false" aria-controls="nav-panel" aria-label="Open menu">
+    <span class="ham-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+  </button>
+
+  <!-- Desktop inline links/actions -->
+  <div class="nav-group" id="nav-group">
+  <a href="index.html" data-i18n="nav.home">Home</a>
+  <a href="destinations.html" data-i18n="nav.destinations">Destinations</a>
+  <a href="offers.html" data-i18n="nav.offers">Offers</a>
+  <a href="experience.html" data-i18n="nav.experience">Experience</a>
+  <a href="news.html" data-i18n="nav.news">Latest news</a>
+  <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+  <a href="membership.html" data-i18n="nav.membership">Membership</a>
+  <button class="btn-book" type="button" onclick="location.href='members'" data-i18n="cta.login">Members Login</button>
+</div>
+
+    <!-- Language switcher -->
+    <div class="ea-actions">
+      <div class="lang-switch" id="lang-switch">
+        <button class="lang-btn" id="lang-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="lang-current">EN</span>
+          <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <ul class="lang-list" id="lang-list" role="listbox" aria-label="Choose language">
+          <li role="option" data-lang="en">EN</li>
+          <li role="option" data-lang="ar">AR</li>
+          <li role="option" data-lang="fr">FR</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile dropdown panel (shares the same links) -->
+  <div class="nav-panel" id="nav-panel" hidden>
+    <a href="index.html">Home</a>
+    <a href="destinations.html">Destinations</a>
+    <a href="offers.html">Offers</a>
+    <a href="experience.html">Experience</a>
+    <a href="news.html">Latest news</a>
+    <a href="cargo.html">Cargo</a>
+    <a href="membership.html">Membership</a>
+    <div class="row-actions">
+      <button class="btn-book" type="button" onclick="location.href='members'">Members Login</button>
+      <!-- Language switcher (reuse existing one by cloning at runtime for mobile) -->
+      <div class="ea-actions" id="lang-mobile-slot"></div>
+    </div>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop" hidden></div>
+
+<!-- ===== HERO (SVG Slides) ===== -->
+<section class="hero">
+  <div class="slides" id="slides">
+    <!-- Slide 1 -->
+    <div class="slide active">
+      <img src="img/eliteairsky.jpeg" alt="Elite Air Kuwait">
+      <div class="content">
+        <div class="eyebrow">Kuwait • New Era</div>
+        <h1 class="headline">Welcome to Our New Home</h1>
+        <p class="sub">Proudly flying from Kuwait with seamless, private luxury-class comfort across our network.</p>
+      </div>
+    </div>
+    <!-- Slide 2 -->
+    <div class="slide">
+      <img src="img/elite-inside.jpeg" alt="Elite Air Kuwait">
+      <div class="content">
+        <div class="eyebrow">Elite Air • Kuwait Hub</div>
+        <h1 class="headline">Direct from Kuwait to the World</h1>
+        <p class="sub">London Gatwick, Paris Orly, Marrakesh, Cairo, Istanbul, and Dubai  refined and direct.</p>
+      </div>
+    </div>
+    <!-- Slide 3 -->
+    <div class="slide">
+      <img src="img/entertainment.png" alt="Elite Air Kuwait">
+      <div class="content">
+        <div class="eyebrow">Experience</div>
+        <h1 class="headline">Calm, Private, Thoughtfully Designed</h1>
+        <p class="sub">From dedicated hosts to tailored dining, every detail is made for comfort and ease.</p>
+      </div>
+    </div>
+
+    <div class="dots" id="dots" aria-label="Slide navigation"></div>
+  </div>
+</section>
+
+<!-- ===== Booking ===== -->
+<section class="booking" aria-label="Flight tools">
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-tab="book">Book flight</div>
+    <div class="tab" data-tab="manage">Manage booking</div>
+    <div class="tab" data-tab="checkin">Check-in</div>
+    <div class="tab" data-tab="status">Flight status</div>
+  </div>
+
+  <div class="pad" id="tab-book">
+    <div class="trip" role="tablist" aria-label="Trip type">
+      <button type="button" class="pill active" id="rt">Round-trip</button>
+      <button type="button" class="pill" id="ow">One-way</button>
+    </div>
+
+    <div class="row" style="margin-bottom:6px">
+      <div class="field">
+        <label for="from">From</label>
+        <select id="from"></select>
+      </div>
+      <div class="field">
+        <label for="to">To</label>
+        <select id="to"></select>
+      </div>
+      <div class="field large">
+        <label for="dep">Departure</label>
+        <input id="dep" type="date"/>
+      </div>
+      <div class="field large" id="return-wrap">
+        <label for="ret">Return</label>
+        <input id="ret" type="date"/>
+      </div>
+
+      <!-- ===== UPDATED: Passengers (Adults / Children / Infants) ===== -->
+      <div class="field wide">
+        <label>Passengers</label>
+        <div class="passengers-grid">
+          <div class="counter" style="border:1px solid #e5e7eb">
+            <label for="adults">Adults</label>
+            <div class="ctrl">
+              <button type="button" data-dec="adults" aria-label="Decrease adults">−</button>
+              <output id="adults" aria-live="polite">1</output>
+              <button type="button" data-inc="adults" aria-label="Increase adults">+</button>
+            </div>
+          </div>
+          <div class="counter" style="border:1px solid #e5e7eb">
+            <label for="children">Children <span class="small-hint">(2–11)</span></label>
+            <div class="ctrl">
+              <button type="button" data-dec="children" aria-label="Decrease children">−</button>
+              <output id="children" aria-live="polite">0</output>
+              <button type="button" data-inc="children" aria-label="Increase children">+</button>
+            </div>
+          </div>
+          <div class="counter" style="border:1px solid #e5e7eb">
+            <label for="infants">Infants <span class="small-hint">(under 2)</span></label>
+            <div class="ctrl">
+              <button type="button" data-dec="infants" aria-label="Decrease infants">−</button>
+              <output id="infants" aria-live="polite">0</output>
+              <button type="button" data-inc="infants" aria-label="Increase infants">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ===== /UPDATED ===== -->
+
+      <div class="field right">
+        <a href="booking/Choose-flight.html" class="btn" id="search">Search</a>
+      </div>
+    </div>
+    <div class="note">Kuwait hub rule: every journey is either from Kuwait to a destination or to Kuwait from a destination.</div>
+  </div>
+
+  <div class="pad" id="tab-manage" hidden>
+    <div class="row">
+      <div class="field wide">
+        <label for="ref">Booking reference</label>
+        <input id="ref" placeholder="ABC123"/>
+      </div>
+      <div class="field wide">
+        <label for="surname">Last name</label>
+        <input id="surname" placeholder="Surname"/>
+      </div>
+      <div class="field right">
+        <button class="btn">Find booking</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pad" id="tab-checkin" hidden>
+    <div class="row">
+      <div class="field wide">
+        <label for="ref2">Booking reference</label>
+        <input id="ref2" placeholder="ABC123"/>
+      </div>
+      <div class="field wide">
+        <label for="lastname2">Last name</label>
+        <input id="lastname2" placeholder="Surname"/>
+      </div>
+      <div class="field right">
+        <button class="btn">Start check-in</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pad" id="tab-status" hidden>
+    <div class="row">
+      <div class="field wide">
+        <label for="flightno">Flight number</label>
+        <input id="flightno" placeholder="EA 101"/>
+      </div>
+      <div class="field large">
+        <label for="date">Date</label>
+        <input id="date" type="date"/>
+      </div>
+      <div class="field right">
+        <button class="btn">Check status</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Membership (NEW) ===== -->
+<section class="membership" id="membership" aria-label="Membership join">
+  <div class="bar">
+    <h3>Join Elite Air Membership</h3>
+    <span class="badge">Members</span>
+    <span class="small">Unlimited annual travel • transferable benefits • priority check-in & lounge</span>
+  </div>
+
+  <div class="pad">
+    <div class="row" style="margin-bottom:6px">
+      <div class="field wide">
+        <label for="m-name">Full name</label>
+        <input id="m-name" placeholder="First Last"/>
+      </div>
+      <div class="field wide">
+        <label for="m-email">Email</label>
+        <input id="m-email" type="email" placeholder="name@example.com"/>
+      </div>
+      <div class="field">
+        <label for="m-phone">Phone</label>
+        <input id="m-phone" placeholder="+965 0000 0000"/>
+      </div>
+      <div class="field">
+        <label for="m-tier">Membership plan</label>
+        <select id="m-tier">
+          <option value="Tier 1 — 10,000 KWD">Tier 1 — 10,000 KWD</option>
+          <option value="Tier 2 — 5,000 KWD">Tier 2 — 5,000 KWD</option>
+        </select>
+      </div>
+      <div class="field large">
+        <label for="m-start">Start date</label>
+        <input id="m-start" type="date"/>
+      </div>
+      <div class="field large">
+        <label for="m-code">Referral / promo (optional)</label>
+        <input id="m-code" placeholder="PROMO2025"/>
+      </div>
+      <div class="field wide">
+        <label>&nbsp;</label>
+        <label style="display:flex;gap:8px;align-items:center;font-size:14px;">
+          <input id="m-agree" type="checkbox"/> I agree to Membership Terms.
+        </label>
+      </div>
+      <div class="field right">
+        <button class="btn" id="m-join">Join now</button>
+      </div>
+    </div>
+
+    <!-- Member ID preview -->
+    <div class="stack">
+      <div class="member-id" id="id-card" aria-label="Membership ID card">
+        <div class="row2">
+          <strong>ELITE AIR • MEMBERSHIP ID</strong>
+          <div class="stamp" id="id-tier">TIER 1</div>
+        </div>
+        <div class="divider"></div>
+        <div class="kv">
+          <div class="k">Member name</div><div id="id-name">—</div>
+          <div class="k">Member no.</div><div id="id-no">EA-000000</div>
+          <div class="k">Valid from</div><div id="id-from">—</div>
+          <div class="k">Valid thru</div><div id="id-thru">—</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <a href="#membership" class="ghost" id="id-copy">Copy Member No.</a>
+        <span class="small" id="id-msg" aria-live="polite"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Upper-mid section ===== -->
+<section class="ea-upper-mid">
+  <div class="ea-container">
+    <div class="ea-hero-row">
+      <figure class="ea-hero-img" aria-label="Elite Air aircraft over turquoise islands">
+        <img src="img/eliteair-1.jpeg" alt="Elite Air aircraft over turquoise islands">
+      </figure>
+      <div class="ea-hero-copy">
+        <h2>Premium direct flights with <span>Elite Air</span></h2>
+        <p>
+          Elite Air connects Kuwait with a handpicked network of cities—London, Paris, Istanbul, Cairo, Marrakesh, and more.
+          Picture crystal-clear journeys, warm Kuwaiti hospitality, and moments that feel effortless.
+        </p>
+      </div>
+    </div>
+
+    <div class="ea-row-title">
+      <h2>From personalized medical care and seamless travel for your beloved pets to the serenity of your own private sanctuary, every moment of your journey is elevated to an art of effortless luxury</h2>
+    </div>
+
+    <div class="ea-features">
+      <article class="ea-card">
+        <figure class="ea-card-media" aria-label="Private sanctuary seat">
+          <img src="img/cust.jpeg" alt="elite-customer">
+        </figure>
+        <h4>Your private sanctuary awaits</h4>
+        <p>Settle into spacious, modern suites with lie-flat seats crafted for true rest. Enjoy attentive Kuwaiti hospitality and seamless privacy.</p>
+      </article>
+
+      <article class="ea-card">
+        <figure class="ea-card-media" aria-label="Culinary adventure">
+          <img src="img/meda-poratableoxygen.png" alt="elite-customer">
+        </figure>
+        <h4>Care Designed Around You</h4>
+        <p>From personalized medical support to ensure your well-being, to attentive care for your pets traveling alongside you, every detail is handled with precision. And when it’s time to retreat, your private sanctuary awaits crafted for rest, privacy, and peace of mind.</p>
+      </article>
+
+      <article class="ea-card">
+        <figure class="ea-card-media" aria-label="Comfort and entertainment">
+          <img src="img/eliteair-coco.jpeg" alt="elite-coco">
+        </figure>
+        <h4>Travel Elevated for You and Your Beloved Companions</h4>
+        <p>Your cherished companions are welcomed with the same care as you seamless travel, comfort at your side, and thoughtful attention that makes the journey as effortless for them as it is for you</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Mid section ===== -->
+<section class="ea-mid">
+  <div class="ea-container">
+    <div class="ea-grid a">
+      <div class="ea-copy">
+        <h2>From your <span>doorstep</span> to your <span>seat</span> — elevated</h2>
+        <p>
+          Your journey begins at home. Chauffeur pickup, priority check-in, and a calm lounge before boarding
+          designed for our Kuwaiti guests.
+        </p>
+        <p class="ea-footnote">*Available on selected fares and routes.</p>
+        <a class="ea-btn" href="Door-to-Seat-Booking.html">Discover more</a>
+      </div>
+
+      <div class="ea-mosaic">
+        <figure class="tile t1" aria-label="Elite Air chauffeur pickup">
+          <img src="img/Elegant Airport Transfer at Sunset.png" alt="Elite Air chauffeur pickup">
+        </figure>
+      </div>
+    </div>
+
+    <div class="ea-grid b">
+      <figure class="ea-hero" aria-label="Elite Air destination arch">
+        <img src="https://images.pexels.com/photos/2044434/pexels-photo-2044434.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Signature coffee in lounge" width="450" height="450">
+      </figure>
+      <div class="ea-copy">
+        <h3>Explore our <span>destinations</span></h3>
+        <p>
+          London, Paris, Istanbul, Cairo, Marrakesh and more. Curated schedules tailored to Luxury-class comfort.
+        </p>
+        <a class="ea-btn" href="discover_destinations.html">Discover more</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Routes map ===== -->
+<section id="our-routes" class="wrap">
+  <div class="section-head">
+    <div class="kicker">Our routes</div>
+    <h1>Direct Luxury-class routes designed for your life.</h1>
+    <p class="lead">We fly from Kuwait to key cities with direct service. The list below is data-driven and easy to update.</p>
+  </div>
+
+  <div class="map-card">
+    <div id="routes-map" aria-label="Route map"></div>
+    <div class="legend" aria-label="Legend">
+      <div class="legend-item"><span class="chip open"></span> Open for sale – Direct flight</div>
+      <div class="legend-item"><span class="chip via"></span> Open for sale – Refuelling stop</div>
+      <div class="legend-item"><span class="chip planned"></span> Planned routes – Direct flight</div>
+    </div>
+  </div>
+
+  <div class="routes-grid" id="routes-grid"></div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="elite-footer">
+  <!-- Curved gold mesh overlay (SVG) -->
+  <svg class="elite-mesh" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <!-- Champagne → Highlight gold -->
+      <linearGradient id="eaGold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#C7A98C"/>
+        <stop offset="1" stop-color="#FFD479"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Upper sweep (left→right) -->
+    <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+      <path d="M-120,840 C 220,690 560,640 980,620 1310,605 1670,560 1880,490"/>
+      <path d="M-120,760 C 220,620 560,580 980,560 1310,545 1670,510 1880,450"/>
+      <path d="M-120,680 C 220,550 560,520 980,500 1310,490 1670,470 1880,415"/>
+      <path d="M-120,600 C 220,480 560,460 980,440 1310,430 1670,440 1880,385"/>
+      <path d="M-120,520 C 220,420 560,400 980,380 1310,370 1670,410 1880,360"/>
+    </g>
+
+    <!-- Cross weave (right→left) -->
+    <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+      <path d="M 0,900 C 360,760 720,700 1120,660 1520,620 1920,560 2320,520"/>
+      <path d="M 0,820 C 360,700 720,640 1120,600 1520,560 1920,540 2320,500"/>
+      <path d="M 0,740 C 360,640 720,600 1120,560 1520,520 1920,520 2320,480"/>
+      <path d="M 0,660 C 360,580 720,560 1120,520 1520,500 1920,500 2320,460"/>
+    </g>
+  </svg>
+
+  <div class="elite-footer__inner">
+    <div class="elite-col">
+      <h4>Popular flights</h4>
+      <a href="#">Kuwait → London</a>
+      <a href="#">Kuwait → Paris</a>
+      <a href="#">Kuwait → Dubai</a>
+      <a href="#">Kuwait → Cairo</a>
+      <a href="#">Kuwait → Istanbul</a>
+      <a href="#">Kuwait → Marrakesh</a>
+      <a href="#">Kuwait → Riyadh</a>
+      <a href="#">Kuwait → Doha</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Navigation</h4>
+      <a href="index.html" data-i18n="nav.home">Home</a>
+      <a href="destinations.html" data-i18n="nav.destinations">Destinations</a>
+      <a href="offers.html" data-i18n="nav.offers">Offers</a>
+      <a href="experience.html" data-i18n="nav.experience">Experience</a>
+      <a href="news.html" data-i18n="nav.news">Latest News</a>
+      <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+      <a href="membership.html" data-i18n="nav.membership">Membership</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>About us</h4>
+      <a href="why-elite-air.html">Why Elite Air</a>
+      <a href="careers.html">Careers</a>
+      <a href="contact.html">Contact</a>
+      <a href="imprint.html">Imprint</a>
+      <a href="meda.html">Medical Assistance</a>
+      <a href="/investor/Investors-Index.html">Investors</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Policies</h4>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="Cookie-Policy.html">Cookie Policy</a>
+      <a href="membership-terms.html">Membership Terms</a>
+    </div>
+
+    <div class="elite-col">
+       <h4>Policies</h4>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="Cookie-Policy.html">Cookie Policy</a>
+      <a href="membership-terms.html">Membership Terms</a>
+    </div>
+  </div>
+  <div class="social-icons">
+  <a href="https://twitter.com" target="_blank" aria-label="Twitter">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53A4.48 4.48 0 0022.4.36a9.1 9.1 0 01-2.88 1.1 4.52 4.52 0 00-7.7 4.12A12.82 12.82 0 013 2.13a4.52 4.52 0 001.4 6.05A4.48 4.48 0 012 7.1v.05a4.52 4.52 0 003.63 4.43 4.5 4.5 0 01-2.04.08 4.53 4.53 0 004.22 3.13A9.05 9.05 0 012 19.54a12.77 12.77 0 006.92 2.03c8.3 0 12.84-6.87 12.84-12.83 0-.2 0-.39-.01-.58A9.22 9.22 0 0023 3z"/></svg>
+  </a>
+
+  <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0122 7.5v9a5.5 5.5 0 01-5.5 5.5h-9A5.5 5.5 0 012 16.5v-9A5.5 5.5 0 017.5 2zm0 2A3.5 3.5 0 004 7.5v9A3.5 3.5 0 007.5 20h9a3.5 3.5 0 003.5-3.5v-9A3.5 3.5 0 0016.5 4h-9zm4.5 3a5.5 5.5 0 110 11 5.5 5.5 0 010-11zm0 2a3.5 3.5 0 100 7 3.5 3.5 0 000-7zm6.25-.9a1.15 1.15 0 110 2.3 1.15 1.15 0 010-2.3z"/></svg>
+  </a>
+
+  <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 12a10 10 0 10-11.5 9.9v-7h-2v-3h2v-2.3c0-2 1.2-3.1 3-3.1.9 0 1.8.2 1.8.2v2h-1c-1 0-1.3.6-1.3 1.2V12h2.3l-.4 3h-1.9v7A10 10 0 0022 12z"/></svg>
+  </a>
+
+  <a href="https://snapchat.com" target="_blank" aria-label="Snapchat">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2c2.5 0 4.5 1 6 2.7s2.2 3.9 2.2 6.3c0 2.3-.7 4.4-1.9 6.1l.1.2c.6.4 1.4.7 2.2.9v2c-1.3-.1-2.6-.5-3.7-1.1l-.2.2c-1.2 1.2-2.8 1.9-4.7 1.9s-3.5-.7-4.7-1.9l-.2-.2c-1.1.6-2.4 1-3.7 1.1v-2c.8-.2 1.6-.5 2.2-.9l.1-.2A9.8 9.8 0 013.8 11c0-2.4.8-4.6 2.2-6.3S9.5 2 12 2z"/></svg>
+  </a>
+
+  <a href="https://youtube.com" target="_blank" aria-label="YouTube">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.8 8s-.2-1.4-.8-2c-.7-.8-1.6-.8-2-1-2.8-.2-7-.2-7-.2s-4.2 0-7 .2c-.4 0-1.3.2-2 1-.6.6-.8 2-.8 2S2 9.6 2 11.3v1.3c0 1.7.2 3.3.2 3.3s.2 1.4.8 2c.7.8 1.6.8 2 1 1.4.1 6.8.2 6.8.2s4.2 0 7-.2c.4 0 1.3-.2 2-1 .6-.6.8-2 .8-2s.2-1.6.2-3.3v-1.3c0-1.7-.2-3.3-.2-3.3zM10 15V9l5.5 3-5.5 3z"/></svg>
+  </a>
+</div>
+
+
+  <p class="elite-copy">© 2025 Elite Airline Company K.S.C. (Public). All Rights Reserved.</p>
+</footer>
+
+<script>
+/* ===== Fixed-nav polish ===== */
+const onScroll = () =>
+  document.documentElement.classList.toggle('nav-scrolled', window.scrollY > 2);
+window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+/* ===== Hamburger / Mobile menu ===== */
+const navEl = document.querySelector('.nav');
+const navToggle = document.getElementById('nav-toggle');
+const navPanel = document.getElementById('nav-panel');
+const backdrop = document.getElementById('nav-backdrop');
+
+function openMenu(){
+  navEl.classList.add('open');
+  navPanel.hidden = false;
+  backdrop.hidden = false;
+  navToggle.setAttribute('aria-expanded','true');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu(){
+  navEl.classList.remove('open');
+  navPanel.hidden = true;
+  backdrop.hidden = true;
+  navToggle.setAttribute('aria-expanded','false');
+  document.body.style.overflow = '';
+}
+navToggle.addEventListener('click', ()=>{
+  const isOpen = navEl.classList.contains('open');
+  isOpen ? closeMenu() : openMenu();
+});
+backdrop.addEventListener('click', closeMenu);
+window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeMenu(); });
+
+// Close when clicking a link or action inside panel
+navPanel.addEventListener('click', (e)=>{
+  const el = e.target.closest('a, button');
+  if(el){ closeMenu(); }
+});
+
+// Reuse the existing language switcher inside mobile panel by cloning it once
+(function cloneLangSwitcher(){
+  const desktopLang = document.getElementById('lang-switch');
+  if(!desktopLang) return;
+  const clone = desktopLang.cloneNode(true);
+  clone.id = 'lang-switch-mobile';
+  document.getElementById('lang-mobile-slot').appendChild(clone);
+})();
+
+/* ===== Slider ===== */
+const slides = [...document.querySelectorAll('.slide')];
+const dotsWrap = document.getElementById('dots');
+let idx = 0, timer;
+function renderDots(){
+  dotsWrap.innerHTML = '';
+  slides.forEach((_,i)=>{
+    const d = document.createElement('button');
+    d.className = 'dot' + (i===idx?' active':'');
+    d.setAttribute('aria-label','Go to slide '+(i+1));
+    d.addEventListener('click',()=>go(i,true));
+    dotsWrap.appendChild(d);
+  });
+}
+function go(n,manual=false){
+  idx = (n+slides.length)%slides.length;
+  slides.forEach((s,i)=>s.classList.toggle('active',i===idx));
+  [...dotsWrap.children].forEach((d,i)=>d.classList.toggle('active',i===idx));
+  if(manual){clearInterval(timer); timer=setInterval(()=>go(idx+1),6000);}  
+}
+renderDots(); timer=setInterval(()=>go(idx+1),6000);
+
+/* ===== Tabs ===== */
+document.getElementById('tabs').addEventListener('click', (e)=>{
+  const t = e.target.closest('.tab'); if(!t) return;
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  t.classList.add('active');
+  const name = t.dataset.tab;
+  ['book','manage','checkin','status'].forEach(k=>{
+    document.getElementById('tab-'+k).hidden = (k!==name);
+  });
+});
+
+
+
+/* ===== Membership logic + live ID ===== */
+const nameEl  = document.getElementById('m-name');
+const emailEl = document.getElementById('m-email');
+const phoneEl = document.getElementById('m-phone');
+const tierEl  = document.getElementById('m-tier');
+const startEl = document.getElementById('m-start');
+const agreeEl = document.getElementById('m-agree');
+
+const idName = document.getElementById('id-name');
+const idNo   = document.getElementById('id-no');
+const idFrom = document.getElementById('id-from');
+const idThru = document.getElementById('id-thru');
+const idTier = document.getElementById('id-tier');
+const idCopy = document.getElementById('id-copy');
+const idMsg  = document.getElementById('id-msg');
+
+function fmt(d){ return d ? new Date(d).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'}) : '—'; }
+function addMonths(date, n){ const d=new Date(date); d.setMonth(d.getMonth()+n); return d; }
+function genMemberNo(){
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const d = String(now.getDate()).padStart(2,'0');
+  const r = Math.floor(Math.random()*900+100); // 3-digit
+  return `EA-${y}${m}${d}-${r}`;
+}
+
+function updateCard(){
+  idName.textContent = nameEl.value || '—';
+  idTier.textContent = (tierEl.value || 'Tier 1').toUpperCase();
+  const start = startEl.value ? new Date(startEl.value) : null;
+  idFrom.textContent = fmt(start);
+  idThru.textContent = start ? fmt(addMonths(start,12)) : '—';
+}
+nameEl.addEventListener('input', updateCard);
+tierEl.addEventListener('change', updateCard);
+startEl.addEventListener('change', updateCard);
+
+document.getElementById('m-join').addEventListener('click', ()=>{
+  if(!nameEl.value || !emailEl.value || !startEl.value || !agreeEl.checked){
+    alert('Please complete Name, Email, Start date, and agree to the terms.');
+    return;
+  }
+  const no = genMemberNo();
+  idNo.textContent = no;
+  updateCard();
+  alert(`Welcome, ${nameEl.value}!\nYour temporary Member No.: ${no}`);
+});
+
+idCopy.addEventListener('click', (e)=>{
+  e.preventDefault();
+  navigator.clipboard.writeText(idNo.textContent).then(()=>{
+    idMsg.textContent = 'Member No. copied.';
+    setTimeout(()=>idMsg.textContent='',1800);
+  });
+});
+
+/* ===== Routes Map (Leaflet) ===== */
+const CITIES = {
+  "Kuwait (KWI)":   [29.2266, 47.9689],
+  "Dubai (DXB)":    [25.2532, 55.3657],
+  "London (LGW)":   [51.1537, -0.1821],
+  "Paris (ORY)":    [48.7262, 2.3652],
+  "Marrakesh (RAK)":[31.6069, -8.0363],
+  "Cairo (CAI)":    [30.1219, 31.4056],
+  "Istanbul (IST)": [41.2753, 28.7519]
+};
+const ROUTES = [
+  { from: "Kuwait (KWI)", to: "London (LGW)",    type: "openDirect" },
+  { from: "Kuwait (KWI)", to: "Paris (ORY)",     type: "openDirect" },
+  { from: "Kuwait (KWI)", to: "Cairo (CAI)",     type: "openDirect" },
+  { from: "Kuwait (KWI)", to: "Marrakesh (RAK)", type: "planned" },
+  { from: "Kuwait (KWI)", to: "Istanbul (IST)",  type: "openDirect" },
+  { from: "Kuwait (KWI)", to: "Dubai (DXB)",     type: "openDirect" }
+];
+
+const map = L.map('routes-map',{ zoomControl:false, worldCopyJump:true });
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+  maxZoom: 6, minZoom: 2, attribution: '&copy; OpenStreetMap & CARTO'
+}).addTo(map);
+
+const STYLE = {
+  cityDot: { radius:5, color:'#fff', fillColor:'#cf8a2d', fillOpacity:1, weight:1 },
+  openDirect: { color:'#1b4f72', weight:3, opacity:.95 },
+  openVia:     { color:'#b85c00', weight:3, opacity:.95 },
+  planned:     { color:'#9298a1', weight:2, dashArray:'8 8', opacity:1 }
+};
+
+const pts = Object.values(CITIES).map(([lat,lng])=>L.latLng(lat,lng));
+map.fitBounds(L.latLngBounds(pts).pad(0.35));
+
+Object.entries(CITIES).forEach(([name,[lat,lng]])=>{
+  L.circleMarker([lat,lng], STYLE.cityDot).addTo(map);
+  L.marker([lat,lng], { icon: L.divIcon({ className:'city-label', html:name, iconSize:[0,0], iconAnchor:[-6,18] }) }).addTo(map);
+});
+
+function greatCircle(from,to,segments=120){
+  const toRad = d=>d*Math.PI/180, toDeg = r=>r*180/Math.PI;
+  let [lat1,lon1]=[toRad(from[0]),toRad(from[1])];
+  let [lat2,lon2]=[toRad(to[0]),toRad(to[1])];
+  const d = 2*Math.asin(Math.sqrt(Math.sin((lat2-lat1)/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin((lon2-lon1)/2)**2));
+  if(d===0) return [from,to];
+  const pts=[];
+  for(let i=0;i<=segments;i++){
+    const f=i/segments, A=Math.sin((1-f)*d)/Math.sin(d), B=Math.sin(f*d)/Math.sin(d);
+    const x=A*Math.cos(lat1)*Math.cos(lon1)+B*Math.cos(lat2)*Math.cos(lon2);
+    const y=A*Math.cos(lat1)*Math.sin(lon1)+B*Math.cos(lat2)*Math.sin(lon2);
+    const z=A*Math.sin(lat1)+B*Math.sin(lat2);
+    pts.push([toDeg(Math.atan2(z,Math.sqrt(x*x+y*y))), toDeg(Math.atan2(y,x))]);
+  }
+  return pts;
+}
+
+const listEl=document.getElementById('routes-grid');
+function addRouteTile(r){
+  const viaText = r.type==='openVia' ? `via ${r.via?.join(', ')}` : (r.type==='planned'?'Planned':'Direct');
+  const el=document.createElement('div');
+  el.className='route-tile';
+  el.innerHTML=`<div class="route-title">${r.from} ⇄ ${r.to}</div><div class="route-meta">${viaText}</div>`;
+  listEl.appendChild(el);
+  return el;
+}
+
+ROUTES.forEach(route=>{
+  const src=CITIES[route.from], dst=CITIES[route.to];
+  if(!src||!dst) return;
+  const tile=addRouteTile(route);
+  const draw=(a,b,key)=>{
+    const latlngs=greatCircle(a,b,160);
+    const line=L.polyline(latlngs,STYLE[key]).addTo(map);
+    tile.addEventListener('mouseenter',()=>line.setStyle({weight:STYLE[key].weight+1}));
+    tile.addEventListener('mouseleave',()=>line.setStyle({weight:STYLE[key].weight}));
+  };
+  if(route.type==='openVia' && route.via?.length){
+    let last=src; route.via.forEach(n=>{ const s=CITIES[n]; if(s){ draw(last,s,'openVia'); last=s; }});
+    draw(last,dst,'openVia');
+  }else if(route.type==='planned'){ draw(src,dst,'planned'); }
+  else{ draw(src,dst,'openDirect'); }
+});
+</script>
+<script src="assets/language-switcher.js" defer></script>
+
+<!-- ===== UPDATED: Search click + counters logic only ===== -->
+ <script>
+/* ===== Booking logic (Kuwait hub rule) ===== */
+const fromSel = document.getElementById('from');
+const toSel   = document.getElementById('to');
+const retWrap = document.getElementById('return-wrap');
+const btnRT   = document.getElementById('rt');
+const btnOW   = document.getElementById('ow');
+
+const KUWAIT = { code:'KWI', name:'Kuwait (KWI)' };
+const DESTS  = [
+  {code:'LGW', name:'London Gatwick (LGW)'},
+  {code:'ORY', name:'Paris Orly (ORY)'},
+  {code:'RAK', name:'Marrakesh (RAK)'},
+  {code:'CAI', name:'Cairo (CAI)'},
+  {code:'IST', name:'Istanbul (IST)'},
+  {code:'DXB', name:'Dubai (DXB)'},
+];
+
+function fillSelect(el, items, selected){
+  el.innerHTML = items.map(o=>`<option value="${o.code}">${o.name}</option>`).join('');
+  if(selected){ el.value = selected; }
+}
+function refreshForKuwaitRule(){
+  const from = fromSel.value;
+  if(from === KUWAIT.code){ fillSelect(toSel, DESTS); }
+  else{ fillSelect(toSel, [KUWAIT]); }
+}
+function initBooking(){
+  fillSelect(fromSel, [KUWAIT, ...DESTS], KUWAIT.code);
+  refreshForKuwaitRule();
+  fromSel.addEventListener('change', refreshForKuwaitRule);
+  btnRT.addEventListener('click', ()=>{ btnRT.classList.add('active'); btnOW.classList.remove('active'); retWrap.style.display='block'; });
+  btnOW.addEventListener('click', ()=>{ btnOW.classList.add('active'); btnRT.classList.remove('active'); retWrap.style.display='none'; });
+}
+initBooking();
+
+/* ===== Passengers counters + SEARCH linking ===== */
+const outAdults   = document.getElementById('adults');
+const outChildren = document.getElementById('children');
+const outInfants  = document.getElementById('infants');
+const depInput    = document.getElementById('dep');
+const retInput    = document.getElementById('ret');
+const searchBtn   = document.getElementById('search');
+
+function getCount(el){ return Math.max(0, parseInt(el?.textContent || '0', 10)); }
+function setCount(el, n){ if(el) el.textContent = String(Math.max(0, n)); }
+
+// +/− handlers
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button[data-inc],button[data-dec]');
+  if(!btn) return;
+  const type = btn.dataset.inc || btn.dataset.dec;
+  const el = type==='adults'?outAdults : type==='children'?outChildren : outInfants;
+  if(!el) return;
+
+  let v = getCount(el);
+  if(btn.dataset.inc){ v++; } else { v = Math.max(0, v-1); }
+
+  let a = type==='adults'?v:getCount(outAdults);
+  let c = type==='children'?v:getCount(outChildren);
+  let i = type==='infants'?v:getCount(outInfants);
+
+  // infants ≤ adults
+  if(type!=='adults' && i > a){ setCount(outInfants, a); return; }
+  if(type==='infants' && v > a){ v = a; }
+
+  // total ≤ 9
+  const predicted = (type==='adults'?v:a) + (type==='children'?v:c) + (type==='infants'?v:i);
+  if(predicted > 9){ return; }
+
+  setCount(el, v);
+});
+
+// SEARCH → booking/Choose-flight.html with full state
+searchBtn.addEventListener('click', (e)=>{
+  e.preventDefault();
+
+  const from = fromSel.value?.toUpperCase();
+  const to   = toSel.value?.toUpperCase();
+  const date = depInput.value;
+
+  const trip = btnRT.classList.contains('active') ? 'round' : 'oneway';
+  const returnDate = (trip==='round') ? retInput.value : '';
+
+  if(!from || !to || !date){ alert('Please choose From, To and Departure date'); return; }
+  if(trip==='round' && !returnDate){ alert('Please choose a Return date for round-trip'); return; }
+
+  const a = getCount(outAdults)   || 1;
+  const c = getCount(outChildren) || 0;
+  let   i = getCount(outInfants)  || 0;
+  i = Math.min(i, a); // infants ≤ adults
+
+  const url = new URL('booking/Choose-flight.html', location.href);
+  url.searchParams.set('from', from);
+  url.searchParams.set('to', to);
+  url.searchParams.set('date', date);
+  url.searchParams.set('trip', trip);
+  if(trip==='round' && returnDate){ url.searchParams.set('returnDate', returnDate); }
+  url.searchParams.set('a', String(a));
+  url.searchParams.set('c', String(c));
+  url.searchParams.set('i', String(i));
+
+  // go straight to booking page (embedded linking)
+  location.href = `lodingpage.html?redirect=${encodeURIComponent(url.toString())}&msg=${encodeURIComponent('Searching flights…')}`;
+
+});
+
+
+</script>
+<!-- ===== /UPDATED ===== -->
+
+<script src="assets/js/ea-core.js"></script>
+<script>EA.init();</script>
+<script src="lang.js"></script>
+</body>
+</html>

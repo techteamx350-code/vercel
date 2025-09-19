@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — Latest News</title>
+<link rel="icon" type="image/x-icon" href="img/elite.ico">
+
+<style>
+  /* =========================
+     Brand tokens (same as Offers)
+     ========================= */
+  :root{
+    --ea-charcoal:#161A1F;
+    --ea-gold:#C7A98C;
+    --ea-gold-hi:#FFD479;
+    --ea-pearl:#FDFDFC;
+    --ea-text-sub:#B9C1CC;
+    --ea-navy:#0f172a;
+    --ea-ink:#111827;
+    --ea-ivory:#f7f4ee;
+    --ea-panel:#ffffff;
+    --ea-muted:#6b7280;
+    --shadow:0 18px 60px rgba(15,23,42,.12);
+    --radius:18px;
+
+    /* Fixed header height */
+    --nav-h:72px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+    color:var(--ea-ink);
+    background:var(--ea-ivory);
+    padding-top: calc(var(--nav-h) + 18px); /* room for fixed header */
+    line-height:1.55;
+  }
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* =========================
+     Luxury Gradient Fixed Header + Mobile Hamburger (same as Offers)
+     ========================= */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 10000;
+    display: flex; align-items: center; gap: 18px;
+    padding: 26px 56px;
+    background: linear-gradient(90deg, #D5D7DB 0%, #C7A98C 44%, #F7F6F3 78%, #FDFDFC 100%);
+    box-shadow: 0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45);
+    border: none;
+  }
+  .logo { font-family: "Playfair Display", serif; font-size: 28px; font-weight: 600; color: #1e1e1e; letter-spacing: .06em; }
+  .nav-links{display:flex; align-items:center; gap:40px; flex-wrap:wrap}
+  .nav a { text-decoration: none; color: #222; font-weight: 600; font-size: 15px; letter-spacing:.03em; position: relative; }
+  .nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -10px; height: 2px; background: linear-gradient(90deg,#C7A98C,#E7D9C7); opacity: 0; transform: scaleX(.6); transition: opacity .2s, transform .2s; }
+  .nav a:hover { color: #c7a98c; }
+  .nav a:hover::after { opacity: 1; transform: scaleX(1); }
+  .spacer{flex:1}
+  .btn-book { padding: 12px 20px; border-radius: 999px; border: 1px solid #c7a98c; background: rgba(255,255,255,.35); font-weight: 700; cursor: pointer; transition: all .25s; color: #1e1e1e; box-shadow: 0 4px 14px rgba(0,0,0,.05); text-decoration:none; display:inline-block; }
+  .btn-book:hover { background:#c7a98c; color:#ffffff; box-shadow:0 10px 22px rgba(199,169,140,.35); }
+
+  /* Hamburger button (right-aligned) */
+  .hamburger{ display:none; border:0; background:transparent; padding:8px; border-radius:10px; }
+  .hamburger:focus{ outline:2px solid #c7a98c; outline-offset:2px; }
+  .ham-bars{ display:inline-grid; gap:5px; }
+  .ham-bars span{ display:block; width:22px; height:2px; background:#1e1e1e; border-radius:2px; transition:transform .25s, opacity .25s; }
+
+  /* Mobile dropdown panel */
+  .nav-panel{ display:none; position:fixed; top:var(--nav-h); left:0; right:0; background:#fff; box-shadow:0 22px 60px rgba(0,0,0,.16); z-index:9999; padding:12px 14px 16px; border-bottom:1px solid #eee; }
+  .nav-panel a{ display:block; margin:10px 6px; font-weight:700; color:#222; text-decoration:none; }
+  .nav-panel a:hover{ color:#c7a98c; }
+  .nav-panel .row-actions{ display:grid; gap:10px; margin-top:6px; }
+
+  /* Backdrop */
+  .nav-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.28); z-index:9998; }
+
+  /* Open state */
+  .nav.open .nav-panel{ display:block; animation:slideDown .18s ease-out; }
+  .nav.open + .nav-backdrop{ display:block; }
+  .nav.open .ham-bars span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .nav.open .ham-bars span:nth-child(2){ opacity:0; }
+  .nav.open .ham-bars span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  @keyframes slideDown{ from{ transform:translateY(-8px); opacity:.6 } to{ transform:translateY(0); opacity:1 } }
+
+  /* Language switcher (simple) */
+  .ea-actions{display:flex;align-items:center;gap:10px}
+  .lang-switch{position:relative}
+  .lang-btn{ display:inline-flex;align-items:center;gap:6px;padding:8px 10px; border:1px solid #e6e8ee;border-radius:999px;background:#fff;color:#111; cursor:pointer;font-weight:700;letter-spacing:.04em }
+  .lang-btn .chev{transition:transform .15s}
+  .lang-switch.open .lang-btn .chev{transform:rotate(180deg)}
+  .lang-list{ position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #e6e8ee; border-radius:12px;box-shadow:0 12px 26px rgba(0,0,0,.08);padding:6px;list-style:none;margin:0;display:none;min-width:92px;z-index:50 }
+  .lang-switch.open .lang-list{display:block}
+  .lang-list li{padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:700}
+  .lang-list li:hover{background:#f4f5f7}
+
+  @media (max-width:900px){
+    :root{ --nav-h:64px }
+    body{ padding-top: calc(var(--nav-h) + 8px); }
+    .nav{ padding:12px 16px; }
+    .nav-links{gap:12px}
+    .logo{font-size:22px; letter-spacing:.12em}
+    .nav-links, .btn-book, .ea-actions{ display:none; } /* hide inline items on mobile */
+    .hamburger{ display:inline-flex; margin-left:0; } /* button stays at far right */
+  }
+
+  /* =========================
+     Breadcrumb (same style as Offers)
+     ========================= */
+  .ea-breadcrumb{ font-size:14px; color:#6b7280; margin-bottom:18px; display:flex; gap:8px; align-items:center; }
+  .ea-breadcrumb .crumb{ text-decoration:none; color:#6b7280; }
+  .ea-breadcrumb .current{ color:#111827; }
+
+  /* =========================
+     Hero + Controls
+     ========================= */
+  .hero{background:#fff}
+  .hero-inner{max-width:1200px; margin:0 auto; padding: clamp(16px,5vw,36px) 20px; display:grid; grid-template-columns: 1.1fr .9fr; gap:22px; align-items:center}
+  .hero h1{font-size: clamp(28px,3.4vw,44px); margin:0; font-weight:800; color:var(--ea-navy)}
+  .hero p{color:#46546b; line-height:1.8; margin:6px 0 0}
+  .badge{display:inline-block; background:#111; color:#fff; font-weight:800; padding:6px 10px; border-radius:999px; font-size:12px}
+  .hero-title{ color:#000000; text-shadow:0 8px 26px rgba(0,0,0,.35); font-size:clamp(32px,5vw,56px); line-height:1.04; margin:12px 0 8px; }
+
+  .controls{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+  .search{position:relative; flex:1; min-width:220px}
+  .search input{width:100%; padding:12px 12px 12px 36px; border:1px solid #e6e8ee; border-radius:12px; font-size:14px}
+  .search .icon{position:absolute; left:10px; top:50%; transform:translateY(-50%); opacity:.6}
+  select.year{padding:12px; border:1px solid #e6e8ee; border-radius:12px; font-weight:700; min-width:130px}
+
+  .collage{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+  .collage img{width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:16px; box-shadow:0 8px 20px rgba(0,0,0,.12)}
+  @media (max-width:980px){ .hero-inner{ grid-template-columns:1fr } }
+
+  /* =========================
+     News grid
+     ========================= */
+  .wrap{ max-width:1200px; margin:0 auto; padding: 18px 20px 44px; }
+  .grid{ display:grid; gap:16px; grid-template-columns: repeat(3,1fr); }
+  @media (max-width:980px){ .grid{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width:640px){ .grid{ grid-template-columns: 1fr; } }
+
+  .card{ background:#fff; border:1px solid #e6e8ee; border-radius:16px; overflow:hidden; box-shadow:0 10px 24px rgba(15,23,42,.06); display:flex; flex-direction:column }
+  .card .media{ position:relative; overflow:hidden; }
+  .card img{ width:100%; height:220px; object-fit:cover; display:block; transition: transform .35s ease }
+  .card:hover img{ transform:scale(1.02) }
+  .card .body{ padding:14px 14px 16px }
+  .meta{ display:flex; align-items:center; gap:8px; font-size:12px; color:#6b7280; margin-bottom:6px }
+  .title{ font-weight:800; margin:0 0 8px; font-size:16px; line-height:1.35 }
+  .excerpt{ margin:0; color:#5b667a; font-size:14px; line-height:1.7 }
+  .more{ margin-top:auto; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #eee; font-weight:800 }
+  .more a{ color:#111; text-decoration:none }
+
+  .list-head{ display:flex; align-items:end; justify-content:space-between; margin-bottom:12px }
+  .count{ color:#6b7280; font-size:13px }
+
+  /* Pagination */
+  .pager{ display:flex; gap:10px; justify-content:center; align-items:center; margin-top:16px }
+  .btn{ background:#fff; border:1px solid #e6e8ee; padding:10px 16px; border-radius:999px; font-weight:800; cursor:pointer }
+  .btn[disabled]{ opacity:.5; cursor:not-allowed }
+  .pill{ border-radius:999px; border:1px solid #e6e8ee; padding:6px 10px; font-size:12px }
+
+  /* =========================
+     Mesh Footer (same as Offers)
+     ========================= */
+  .elite-footer{
+    position:relative; background:linear-gradient(180deg,#1C2128, var(--ea-charcoal));
+    color:var(--ea-pearl); padding:64px 40px 36px; overflow:hidden; margin-top:24px;
+  }
+  .elite-mesh{ position:absolute; inset:-10% -6% -18% -6%; transform:rotate(-6deg); width:120%; height:140%; pointer-events:none; }
+  .elite-footer__inner{ position:relative; z-index:1; display:grid; gap:8px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); max-width:1200px; margin:0 auto; }
+  .elite-col h4{ margin:0 0 14px; font:600 14px/1.2 "Inter",system-ui; letter-spacing:.08em; text-transform:uppercase; color:var(--ea-pearl); }
+  .elite-col a{ display:block; margin:8px 0; color:var(--ea-text-sub); text-decoration:none; font:500 14px/1.6 "Inter",system-ui; transition:color .2s ease; }
+  .elite-col a:hover{ color:var(--ea-gold-hi); }
+  .elite-copy{ position:relative; z-index:1; margin:42px 0 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.14); color:#9FA6B2; font:400 14px/1.6 "Inter",system-ui; text-align:center; }
+
+  /* =========================
+     NEWS MODAL (popup) — new
+     ========================= */
+  .ea-modal{ position:fixed; inset:0; display:none; z-index:100000; }
+  .ea-modal.open{ display:block; }
+  .ea-modal__backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.44); backdrop-filter:saturate(120%) blur(2px); }
+  .ea-modal__dialog{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(920px,92vw); height:min(86vh,920px); background:#fff; border-radius:22px; box-shadow:0 30px 80px rgba(0,0,0,.26); display:flex; flex-direction:column; overflow:hidden; border:1px solid #ececec; }
+  .ea-modal__close{ position:absolute; top:10px; right:10px; width:42px; height:42px; border-radius:999px; border:1px solid #e8e8e8; background:#fff; font-size:22px; line-height:1; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,.08); }
+  .ea-modal__header{ padding:18px 20px 10px; border-bottom:1px solid #f0f1f3; }
+  .ea-modal__title{ margin:0; font:800 20px/1.3 Inter,system-ui; color:#0f172a; }
+  .ea-modal__meta{ font:600 12px/1.2 Inter,system-ui; color:#6b7280; margin-top:4px; }
+  .ea-modal__content{ flex:1; overflow:auto; padding:16px 20px 84px; }
+  .ea-modal__content img{ max-width:100%; border-radius:12px; }
+  .ea-modal__content h2, .ea-modal__content h3{ line-height:1.25; }
+  .ea-modal__scroll{ position:absolute; right:14px; bottom:14px; width:52px; height:52px; border-radius:999px; border:1px solid rgba(199,169,140,.55); background:linear-gradient(180deg,#fff, #f9f5ef); color:#111; display:inline-grid; place-items:center; box-shadow:0 14px 30px rgba(199,169,140,.35); cursor:pointer; }
+  .ea-modal__scroll svg{ transition: transform .25s ease; }
+  .ea-modal__scroll.up svg{ transform:rotate(180deg); }
+
+  @media (max-width:640px){
+    .ea-modal__dialog{ height:min(92vh,900px); width:min(96vw,720px); border-radius:18px; }
+    .ea-modal__header{ padding:14px 14px 8px; }
+    .ea-modal__content{ padding:12px 14px 76px; }
+  }
+
+  /* Hidden store for full news */
+  #news-templates{ display:none; }
+
+  /* small utility for visually-hidden (if you ever need it) */
+  .sr-only{ position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+</style>
+</head>
+<body>
+
+<!-- =========================
+     HEADER (with right-aligned hamburger)
+     ========================= -->
+<nav class="nav" aria-label="Primary">
+  <div class="logo">ELITE&nbsp;AIR</div>
+
+  <div class="nav-links">
+    <a href="index.html" data-i18n="nav.home">Home</a>
+    <a href="destinations.html" data-i18n="nav.destinations">Destinations</a>
+    <a href="offers.html" data-i18n="nav.offers">Offers</a>
+    <a href="experience.html" data-i18n="nav.experience">Experience</a>
+    <a href="news.html" data-i18n="nav.news">Latest news</a>
+    <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+    <a href="membership.html" data-i18n="nav.membership">Membership</a>
+  </div>
+
+  <div class="spacer"></div>
+
+ <button class="btn-book" type="button" onclick="location.href='members'" data-i18n="cta.login">Members Login</button>
+
+  <!-- Simple language switch (desktop) -->
+  <div class="ea-actions">
+    <div class="lang-switch" id="lang-switch">
+      <button class="lang-btn" id="lang-btn" aria-haspopup="listbox" aria-expanded="false">
+        <span id="lang-current">EN</span>
+        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <ul class="lang-list" id="lang-list" role="listbox" aria-label="Choose language">
+        <li role="option" data-lang="en">EN</li>
+        <li role="option" data-lang="ar">AR</li>
+        <li role="option" data-lang="fr">FR</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Hamburger (mobile only, at right) -->
+  <button class="hamburger" id="nav-toggle" aria-expanded="false" aria-controls="nav-panel" aria-label="Open menu">
+    <span class="ham-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+  </button>
+
+  <!-- Mobile dropdown panel -->
+  <div class="nav-panel" id="nav-panel" hidden>
+    <a href="index.html">Home</a>
+    <a href="destinations.html">Destinations</a>
+    <a href="offers.html">Offers</a>
+    <a href="experience.html">Experience</a>
+    <a href="news.html" aria-current="page">Latest news</a>
+    <a href="cargo.html">Cargo</a>
+    <a href="membership.html">Membership</a>
+    <div class="row-actions">
+      <button class="btn-book" type="button" onclick="location.href='members'">Members Login</button>
+      <!-- Mobile language switcher -->
+      <div class="ea-actions">
+        <div class="lang-switch" id="lang-switch-m">
+          <button class="lang-btn" id="lang-btn-m" aria-haspopup="listbox" aria-expanded="false">
+            <span id="lang-current-m">EN</span>
+            <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <ul class="lang-list" id="lang-list-m" role="listbox" aria-label="Choose language">
+            <li role="option" data-lang="en">EN</li>
+            <li role="option" data-lang="ar">AR</li>
+            <li role="option" data-lang="fr">FR</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop" hidden></div>
+
+<!-- =========================
+     HERO
+     ========================= -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <!-- Breadcrumb -->
+      <nav class="ea-breadcrumb" aria-label="Breadcrumb">
+        <a href="/" class="crumb">Home</a>
+        <span aria-hidden="true">/</span>
+        <span class="crumb current">Latest news</span>
+      </nav>
+
+      <h1 class="hero-title">Read the latest updates from Elite Air</h1>
+      <p>Stay updated with our business news, including the latest press releases, route launches, and partnerships.</p>
+
+      <div class="controls" role="group" aria-label="Filters">
+        <div class="search">
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input id="q" placeholder="Search news, routes, partnerships…" />
+        </div>
+        <select class="year" id="year" aria-label="Filter by year"><option value="all">All years</option></select>
+      </div>
+    </div>
+
+    <div>
+      <div class="collage" aria-hidden="true">
+        <img src="img/tale.png" alt="Elite Air fleet"/>
+        <img src="img/eliteair-seats3.jpeg" alt="Elite Air cabin"/>
+        <img src="img/cust-service1.png" alt="Elite Air event"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================
+     News Grid
+     ========================= -->
+<section class="wrap">
+  <div class="list-head">
+    <div>
+      <h2 style="margin:0">Latest News</h2>
+      <div class="count" id="count"></div>
+    </div>
+  </div>
+
+  <div id="grid" class="grid" aria-live="polite"></div>
+  <div class="pager">
+    <button class="btn" id="prev">Previous</button>
+    <span class="pill" id="pageBadge">Page 1 of 1</span>
+    <button class="btn" id="next">Next</button>
+  </div>
+</section>
+
+<!-- =========================
+     FULL ARTICLES SECTION (authoring area)
+     - You can edit the HTML for each article below. This section is hidden from view
+       and used to populate the popup. Keep IDs matching the NEWS.id values.
+     ========================= -->
+<section id="news-templates" hidden>
+  <!-- Example structure per item:
+  <template id="tpl-velana-inaug">
+    <article>
+      <h2>...</h2>
+      <p class="ea-lede">Optional lede/excerpt</p>
+      <img src="img/.." alt="..."/>
+      <p>Body...</p>
+    </article>
+  </template>
+  -->
+</section>
+
+<!-- =========================
+     FOOTER (mesh, same as Offers)
+     ========================= -->
+<footer class="elite-footer">
+  <!-- Curved gold mesh overlay (SVG) -->
+  <svg class="elite-mesh" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="eaGold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#C7A98C"/>
+        <stop offset="1" stop-color="#FFD479"/>
+      </linearGradient>
+    </defs>
+    <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+      <path d="M-120,840 C 220,690 560,640 980,620 1310,605 1670,560 1880,490"/>
+      <path d="M-120,760 C 220,620 560,580 980,560 1310,545 1670,510 1880,450"/>
+      <path d="M-120,680 C 220,550 560,520 980,500 1310,490 1670,470 1880,415"/>
+      <path d="M-120,600 C 220,480 560,460 980,440 1310,430 1670,440 1880,385"/>
+      <path d="M-120,520 C 220,420 560,400 980,380 1310,370 1670,410 1880,360"/>
+    </g>
+    <g stroke="url(#eaGold)" stroke-width="2.6" stroke-linecap="round" opacity="0.55">
+      <path d="M 0,900 C 360,760 720,700 1120,660 1520,620 1920,560 2320,520"/>
+      <path d="M 0,820 C 360,700 720,640 1120,600 1520,560 1920,540 2320,500"/>
+      <path d="M 0,740 C 360,640 720,600 1120,560 1520,520 1920,520 2320,480"/>
+      <path d="M 0,660 C 360,580 720,560 1120,520 1520,500 1920,500 2320,460"/>
+    </g>
+  </svg>
+
+  <div class="elite-footer__inner">
+    <div class="elite-col">
+      <h4>Popular flights</h4>
+      <a href="#">Kuwait → London</a>
+      <a href="#">Kuwait → Paris</a>
+      <a href="#">Kuwait → Dubai</a>
+      <a href="#">Kuwait → Cairo</a>
+      <a href="#">Kuwait → Istanbul</a>
+      <a href="#">Kuwait → Marrakesh</a>
+      <a href="#">Kuwait → Riyadh</a>
+      <a href="#">Kuwait → Doha</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Navigation</h4>
+      <a href="index.html" data-i18n="nav.home">Home</a>
+      <a href="destinations.html" data-i18n="nav.destinations">Destinations</a>
+      <a href="offers.html" data-i18n="nav.offers">Offers</a>
+      <a href="experience.html" data-i18n="nav.experience">Experience</a>
+      <a href="news.html" data-i18n="nav.news">Latest News</a>
+      <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+      <a href="membership.html" data-i18n="nav.membership">Membership</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>About us</h4>
+      <a href="why-elite-air.html">Why Elite Air</a>
+      <a href="careers.html">Careers</a>
+      <a href="contact.html">Contact</a>
+      <a href="imprint.html">Imprint</a>
+      <a href="meda.html">Medical Assistance</a>
+      <a href="investor/investors-index.html">Investors</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Policies</h4>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="Cookie-Policy.html">Cookie Policy</a>
+      <a href="membership-terms.html">Membership Terms</a>
+    </div>
+
+    <div class="elite-col">
+      <h4>Legal</h4>
+      <a href="Terms-And-Conditions.html">Terms & Conditions</a>
+      <a href="Conditions-of-Carriage.html">Conditions of Carriage</a>
+      <a href="notice-of-Passenger-Rights.html">Notice of Passenger Rights</a>
+    </div>
+  </div>
+
+  <p class="elite-copy">© 2025 Elite Airline Company K.S.C. (Public). All Rights Reserved.</p>
+</footer>
+
+<!-- =========================
+     NEWS POPUP (modal) — markup
+     ========================= -->
+<div class="ea-modal" id="newsModal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="ea-modal__backdrop" data-close></div>
+  <div class="ea-modal__dialog" role="document">
+    <button class="ea-modal__close" id="modalClose" aria-label="Close">×</button>
+    <header class="ea-modal__header">
+      <h2 class="ea-modal__title" id="modalTitle"></h2>
+      <div class="ea-modal__meta" id="modalDate"></div>
+    </header>
+    <article class="ea-modal__content" id="modalContent" tabindex="0"></article>
+    <button class="ea-modal__scroll" id="modalScroll" aria-label="Scroll down">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+/* ===== Hamburger / Mobile menu (same behavior as Offers) ===== */
+const navEl = document.querySelector('.nav');
+const navToggle = document.getElementById('nav-toggle');
+const navPanel = document.getElementById('nav-panel');
+const backdrop = document.getElementById('nav-backdrop');
+
+function openMenu(){
+  navEl.classList.add('open');
+  navPanel.hidden = false;
+  backdrop.hidden = false;
+  navToggle.setAttribute('aria-expanded','true');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu(){
+  navEl.classList.remove('open');
+  navPanel.hidden = true;
+  backdrop.hidden = true;
+  navToggle.setAttribute('aria-expanded','false');
+  document.body.style.overflow = '';
+}
+navToggle?.addEventListener('click', ()=>{
+  const isOpen = navEl.classList.contains('open');
+  isOpen ? closeMenu() : openMenu();
+});
+backdrop?.addEventListener('click', closeMenu);
+window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeMenu(); });
+navPanel?.addEventListener('click', (e)=>{ const el = e.target.closest('a, button'); if(el){ closeMenu(); } });
+
+/* ===== Language Switcher (Desktop) ===== */
+(() => {
+  const wrap = document.getElementById('lang-switch');
+  if(!wrap) return;
+  const btn  = document.getElementById('lang-btn');
+  const list = document.getElementById('lang-list');
+  const cur  = document.getElementById('lang-current');
+
+  btn.addEventListener('click', () => {
+    const open = wrap.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e)=>{
+    if(!wrap.contains(e.target)){
+      wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+    }
+  });
+  list.addEventListener('click', (e)=>{
+    const li = e.target.closest('li'); if(!li) return;
+    cur.textContent = li.dataset.lang.toUpperCase();
+    wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+    document.documentElement.dir = (li.dataset.lang==='ar') ? 'rtl' : 'ltr';
+  });
+})();
+
+/* ===== Language Switcher (Mobile) ===== */
+(() => {
+  const wrap = document.getElementById('lang-switch-m');
+  if(!wrap) return;
+  const btn  = document.getElementById('lang-btn-m');
+  const list = document.getElementById('lang-list-m');
+  const cur  = document.getElementById('lang-current-m');
+
+  btn.addEventListener('click', () => {
+    const open = wrap.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e)=>{
+    if(!wrap.contains(e.target)){
+      wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+    }
+  });
+  list.addEventListener('click', (e)=>{
+    const li = e.target.closest('li'); if(!li) return;
+    cur.textContent = li.dataset.lang.toUpperCase();
+    wrap.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+    document.documentElement.dir = (li.dataset.lang==='ar') ? 'rtl' : 'ltr';
+  });
+})();
+</script>
+
+<script>
+/* ===== Data (edit this array to update news) ===== */
+const NEWS = [
+  { id:'velana-inaug', title:'Elite Air Secures Commercial License, Clearing the Runway for Launch', date:'Aug 2024', image:'img/eliteair-comingsoon.png', excerpt:'Elite Air today announced it has been granted its commercial operating license, a key milestone that authorizes the airline to commence scheduled passenger services and open ticket sales following final operational readiness checks.', href:'news/kuwait-hub-inaugural.html' },
+  { id:'kuwait-lgw', title:'Elite Air announces first-year profit, driven by non-core commercial activity', date:'Aug 2024', image:'img/eliteair-comingsoon.png', excerpt:'Elite Air today reported that it closed its first financial year with profitability exceeding six percent, delivered primarily by non-core commercial activities while the airline finalised preparations for scheduled passenger services.', href:'news/kuwait-london-lgw.html' },
+  { id:'amenity-kit', title:'Personalised amenity kit with skincare essentials', date:'08 May 2025', image:'img/eliteair-comingsoon.png', excerpt:'New wellness-led amenity kit enhances relaxation and sleep onboard.', href:'news/amenity-kit.html' },
+  { id:'partnership', title:'Elite Air partners with regional tourism boards', date:'01 May 2025', image:'img/eliteair-comingsoon.png', excerpt:'Strategic collaborations to elevate premium travel experiences and connectivity.', href:'news/tourism-partnerships.html' },
+  { id:'network', title:'Network expansion adds Paris, Cairo, Istanbul, Dubai', date:'29 Apr 2025', image:'img/eliteair-comingsoon.png', excerpt:'Handpicked additions strengthen our direct Kuwait hub connectivity.', href:'news/network-expansion.html' },
+  { id:'atm', title:'Elite Air at Arabian Travel Market 2025', date:'18 Apr 2025', image:'img/eliteair-comingsoon.png', excerpt:'Showcasing premium business-class experience with partners and stakeholders.', href:'news/atm-2025.html' },
+  { id:'ops-milestone', title:'On-time performance tops 90% in Q1', date:'15 Feb 2025', image:'img/eliteair-comingsoon.png', excerpt:'Operational reliability continues to improve with smarter scheduling.', href:'news/otp-q1.html' },
+  { id:'gds', title:'Distribution expands via new GDS partnerships', date:'21 Feb 2025', image:'img/eliteair-comingsoon.png', excerpt:'Wider access for travel agents and corporate travel managers.', href:'news/gds-partnerships.html' },
+  { id:'awards', title:'Elite Air recognised for brand and livery design', date:'11 Dec 2024', image:'img/eliteair-comingsoon.png', excerpt:'Accolades celebrate refined aesthetics and guest-centric brand ethos.', href:'news/awards-2024.html' }
+];
+
+/* ===== Full Article HTML (author it here once; used by popup) ===== */
+const FULL_ARTICLES = {
+  'velana-inaug': `
+    <article>
+      <img src="img/eliteair-comingsoon.png" alt="Elite Air commercial license"/>
+      <h3>Commercial license granted</h3>
+      <p>Elite Air confirms receipt of its commercial operating license, enabling scheduled passenger services upon final readiness checks. This milestone reflects rigorous safety, training, and regulatory compliance.</p>
+      <p>Ticket sales will open following route announcements and aircraft entry-into-service. Customers can expect our hallmark 1–2–1 business-class suites, curated dining, and seamless ground experience.</p>
+      <ul>
+        <li>Certification program concluded with regulators</li>
+        <li>Customer care and distribution systems integrated</li>
+        <li>Launch routes to be unveiled ahead of sales</li>
+      </ul>
+      <p>Media enquiries: <a href="mailto:press@eliteair.example">press@eliteair.example</a></p>
+    </article>
+  `,
+  'kuwait-lgw': `
+    <article>
+      <img src="img/eliteair-comingsoon.png" alt="Elite Air financial update"/>
+      <h3>First-year profitability</h3>
+      <p>Elite Air closed its first financial year with profitability above six percent, primarily from non-core commercial activity while scheduled services were in preparation.</p>
+      <p>The proceeds have been reinvested in fleet readiness, crew training, and guest experience innovations to support a strong launch.</p>
+    </article>
+  `,
+  'amenity-kit': `
+    <article>
+      <img src="img/eliteair-comingsoon.png" alt="Amenity kit"/>
+      <h3>Wellness-led amenity kit</h3>
+      <p>Introducing a personalised amenity kit featuring skincare essentials tailored for long-haul comfort, including hydrating mist, lip care, and an eye mask.</p>
+      <p>Guests can pre-select preferred aromas in Manage Booking. Sustainability: packaging uses recyclable materials and reduced plastics.</p>
+    </article>
+  `,
+  'partnership': `
+    <article>
+      <img src="img/eliteair-comingsoon.png" alt="Tourism partnerships"/>
+      <h3>Regional tourism partnerships</h3>
+      <p>We are partnering with leading tourism boards to spotlight premium travel, cultural discovery, and seamless connectivity via Kuwait.</p>
+      <p>Expect destination showcases, co-created itineraries, and member offers.</p>
+    </article>
+  `,
+  'network': `
+    <article>
+      <img src="img/eliteair-comingsoon.png" alt="Network expansion"/>
+      <h3>Network additions</h3>
+      <p>Paris, Cairo, Istanbul, and Dubai join our initial network to strengthen direct connectivity from Kuwait.</p>
+      <p>Schedules and aircraft details to follow with launch timelines.</p>
+    </article>
+  `,
+  'atm': `
+    <article>
+      <img src="img/eliteair-comingsoon.png" alt="Arabian Travel Market"/>
+      <h3>Arabian Travel Market 2025</h3>
+      <p>Elite Air showcased its premium business-class experience, meeting partners and stakeholders to align on distribution, loyalty, and guest experience.</p>
+    </article>
+  `,
+  'ops-milestone': `
+    <article>
+      <img src="img/eliteair-comingsoon.png" alt="On-time performance"/>
+      <h3>On-time performance above 90%</h3>
+      <p>Smarter scheduling and operational tools drove a Q1 OTP of 90%+. Continuous improvements remain a priority as we scale.</p>
+    </article>
+  `,
+  'gds': `
+    <article>
+      <img src="img/eliteair-comingsoon.png" alt="GDS partnerships"/>
+      <h3>Distribution reach expands</h3>
+      <p>New partnerships with global distribution systems broaden access for travel agents and corporate travel managers.</p>
+    </article>
+  `,
+  'awards': `
+    <article>
+      <img src="img/eliteair-comingsoon.png" alt="Design awards"/>
+      <h3>Brand & livery recognition</h3>
+      <p>Elite Air received accolades for refined aesthetics and a guest-centric design ethos reflected in our livery and brand system.</p>
+    </article>
+  `
+};
+</script>
+
+<script>
+/* ===== Helpers ===== */
+const grid = document.getElementById('grid');
+const q = document.getElementById('q');
+const yearSel = document.getElementById('year');
+const countEl = document.getElementById('count');
+const pageBadge = document.getElementById('pageBadge');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+
+const pageSize = 6;
+let page = 1;
+
+function parseDate(d){ return new Date(d); }
+function yearsFromNews(){ const s=new Set(); NEWS.forEach(n=>s.add(String(parseDate(n.date).getFullYear()))); return Array.from(s).sort((a,b)=>b-a); }
+function fillYears(){ yearsFromNews().forEach(y=>{ const opt=document.createElement('option'); opt.value=String(y); opt.textContent=String(y); yearSel.appendChild(opt); }); }
+
+function render(items){
+  grid.innerHTML = '';
+  items.forEach(n=>{
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.setAttribute('data-id', n.id);
+    card.innerHTML = `
+      <div class="media"><img src="${n.image}" alt="${n.title}"></div>
+      <div class="body">
+        <div class="meta">${n.date}</div>
+        <h3 class="title">${n.title}</h3>
+        <p class="excerpt">${n.excerpt}</p>
+      </div>
+      <div class="more"><a href="${n.href}" data-readmore>Read more</a><span>→</span></div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function applyFilters(){
+  const term = q.value.trim().toLowerCase();
+  const yr = yearSel.value;
+  let arr = NEWS.filter(n=>{
+    const okQ = !term || n.title.toLowerCase().includes(term) || n.excerpt.toLowerCase().includes(term);
+    const okY = yr==='all' || String(parseDate(n.date).getFullYear())===yr;
+    return okQ && okY;
+  }).sort((a,b)=>parseDate(b.date)-parseDate(a.date));
+
+  const totalPages = Math.max(1, Math.ceil(arr.length / pageSize));
+  page = Math.min(page, totalPages);
+  const start = (page-1)*pageSize;
+  render(arr.slice(start, start+pageSize));
+
+  countEl.textContent = `${arr.length} article${arr.length!==1?'s':''} found`;
+  pageBadge.textContent = `Page ${page} of ${totalPages}`;
+  prevBtn.disabled = page<=1; nextBtn.disabled = page>=totalPages;
+}
+
+q.addEventListener('input', ()=>{ page=1; applyFilters(); });
+yearSel.addEventListener('change', ()=>{ page=1; applyFilters(); });
+prevBtn.addEventListener('click', ()=>{ if(page>1){ page--; applyFilters(); } });
+nextBtn.addEventListener('click', ()=>{ page++; applyFilters(); });
+
+fillYears();
+applyFilters();
+
+/* =========================
+   Build hidden <template> nodes for full articles from FULL_ARTICLES
+   ========================= */
+const tplHost = document.getElementById('news-templates');
+Object.entries(FULL_ARTICLES).forEach(([id, html])=>{
+  const t = document.createElement('template');
+  t.id = `tpl-${id}`;
+  t.innerHTML = html.trim();
+  tplHost.appendChild(t);
+});
+</script>
+
+<script>
+/* =========================
+   MODAL BEHAVIOUR — open on "Read more" click
+   ========================= */
+const modal = document.getElementById('newsModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalDate = document.getElementById('modalDate');
+
+const modalContent = document.getElementById('modalContent');
+const modalClose = document.getElementById('modalClose');
+const modalScroll = document.getElementById('modalScroll');
+let lastFocused = null;
+
+function trapFocus(e){
+  if(!modal.classList.contains('open')) return;
+  const focusables = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+  const f = Array.from(focusables).filter(el=>!el.hasAttribute('disabled'));
+  if(f.length === 0) return;
+  const first = f[0], last = f[f.length-1];
+  if(e.key === 'Tab'){
+    if(e.shiftKey && document.activeElement === first){ last.focus(); e.preventDefault(); }
+    else if(!e.shiftKey && document.activeElement === last){ first.focus(); e.preventDefault(); }
+  }
+}
+
+function updateScrollButton(){
+  const nearBottom = (modalContent.scrollTop + modalContent.clientHeight) >= (modalContent.scrollHeight - 20);
+  if(nearBottom){
+    modalScroll.classList.add('up');
+    modalScroll.setAttribute('aria-label','Scroll to top');
+  } else {
+    modalScroll.classList.remove('up');
+    modalScroll.setAttribute('aria-label','Scroll down');
+  }
+}
+
+modalContent.addEventListener('scroll', updateScrollButton);
+modalScroll.addEventListener('click', ()=>{
+  const nearBottom = (modalContent.scrollTop + modalContent.clientHeight) >= (modalContent.scrollHeight - 20);
+  if(nearBottom){
+    modalContent.scrollTo({ top:0, behavior:'smooth' });
+  } else {
+    modalContent.scrollBy({ top: modalContent.clientHeight*0.9, behavior:'smooth' });
+  }
+});
+
+function openModal(fromId){
+  const item = NEWS.find(n=>n.id===fromId);
+  if(!item){ return; }
+
+  modalTitle.textContent = item.title;
+  modalDate.textContent = item.date;
+
+  // Pull content from template if available; fallback to link
+  const tpl = document.getElementById(`tpl-${item.id}`);
+  if(tpl){
+    modalContent.innerHTML = '';
+    modalContent.appendChild(tpl.content.cloneNode(true));
+  } else {
+    modalContent.innerHTML = `<p>Full article available here: <a href="${item.href}">${item.href}</a></p>`;
+  }
+
+  lastFocused = document.activeElement;
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+  document.body.style.overflow = 'hidden';
+  modalClose.focus();
+  updateScrollButton();
+}
+
+function closeModal(){
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+  document.body.style.overflow = '';
+  modalContent.scrollTop = 0;
+  if(lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+}
+
+modal.addEventListener('click', (e)=>{
+  if(e.target.matches('[data-close]')) closeModal();
+});
+modalClose.addEventListener('click', closeModal);
+window.addEventListener('keydown', (e)=>{
+  if(modal.classList.contains('open')){
+    if(e.key === 'Escape') closeModal();
+    else trapFocus(e);
+  }
+});
+
+// Intercept Read more clicks for popup (left click only; allow cmd/ctrl to open new tab)
+document.addEventListener('click', (e)=>{
+  const link = e.target.closest('[data-readmore]');
+  if(!link) return;
+  const isModified = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
+  if(isModified) return; // let the browser handle new tab/window etc.
+  e.preventDefault();
+  const card = link.closest('[data-id]');
+  if(!card) return;
+  openModal(card.getAttribute('data-id'));
+});
+</script>
+<script src="assets/language-switcher.js" defer></script>
+</body>
+</html>
