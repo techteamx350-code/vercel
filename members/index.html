@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Elite Air | Members Portal</title>
+  <link rel="icon" type="image/x-icon" href="img/elite.ico">
+  <meta name="description" content="Members login and dashboard for Elite Air. Tier-based rules, member round-trip booking, guest one-way booking with details, exception request for early departure, and no-payment flow." />
+  <!-- Adopt typography + header look from Investor Admin template -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Template-influenced design tokens (from Investor Admin) ===== */
+    :root{
+      --ink:#111827; --muted:#6b7280; --back:#f7f4ee; --panel:#ffffff; --line:#e6e8ee;
+      --gold:#C7A98C; --nav-h:68px; --radius:16px; --shadow:0 18px 60px rgba(15,23,42,.12);
+      /* App-specific extras */
+      --ok:#16a34a; --warn:#b45309; --err:#dc2626; --focus:0 0 0 3px rgba(199,169,140,.45), 0 0 0 2px #fff inset;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:var(--back);color:var(--ink)}
+    a{color:inherit;text-decoration:none}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+
+    /* ===== Header (matches gradient/nav of template) ===== */
+    nav.site-nav{position:sticky;top:0;z-index:20;height:var(--nav-h);display:flex;align-items:center;gap:16px;padding:18px 22px;
+      background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%);
+      box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)}
+    .site-nav .brand{font-weight:800;font-size:18px;letter-spacing:.08em}
+    .site-nav .spacer{flex:1}
+    .site-nav .links{display:flex;gap:18px;align-items:center;font-weight:600}
+    .site-nav .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;border:1px solid rgba(17,24,39,.18);background:#fff;cursor:pointer}
+
+    /* ===== Layout ===== */
+    .wrap{padding-top:14px}
+    .container{max-width:1200px;margin:0 auto;padding:18px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}}
+
+    /* ===== Card ===== */
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .card .hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line);font-weight:800}
+    .card .bd{padding:16px}
+
+    /* ===== Forms ===== */
+    label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:6px}
+    input[type="text"], input[type="password"], input[type="date"], select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    input,select,button{outline:none}
+    input:focus, select:focus, button:focus{box-shadow: var(--focus)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    .btn{appearance:none;border:1px solid var(--line);background:#fff;color:var(--ink);padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer}
+    .btn.primary{border-color:#d8c3a9;background:linear-gradient(90deg,#fdfbf7,#fff);box-shadow:0 8px 24px rgba(199,169,140,.18)}
+    .btn[disabled]{opacity:.5;cursor:not-allowed}
+    .btn.secondary{background:#f9fafb}
+    .btn.link{background:transparent;color:#2563eb}
+
+    .tag{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 10px;font-size:12px;border:1px solid var(--line);background:#fff}
+    .tag.ok{background:#f0fdf4;border-color:#bfe8c7;color:var(--ok)}
+    .tag.warn{background:#fff7ed;border-color:#fbd2a8;color:var(--warn)}
+    .tag.err{background:#fee2e2;border-color:#fecaca;color:var(--err)}
+
+    .welcome{font-family:ui-serif, Georgia, "Times New Roman", serif;font-size:28px;margin:0}
+    .muted{color:var(--muted)}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;letter-spacing:.06em}
+
+    .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .kpi .cell{background:#fafaf9;border:1px solid var(--line);border-radius:14px;padding:12px}
+    .kpi .cell .v{font-weight:900;font-size:20px}
+
+    .notice{margin-top:12px;padding:12px 14px;border-left:4px solid var(--gold);background:#fffdf7;border-radius:12px}
+    .hint{font-size:12px;color:var(--muted)}
+    .divider{height:1px;background:var(--line);margin:12px 0}
+    .inline{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .pilltag{display:inline-flex;gap:8px;align-items:center;padding:6px 12px;border-radius:999px;background:#f3f4f6;color:#111827;font-size:12px;border:1px solid var(--line)}
+
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}
+    th{font-size:12px;color:var(--muted);font-weight:700}
+
+    /* ===== Footer ===== */
+    footer.footer{background:#0f172a;color:#e5e7eb;margin-top:36px}
+    .footwrap{max-width:1200px;margin:0 auto;padding:36px 20px}
+    .footgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:30px}
+    .footgrid h4{margin:0 0 10px}
+    .newsletter{display:flex;gap:10px}
+    .newsletter input{flex:1}
+    .social{display:flex;gap:16px;margin-top:12px}
+    .copyright{opacity:.8;margin-top:22px;font-size:12px}
+
+    @media (max-width:900px){ .footgrid{grid-template-columns:1fr 1fr} }
+  </style>
+</head>
+<body>
+  <!-- Updated Header -->
+  <nav class="site-nav" aria-label="Primary">
+    <div class="brand" aria-label="Elite Air">ELITE&nbsp;AIR — Members</div>
+    <div class="spacer"></div>
+    <div class="links" role="list" aria-label="Sections">
+      <span role="listitem">Home</span>
+      <span role="listitem">Destinations</span>
+      <span role="listitem">Offers</span>
+      <span role="listitem">Experience</span>
+      <span role="listitem">News</span>
+      <button class="pill" style="border:1px solid rgba(17,24,39,.18);background:#fff">Book now</button>
+    </div>
+  </nav>
+
+  <main class="wrap" id="main" tabindex="-1">
+    <div class="container">
+      <!-- LOGIN CARD -->
+      <section id="loginCard" class="card" aria-labelledby="loginTitle">
+        <div class="hd">
+          <h2 id="loginTitle" style="margin:0">Members Login</h2>
+        </div>
+        <div class="bd">
+          <form id="loginForm" novalidate>
+            <div class="row">
+              <div>
+                <label for="user">Username</label>
+                <input id="user" name="username" type="text" inputmode="latin" placeholder="member001" autocomplete="username" required aria-required="true" />
+              </div>
+              <div>
+                <label for="pass">Password</label>
+                <input id="pass" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required aria-required="true" />
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn primary" id="btnLogin" type="submit">Login</button>
+              <button class="btn" id="btnGuest" type="button" aria-describedby="guestHint">Try Demo Account</button>
+            </div>
+            <p id="guestHint" class="hint">Demo autofills <span class="mono">member001 / elite</span>.</p>
+            <div id="loginMsg" class="notice" role="status" aria-live="polite" hidden></div>
+          </form>
+        </div>
+      </section>
+
+      <!-- DASHBOARD -->
+      <section id="dash" aria-labelledby="dashTitle" hidden>
+        <h2 id="dashTitle" class="sr-only">Member Dashboard</h2>
+        <div class="grid">
+          <article class="card" aria-labelledby="overviewTitle">
+            <div class="hd">
+              <h3 id="overviewTitle" style="margin:0">Member Overview</h3>
+              <span id="tierTag" class="tag ok" aria-live="polite">Tier 1</span>
+            </div>
+            <div class="bd">
+              <p class="welcome" id="welcome">Welcome, —</p>
+              <p class="muted" id="memberId">Member ID: —</p>
+              <div class="kpi" style="margin-top:14px">
+                <div class="cell"><div class="k">Membership Start</div><div class="v" id="mStart">—</div></div>
+                <div class="cell"><div class="k">Membership End</div><div class="v" id="mEnd">—</div></div>
+                <div class="cell"><div class="k">Days Left</div><div class="v" id="daysLeft">—</div></div>
+                <div class="cell"><div class="k">Flights Flown</div><div class="v" id="flightsCount">—</div></div>
+              </div>
+              <div class="notice" id="bookingLock" hidden></div>
+            </div>
+          </article>
+
+          <article class="card" aria-labelledby="qaTitle">
+            <div class="hd"><h3 id="qaTitle" style="margin:0">Quick Actions</h3></div>
+            <div class="bd">
+              <div class="actions">
+                <button class="btn primary" id="btnBook" type="button" disabled>Book a Flight</button>
+                <button class="btn" id="btnView" type="button">View Confirmation</button>
+              </div>
+              <p class="hint" id="advanceRule">—</p>
+            </div>
+          </article>
+        </div>
+
+        <!-- BOOKING (no payment) -->
+        <section id="bookCard" class="card" style="margin-top:22px" aria-labelledby="bookTitle" hidden>
+          <div class="hd"><h3 id="bookTitle" style="margin:0">Book a Flight (Member)</h3></div>
+          <div class="bd">
+            <fieldset class="inline" aria-describedby="ptypeHint">
+              <legend class="sr-only">Passenger Type</legend>
+              <span class="pilltag"><input type="radio" name="ptype" id="ptMember" value="member" checked> <label for="ptMember" style="margin:0">Member</label></span>
+              <span class="pilltag"><input type="radio" name="ptype" id="ptGuest" value="guest"> <label for="ptGuest" style="margin:0">Guest</label></span>
+            </fieldset>
+            <p id="ptypeHint" class="hint">Guests are one-sector only. Members can choose round trip.</p>
+            <div class="divider"></div>
+
+            <div id="guestFields" hidden>
+              <div class="row">
+                <div>
+                  <label for="gName">Guest Full Name</label>
+                  <input id="gName" placeholder="Full name" autocomplete="name" />
+                </div>
+                <div>
+                  <label for="gPass">Passport Number</label>
+                  <input id="gPass" placeholder="Passport no." autocapitalize="characters" pattern="[A-Za-z0-9]{6,18}" title="6–18 letters or digits" />
+                </div>
+              </div>
+              <div class="row" style="margin-top:12px">
+                <div>
+                  <label for="gNat">Nationality</label>
+                  <select id="gNat">
+                    <option value="">Select nationality</option>
+                    <option>Kuwaiti</option><option>Saudi</option><option>British</option><option>Egyptian</option><option>Turkish</option><option>Moroccan</option><option>Other</option>
+                  </select>
+                </div>
+                <div></div>
+              </div>
+              <div class="notice" style="margin-top:12px">Guest bookings are <strong>one sector only</strong>.</div>
+              <div class="divider"></div>
+            </div>
+
+            <div class="row3">
+              <div>
+                <label for="selFrom">From</label>
+                <select id="selFrom">
+                  <option value="KWI">Kuwait (KWI)</option>
+                </select>
+              </div>
+              <div>
+                <label for="selTo">To</label>
+                <select id="selTo">
+                  <option value="LHR">London (LHR)</option>
+                  <option value="ORY">Paris Orly (ORY)</option>
+                  <option value="IST">Istanbul (IST)</option>
+                  <option value="CAI">Cairo (CAI)</option>
+                  <option value="CMN">Casablanca (CMN)</option>
+                  <option value="DXB">Dubai (DXB)</option>
+                  <option value="RUH">Riyadh (RUH)</option>
+                  <option value="DOH">Doha (DOH)</option>
+                </select>
+              </div>
+              <div id="rtToggleWrap">
+                <label for="tripType">Trip Type (Member)</label>
+                <select id="tripType"><option value="oneway">One way</option><option value="round">Round trip</option></select>
+              </div>
+            </div>
+
+            <div class="row" style="margin-top:12px">
+              <div>
+                <label for="depDate">Departure Date</label>
+                <input type="date" id="depDate" />
+                <div class="hint">Tier 1: ≥ 3 days ahead • Tier 2: ≥ 6 days ahead. Departure time is <strong>auto-selected by Elite Air</strong>.</div>
+                <div id="earlyWrap" class="hint" style="margin-top:6px" hidden>
+                  <input type="checkbox" id="reqEarly" /> <label for="reqEarly">Request departure before allowed date</label>
+                </div>
+              </div>
+              <div id="retDateWrap">
+                <label for="retDate">Return Date (Member only)</label>
+                <input type="date" id="retDate" />
+                <div class="hint">Return time is auto-selected by Elite Air.</div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn primary" id="btnSubmitBooking" type="button">Confirm Booking (No Payment)</button>
+              <button class="btn" id="btnCancelBookingForm" type="button">Cancel</button>
+            </div>
+            <div class="notice" id="bookMsg" role="status" aria-live="polite" hidden></div>
+          </div>
+        </section>
+
+        <div class="grid" style="margin-top:22px">
+          <article class="card" aria-labelledby="upTitle">
+            <div class="hd"><h3 id="upTitle" style="margin:0">Upcoming Booking</h3></div>
+            <div class="bd"><div id="upcomingBox">No upcoming booking.</div></div>
+          </article>
+          <article class="card" aria-labelledby="histTitle">
+            <div class="hd"><h3 id="histTitle" style="margin:0">Flights Flown (Report)</h3></div>
+            <div class="bd">
+              <table id="tblHistory">
+                <thead><tr><th scope="col">Date</th><th scope="col">From</th><th scope="col">To</th><th scope="col">Passenger</th><th scope="col">PNR</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footwrap">
+      <div class="footgrid" aria-label="Footer Links">
+        <div><h4>Popular flights with Elite Air</h4><div>Flights from Kuwait to London</div><div>Flights from Kuwait to Paris</div><div>Flights from Kuwait to Dubai</div><div>Flights from Kuwait to Cairo</div><div>Flights from Kuwait to Istanbul</div><div>Flights from Kuwait to Casablanca</div><div>Flights from Kuwait to Riyadh</div><div>Flights from Kuwait to Doha</div></div>
+        <div><h4>Navigation</h4><div>Home</div><div>Destinations</div><div>Experience</div><div>Offers</div><div>Membership</div></div>
+        <div><h4>About</h4><div>Why Elite Air</div><div>Latest News</div><div>Careers</div><div>Contact</div></div>
+        <div><h4>Policies</h4><div>Privacy Policy</div><div>Cookie Policy</div><div>Membership Terms</div></div>
+        <div><h4>Legal</h4><div>Terms and Conditions</div><div>Conditions of Carriage</div><div>Notice of Passenger Rights</div></div>
+      </div>
+      <div style="margin-top:24px">
+        <h4>Sign up for our newsletter</h4>
+        <p class="muted">Stay updated with the latest news, offers, and announcements from Elite Air.</p>
+        <div class="newsletter" style="margin-top:10px"><input placeholder="Enter your email address" aria-label="Email for newsletter"/><button class="pill" style="border:1px solid rgba(17,24,39,.18);background:#fff">Subscribe</button></div>
+        <div class="social" aria-label="Social links">Fb  Ig  X  Li  Yt</div>
+        <div class="copyright">© 2025 Elite Airline Company K.S.C. (Public). All Rights Reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // --- Demo data (unchanged) ---
+    const DEMO = {
+      members: {
+        'member001': { password:'elite', id:'EA-M-0001', name:'Capt. Salman Alenezi', tier:1, start:'2025-01-10', end:'2026-01-09', passengers:['Capt. Salman Alenezi'], flightsFlown:[{date:'2025-02-05',from:'KWI',to:'LHR',pax:'Capt. Salman Alenezi',pnr:'EA1ABC'}], upcoming:null },
+        'member002': { password:'elite', id:'EA-M-0002', name:'Layla Al-Faris', tier:2, start:'2025-03-15', end:'2026-03-14', passengers:['Layla Al-Faris'], flightsFlown:[], upcoming:null },
+      }
+    };
+
+    // Helpers
+    const $ = (s)=>document.querySelector(s);
+    const today = new Date();
+    const fmtDate = (d)=>{ const p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`; };
+    const daysBetween = (a,b)=> Math.ceil((b-a)/(24*3600*1000));
+
+    let current = null;
+
+    // Accessibility helpers
+    function show(el){ el.hidden = false; el.removeAttribute('aria-hidden'); }
+    function hide(el){ el.hidden = true; el.setAttribute('aria-hidden','true'); }
+    function setText(el, text){ el.textContent = text; }
+
+    // Confirmation opener (wired)
+    function openConfirmation(b){
+      const url = 'booking-confirmation.html?b='+btoa(JSON.stringify(b));
+      window.open(url, '_blank');
+    }
+
+    // Login UX
+    $('#btnGuest').addEventListener('click', ()=>{ $('#user').value='member001'; $('#pass').value='elite'; $('#user').focus(); });
+
+    $('#loginForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const u=$('#user').value.trim();
+      const pw=$('#pass').value;
+      const m=DEMO.members[u];
+      if(!m || m.password!==pw){ showLoginMsg('Invalid username or password.'); return; }
+      current=m; hide($('#loginCard')); initDashboard(); show($('#dash')); window.scrollTo({top:0,behavior:'smooth'});
+      $('#dashTitle').focus && $('#dashTitle').focus();
+    });
+
+    function showLoginMsg(msg){ const el=$('#loginMsg'); show(el); setText(el, msg); }
+
+    // Dashboard init
+    function initDashboard(){
+      setText($('#welcome'), `Welcome, ${current.name}`);
+      setText($('#memberId'), `Member ID: ${current.id}`);
+      setText($('#mStart'), current.start);
+      setText($('#mEnd'), current.end);
+      setText($('#daysLeft'), daysBetween(new Date(), new Date(current.end)));
+      setText($('#flightsCount'), current.flightsFlown.length);
+      const tag=$('#tierTag');
+      const isTier1 = current.tier===1;
+      tag.textContent = isTier1? 'Tier 1' : 'Tier 2';
+      tag.className = 'tag ' + (isTier1? 'ok' : 'warn');
+
+      // history
+      const tb=$('#tblHistory tbody'); tb.innerHTML='';
+      current.flightsFlown.forEach(r=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${r.date}</td><td>${r.from}</td><td>${r.to}</td><td>${r.pax}</td><td class="mono">${r.pnr}</td>`;
+        tb.appendChild(tr);
+      });
+
+      // rule text
+      const minDays = isTier1?3:6;
+      setText($('#advanceRule'), `Advance booking rule: Tier ${current.tier} must book at least ${minDays} days ahead.`);
+
+      // lock if upcoming
+      const btnBook=$('#btnBook'); const lock=$('#bookingLock'); const upBox=$('#upcomingBox');
+      if(current.upcoming){
+        btnBook.disabled=true; show(lock); lock.innerHTML=`<strong>Booking exists:</strong> ${renderUpcoming(current.upcoming)} Please cancel this booking to make a new one.`;
+        upBox.innerHTML=renderUpcoming(current.upcoming,true);
+      } else {
+        btnBook.disabled=false; hide(lock); upBox.textContent='No upcoming booking.';
+      }
+
+      // wire
+      btnBook.onclick=()=>{ show($('#bookCard')); resetBookingForm(); };
+      $('#btnCancelBookingForm').onclick=()=>{ hide($('#bookCard')); };
+      $('#btnSubmitBooking').onclick=submitBooking;
+      $('#btnView').onclick=()=> {
+        if(!current || !current.upcoming){ alert('No booking found.'); return; }
+        const u=current.upcoming;
+        const payload = {
+          pnr: u.pnr,
+          name: (u.paxType==='guest' ? (u.guest?.name || 'Guest') : current.name),
+          paxType: (u.paxType==='guest' ? 'Guest' : 'Adult'),
+          fare: 'Ivory Saver',
+          from: u.from,
+          to: u.to,
+          date: u.date,
+          returnDate: u.returnDate || '',
+          pax: 1,
+          email: 'member@eliteair.example',
+          extras: ''
+        };
+        openConfirmation(payload);
+      };
+    }
+
+    function renderUpcoming(b,withCancel=false){
+      const base=`${b.date}${b.returnDate?(' / '+b.returnDate):''} — ${b.from}\u2192${b.to}${b.returnDate?(' \u2192 '+b.from):''} for ${b.paxType==='guest'? (b.guest?.name||'Guest'): 'Member'} (PNR <span class='mono'>${b.pnr}</span>) • Time: Auto`;
+      if(withCancel) return base+` <button class='btn' style='margin-left:8px' onclick='cancelUpcoming()'>Cancel</button>`; return base;
+    }
+    window.cancelUpcoming = function(){ if(!current||!current.upcoming) return; if(confirm('Cancel this booking?')){ current.upcoming=null; initDashboard(); } }
+
+    // Booking form behavior
+    const ptMember=$('#ptMember'); const ptGuest=$('#ptGuest'); const guestFields=$('#guestFields'); const tripType=$('#tripType'); const rtWrap=$('#rtToggleWrap'); const retDateWrap=$('#retDateWrap'); const depDate=$('#depDate'); const earlyWrap=$('#earlyWrap'); const reqEarly=$('#reqEarly');
+
+    function resetBookingForm(){ $('#selFrom').value='KWI'; $('#selTo').value='LHR'; depDate.value=''; $('#retDate').value=''; ptMember.checked=true; ptGuest.checked=false; reqEarly.checked=false; syncPassengerMode(); hide($('#bookMsg')); setMinDates(); }
+
+    function syncPassengerMode(){ if(ptGuest.checked){ show(guestFields); hide(rtWrap); hide(retDateWrap); tripType.value='oneway'; } else { hide(guestFields); show(rtWrap); syncTripType(); } checkEarlyEligibility(); }
+
+    function syncTripType(){ retDateWrap.hidden = (tripType.value!=='round'); }
+
+    function setMinDates(){ const t = fmtDate(new Date()); depDate.min = t; $('#retDate').min = t; }
+
+    function checkEarlyEligibility(){ const minDays = current.tier===1?3:6; if(!depDate.value){ hide(earlyWrap); return; } const chosen=new Date(depDate.value+'T00:00:00'); const delta=daysBetween(new Date(), chosen); earlyWrap.hidden = !(delta < minDays); }
+
+    function msg(t){ const el=$('#bookMsg'); show(el); setText(el, t); }
+
+    function submitBooking(){
+      if(!current) return; if(current.upcoming){ msg('You already have a booking. Please cancel it first.'); return; }
+      const from=$('#selFrom').value; const to=$('#selTo').value; const d=depDate.value; const rtv=$('#retDate').value; const isGuest=ptGuest.checked; const minDays=current.tier===1?3:6; if(!d){ msg('Please select a departure date.'); return; }
+      const delta=daysBetween(new Date(), new Date(d+'T00:00:00'));
+      if(delta < minDays && !reqEarly.checked){ msg(`Tier ${current.tier} requires booking at least ${minDays} days ahead. To request an earlier date, check "Request departure before allowed date".`); return; }
+      let guestData=null; if(isGuest){ const name=$('#gName').value.trim(); const pass=$('#gPass').value.trim(); const nat=$('#gNat').value; if(!name||!pass||!nat){ msg('Please enter guest name, passport, and nationality.'); return; } guestData={name, passport:pass, nationality:nat}; }
+      let returnDate=null; if(!isGuest && tripType.value==='round'){ if(!rtv){ msg('Please choose a return date.'); return; } if(new Date(rtv) < new Date(d)){ msg('Return date cannot be before departure date.'); return; } returnDate=rtv; }
+      const pnr='EA'+Math.random().toString(36).slice(2,7).toUpperCase();
+      current.upcoming={ date:d, returnDate, time:'Auto', from, to, pnr, paxType:isGuest?'guest':'member', guest:guestData };
+      hide($('#bookCard')); initDashboard();
+      // Auto open confirmation
+      openConfirmation({ pnr, name:(isGuest?guestData.name:current.name), paxType:(isGuest?'Guest':'Adult'), fare:'Ivory Saver', from, to, date:d, returnDate:(returnDate||''), pax:1, email:'member@eliteair.example', extras:'' });
+      if(reqEarly.checked && delta < minDays){ alert('Request received: departure before allowed date. Elite Air will contact you regarding availability.'); }
+      else { alert('Booking created (no payment). Departure time will be assigned by Elite Air.'); }
+    }
+
+    ptMember.addEventListener('change',syncPassengerMode);
+    ptGuest.addEventListener('change',syncPassengerMode);
+    tripType.addEventListener('change',syncTripType);
+    depDate.addEventListener('input',checkEarlyEligibility);
+
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && !$('#bookCard').hidden){ hide($('#bookCard')); } });
+  </script>
+<script src="../lang.js"></script>
+</body>
+</html>
