@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — Corporate Governance</title>
+<link rel="icon" type="image/x-icon" href="img/elite.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --ea-charcoal:#161A1F; --ea-pearl:#FDFDFC; --ea-gold:#C7A98C; --ea-gold-hi:#FFD479; --ink:#111827; --muted:#6b7280; --panel:#ffffff; --back:#f7f4ee; --radius:18px; --shadow:0 18px 60px rgba(15,23,42,.12); --nav-h:72px; --line:#e6e8ee; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink);background:var(--back);line-height:1.6;padding-top:calc(var(--nav-h)+18px)}
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* HEADER */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;align-items:center;gap:18px;padding:26px 56px; background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%); box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)}
+  .logo{font-family:"Playfair Display",serif;font-size:28px;font-weight:600;color:#1e1e1e;letter-spacing:.06em}
+  .nav-links{display:flex;gap:40px;flex-wrap:wrap}
+  .nav a{color:#222;text-decoration:none;font-weight:600;position:relative}
+  .nav a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;background:#c7a98c;opacity:0;transform:scaleX(.6);transition:.2s}
+  .nav a:hover{color:#c7a98c}
+  .nav a:hover::after{opacity:1;transform:scaleX(1)}
+  .spacer{flex:1}
+  .btn-book{padding:12px 20px;border-radius:999px;border:1px solid #c7a98c;background:#fff;color:#1e1e1e;box-shadow:0 4px 14px rgba(0,0,0,.05);text-decoration:none}
+  .btn-book:hover{background:#c7a98c;color:#fff}
+  @media(max-width:960px){:root{--nav-h:64px}body{padding-top:calc(var(--nav-h)+12px)}.nav{padding:12px 16px}.nav-links{display:none}.btn-book{display:none}}
+
+  /* HERO */
+  .hero{background:#fff;border-bottom:1px solid var(--line)}
+  .hero-inner{padding:22px 0}
+  .hero h1{margin:.2rem 0;font-weight:800;font-size:clamp(28px,3.5vw,40px)}
+  .hero p{margin:.4rem 0 0;color:#46546b}
+  .pill{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b7280;font-size:12px}
+
+  /* CONTENT */
+  .grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin:18px 0 36px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:18px}
+  .card h2{margin:0 0 10px;font-weight:800;font-size:20px}
+  .muted{color:#6b7280}
+  .list{margin:0;padding-left:18px;color:#374151}
+  .list li{margin:6px 0}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:700;text-decoration:none;color:#111;cursor:pointer}
+  .btn.gold{border-color:#d8c3a9;background:linear-gradient(90deg,#fdfbf7,#fff);box-shadow:0 8px 24px rgba(199,169,140,.18)}
+  .table{width:100%;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .table table{width:100%;border-collapse:separate;border-spacing:0}
+  .table th,.table td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}
+  .table th{background:#fafafa;font-weight:800}
+  .table tr:last-child td{border-bottom:0}
+  .small{font-size:12px;color:#6b7280}
+  .rtl{direction:rtl}
+
+  /* Board grid */
+  .board-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:1000px){.board-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:680px){.board-grid{grid-template-columns:1fr}}
+  .member{display:flex;gap:12px;border:1px solid var(--line);border-radius:12px;padding:12px}
+  .avatar{width:72px;height:72px;border-radius:12px;object-fit:cover;background:#f3f4f6;border:1px solid #eceff3}
+  .badge{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:#fff;white-space:nowrap}
+  .ok{background:#f0fdf4;border-color:#bfe8c7}
+  .warn{background:#fff7ed;border-color:#fbd2a8}
+  .neg{background:#fee2e2;border-color:#fecaca}
+
+  /* Skills */
+  .skills-legend{display:flex;gap:8px;flex-wrap:wrap}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:999px;background:#e5e7eb;border:1px solid #d1d5db}
+  .lv1{background:#e7d7bf}
+  .lv2{background:#d6c2a6}
+  .lv3{background:#c7a98c}
+  .nowrap{white-space:nowrap}
+  input,select{padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-family:inherit}
+
+  /* Hide the "Need to edit?" card in the sidebar */
+  #editHead,
+  #editHead + p,
+  #editHead ~ * { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<nav class="nav">
+  <div class="logo">ELITE&nbsp;AIR</div>
+  <div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../destinations.html">Destinations</a>
+    <a href="../offers.html">Offers</a>
+    <a href="../experience.html">Experience</a>
+    <a href="../news.html">Latest news</a>
+    <a href="../cargo.html">Cargo</a>
+    <a href="../membership.html">Membership</a>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn-book" type="button" onclick="location.href='../members'">Members Login</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-inner">
+    <h1>Corporate Governance <span class="pill" id="langTag">EN</span></h1>
+  </div>
+</section>
+
+<div class="container">
+  <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn" id="btnEN">EN</button>
+      <button class="btn" id="btnAR">AR</button>
+      <input id="q" placeholder="Search board…"/>
+      <select id="indFilter">
+        <option value="">All</option>
+        <option value="ind">Independent</option>
+        <option value="exec">Executive</option>
+        <option value="non-exec">Non-Executive</option>
+      </select>
+    </div>
+    <div class="small">Last updated: <span id="updatedAt">—</span></div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <!-- BOARD -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <h2 style="margin:0" id="boardHead">Board of Directors</h2>
+          <button class="btn gold" id="dlBoard">Download Board CSV</button>
+        </div>
+        <div id="boardGrid" class="board-grid" style="margin-top:12px"></div>
+      </div>
+
+      <!-- COMMITTEES -->
+      <div class="card">
+        <h2 id="commHead">Board Committees</h2>
+        <div id="commWrap"></div>
+      </div>
+
+      <!-- SKILLS MATRIX -->
+      <div class="card" id="skillsCard">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <h2 style="margin:0" id="skillsHead">Skills Matrix</h2>
+          <div class="skills-legend small">
+            <span class="nowrap"><span class="dot"></span> 0</span>
+            <span class="nowrap"><span class="dot lv1"></span> 1</span>
+            <span class="nowrap"><span class="dot lv2"></span> 2</span>
+            <span class="nowrap"><span class="dot lv3"></span> 3</span>
+          </div>
+        </div>
+        <div class="table" style="margin-top:10px">
+          <table>
+            <thead id="skillsHeadRow"></thead>
+            <tbody id="skillsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE -->
+      <div class="card" id="attCard">
+        <h2 id="attHead">Meetings & Attendance</h2>
+        <div class="table">
+          <table>
+            <thead id="attHeadRow"></thead>
+            <tbody id="attBody"></tbody>
+          </table>
+        </div>
+        <div class="small" id="attLegend" style="margin-top:8px">P = Present • A = Absent • L = Leave</div>
+      </div>
+    </div>
+
+    <aside>
+      <!-- KEY DOCS / POLICIES -->
+      <div class="card">
+        <h2 id="docsHead">Key Governance Documents</h2>
+        <ul class="list" id="docsList"></ul>
+        <p class="small muted">Looking for the <b>Company Establishment Contract</b>? Find it also in <a href="Certificates-&-Legal.html">Certificates & Legal</a>.</p>
+      </div>
+
+      <!-- CONTACT / WHISTLEBLOWING -->
+      <div class="card">
+        <h2 id="wbHead">Whistleblowing & Contact</h2>
+        <div class="list" id="wbBlock"></div>
+      </div>
+
+      <div class="card" style="display:none">
+        <h2 id="editHead">Need to edit?</h2>
+        <p class="muted" id="editText">Open Investors Admin → Governance to update board, committees, policies, skills and attendance.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- CMS bootstrap snippet -->
+<script>
+  async function loadCMSFromServer(){
+    try{
+      const res = await fetch('/investor/api/governance_get.php', { cache: 'no-store' });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      window.EA_CMS = data; // { meta, governance:{...} }
+      localStorage.setItem('EA_INVESTORS_CMS', JSON.stringify(data)); // offline fallback
+    }catch(err){
+      console.warn('Server fetch failed; using localStorage fallback:', err);
+    }
+  }
+</script>
+
+
+<script>
+  const el = id=>document.getElementById(id);
+  let lang='en';
+
+  const L={
+    en:{ board:'Board of Directors', committees:'Board Committees', skills:'Skills Matrix', attendance:'Meetings & Attendance', docs:'Key Governance Documents', wb:'Whistleblowing & Contact', needEdit:'Need to edit?', editText:'Open Investors Admin → Governance to update board, committees, policies, skills and attendance.', ind:'Independent', exec:'Executive', nonexec:'Non-Executive', chair:'Chair', charter:'Charter', members:'Members', present:'P', absent:'A', leave:'L', member:'Member', committeesLbl:'Committees', biography:'Biography' },
+    ar:{ board:'مجلس الإدارة', committees:'لجان المجلس', skills:'مصفوفة المهارات', attendance:'الاجتماعات والحضور', docs:'الوثائق الحاكمة', wb:'الإبلاغ والتواصل', needEdit:'تحتاج تعديل؟', editText:'انتقل إلى لوحة الإدارة ← الحوكمة لتحديث بيانات المجلس واللجان والسياسات والمهارات والحضور.', ind:'مستقل', exec:'تنفيذي', nonexec:'غير تنفيذي', chair:'الرئيس', charter:'اللائحة', members:'الأعضاء', present:'ح', absent:'غ', leave:'إ', member:'العضو', committeesLbl:'اللجان', biography:'السيرة' }
+  };
+
+  function localizeIndLabel(kind){
+    const t = L[lang];
+    if(kind==='ind') return t.ind;
+    if(kind==='exec') return t.exec;
+    if(kind==='non-exec') return t.nonexec;
+    return kind||'';
+  }
+
+  function badge(kind){
+    if(!kind) return '';
+    const map={ind:'ok', exec:'warn', 'non-exec':'warn'};
+    const cls=map[kind]||'';
+    return `<span class="badge ${cls}">${localizeIndLabel(kind)}</span>`;
+  }
+
+  // Normalize independence text from Admin to filter keys
+  function normalizeInd(value){
+    const v = (value||'').toLowerCase();
+    if(v.startsWith('ind')) return 'ind';
+    if(v.startsWith('exec')) return 'exec';
+    if(v.includes('non')) return 'non-exec';
+    return v;
+  }
+
+  function renderBoard(members){
+    const q = el('q').value.trim().toLowerCase();
+    const f = el('indFilter').value; // ind | exec | non-exec | ''
+    const list = (Array.isArray(members)? members: []).filter(m=>{
+      const matchQ = !q || `${m.name||''} ${(m.role?.en||m.role||'')}`.toLowerCase().includes(q);
+      const kind = normalizeInd(m.independence);
+      const matchF = !f || kind===f;
+      return matchQ && matchF;
+    });
+
+    el('boardGrid').innerHTML = list.length? list.map(m=>{
+      const name = m.name || '—';
+      const role = (m.role && (m.role[lang]||m.role.en)) || m.role || '';
+      const bio = (m.bio && (m.bio[lang]||m.bio.en)) || (lang==='ar' ? m.bioAR : m.bioEN) || '';
+      const ind = normalizeInd(m.independence);
+      const comms = Array.isArray(m.committees)? m.committees : [];
+      const img = m.photo || '';
+      return `<div class="member">
+        ${img? `<img class="avatar" src="${img}" alt="${name}">` : `<div class="avatar"></div>`}
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><b>${name}</b> ${badge(ind)}</div>
+          <div class="small muted">${role||''}</div>
+          ${comms.length? `<div class="small" style="margin-top:6px"><b>${lang==='ar'? L.ar.committeesLbl : L.en.committeesLbl}:</b> ${comms.join(', ')}</div>`:''}
+          ${bio? `<details style="margin-top:8px"><summary>${lang==='ar'?L.ar.biography:L.en.biography}</summary><div class="small" style="margin-top:6px">${bio.replace(/\n/g,'<br>')}</div></details>`:''}
+        </div>
+      </div>`;
+    }).join('') : '<div class="muted">No board members found.</div>';
+  }
+
+  function renderCommittees(comms){
+    const list = Array.isArray(comms)? comms : [];
+    el('commWrap').innerHTML = list.length? list.map(c=>{
+      const name = (c.name && (c.name[lang]||c.name.en)) || c.name || '—';
+      const chair = c.chair || '';
+      const members = (Array.isArray(c.members)? c.members: []).join(', ');
+      const freq = c.frequency || '';
+      const charterHref = c.charterURL || c.charter;
+      const charter = charterHref ? `<a href="${charterHref}" target="_blank" rel="noopener">${lang==='ar'?L.ar.charter:L.en.charter}</a>` : '';
+      return `<div class="table" style="margin-bottom:12px">
+        <table>
+          <thead><tr><th style="width:40%">${name}</th><th>${lang==='ar'?L.ar.members:L.en.members}</th><th class="nowrap">${lang==='ar'?L.ar.chair:L.en.chair}</th><th> </th></tr></thead>
+          <tbody><tr><td>${freq? `<span class="small muted">${freq}</span>`:''}</td><td>${members||'—'}</td><td>${chair||'—'}</td><td>${charter}</td></tr></tbody>
+        </table>
+      </div>`;
+    }).join('') : '<div class="muted">—</div>';
+  }
+
+  function shade(score){ if(score>=3) return 'lv3'; if(score>=2) return 'lv2'; if(score>=1) return 'lv1'; return ''; }
+
+  function renderSkills(sk){
+    const skills = Array.isArray(sk?.skills)? sk.skills: [];
+    const rows = Array.isArray(sk?.rows)? sk.rows: [];
+    // Hide card if empty
+    el('skillsCard').style.display = (skills.length||rows.length)? 'block':'none';
+    // Head
+    el('skillsHeadRow').innerHTML = skills.length? `<tr><th style="width:28%">${lang==='ar'? L.ar.member : L.en.member}</th>`+ skills.map(s=>`<th class="nowrap">${(s&& (s[lang]||s.en))||s}</th>`).join('') +'</tr>' : '';
+    // Body
+    el('skillsBody').innerHTML = rows.length? rows.map(r=>{
+      const name = r.name || '—';
+      const cells = skills.map((s,idx)=>{ const key = (s?.key)|| s?.en || s; const v = Number(r.values? r.values[key] : r[key]) || 0; return `<td><span class="dot ${shade(v)}"></span></td>`; }).join('');
+      return `<tr><td>${name}</td>${cells}</tr>`;
+    }).join('') : (skills.length? '<tr><td class="muted">—</td></tr>':'');
+  }
+
+  function renderAttendance(att){
+    const dates = Array.isArray(att?.dates)? att.dates: [];
+    const members = Array.isArray(att?.members)? att.members: [];
+    // Hide card if empty
+    el('attCard').style.display = (dates.length||members.length)? 'block':'none';
+    // Head
+    el('attHeadRow').innerHTML = dates.length? `<tr><th style="width:28%">${lang==='ar'?L.ar.member:'Member'}</th>` + dates.map(d=>`<th class="nowrap">${d}</th>`).join('') + '</tr>' : '';
+    // Body
+    el('attBody').innerHTML = members.length? members.map(m=>{
+      const name = m.name||'—';
+      const row = dates.map(d=>{
+        const v = (m.attendance && (m.attendance[d])) || '';
+        const text = v||'';
+        const cls = text==='P' ? 'ok' : (text==='A'?'neg': (text==='L'?'warn':''));
+        const label = lang==='ar'
+          ? (text==='P'?L.ar.present:text==='A'?L.ar.absent:text==='L'?L.ar.leave:text)
+          : text;
+        return `<td><span class="badge ${cls}">${label||''}</span></td>`;
+      }).join('');
+      return `<tr><td>${name}</td>${row}</tr>`;
+    }).join('') : (dates.length? '<tr><td class="muted">—</td></tr>':'');
+  }
+
+  function toCSV(rows){ return rows.map(r=>r.map(x=>`"${(x||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n'); }
+
+  function downloadBoardCSV(members){
+    const rows = [['Name','Role','Independence','Committees']].concat((members||[]).map(m=>[
+      m.name||'',
+      (m.role?.en||m.role||''),
+      m.independence||'',
+      (Array.isArray(m.committees)? m.committees.join('; '):'')
+    ]));
+    const csv = toCSV(rows); const blob = new Blob([csv], {type:'text/csv'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='elite-air_board.csv'; a.click();
+  }
+
+  function render(){
+    const cms = window.EA_CMS || {};
+    const g = cms.governance || { board:[], committees:[], policies:[], skills:{}, attendance:{} };
+
+    // Meta & language setup
+    el('langTag').textContent = (lang==='ar'?'AR':'EN');
+    el('updatedAt').textContent = (cms.meta && cms.meta.updatedAt) ? cms.meta.updatedAt : '—';
+    if(lang==='ar'){ document.body.classList.add('rtl'); } else { document.body.classList.remove('rtl'); }
+    const t = L[lang];
+    el('boardHead').textContent = t.board;
+    el('commHead').textContent = t.committees;
+    el('skillsHead').textContent = t.skills;
+    el('attHead').textContent = t.attendance;
+    el('docsHead').textContent = t.docs;
+    el('wbHead').textContent = t.wb;
+    el('editHead').textContent = t.needEdit;
+    el('editText').textContent = t.editText;
+
+    // Render sections
+    renderBoard(g.board);
+    renderCommittees(g.committees);
+    renderSkills(g.skills);
+    renderAttendance(g.attendance);
+
+    // Policies → Key Governance Documents (Admin: governance.policies[])
+    const policies = Array.isArray(g.policies) ? g.policies : [];
+    el('docsList').innerHTML = policies.length
+      ? policies.map(p=>`<li><a href="${p.url}" target="_blank" rel="noopener">${p.name||'Policy'}</a></li>`).join('')
+      : '<li class="muted">—</li>';
+
+    // Whistleblowing / Contact (fallback to IR if governance.contact missing)
+    const ir = cms.ir || {};
+    const wb = g.contact || {};
+    const wbEmail = wb.email || ir.email;
+    const wbPhone = wb.phone || ir.phone;
+    const wbPortal = wb.portal;
+    el('wbBlock').innerHTML = [
+      wbEmail ? `<li><b>Email:</b> <a href="mailto:${wbEmail}">${wbEmail}</a></li>`:'',
+      wbPhone ? `<li><b>Phone:</b> <a href="tel:${wbPhone}">${wbPhone}</a></li>`:'',
+      wbPortal ? `<li><b>Portal:</b> <a href="${wbPortal}" target="_blank" rel="noopener">Open</a></li>`:''
+    ].filter(Boolean).join('') || '<li class="muted">—</li>';
+
+    // Download
+    el('dlBoard').onclick = ()=> downloadBoardCSV(g.board||[]);
+  }
+
+   window.addEventListener('DOMContentLoaded', async ()=>{
+    const el = (id)=>document.getElementById(id);
+    el('btnEN').addEventListener('click',()=>{lang='en'; render();});
+    el('btnAR').addEventListener('click',()=>{lang='ar'; render();});
+    el('q').addEventListener('input', ()=>{ const cms=window.EA_CMS||{}; renderBoard((cms.governance||{}).board||[]); });
+    el('indFilter').addEventListener('input', ()=>{ const cms=window.EA_CMS||{}; renderBoard((cms.governance||{}).board||[]); });
+
+    await loadCMSFromServer();  // ← MySQL → PHP API
+    render();                   // ← build UI
+  });
+</script>
+</body>
+</html>

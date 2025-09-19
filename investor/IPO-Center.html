@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — IPO Center</title>
+<link rel="icon" type="image/x-icon" href="img/elite.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ea-charcoal:#161A1F; --ea-pearl:#FDFDFC; --ea-gold:#C7A98C; --ea-gold-hi:#FFD479;
+    --ink:#111827; --muted:#6b7280; --panel:#ffffff; --back:#f7f4ee;
+    --radius:18px; --shadow:0 18px 60px rgba(15,23,42,.12); --nav-h:72px; --line:#e6e8ee;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink);background:var(--back);line-height:1.6;padding-top:calc(var(--nav-h)+18px)}
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* HEADER */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;align-items:center;gap:18px;padding:26px 56px;
+    background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%);box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)}
+  .logo{font-family:"Playfair Display",serif;font-size:28px;font-weight:600;color:#1e1e1e;letter-spacing:.06em}
+  .nav-links{display:flex;gap:40px;flex-wrap:wrap}
+  .nav a{color:#222;text-decoration:none;font-weight:600;position:relative}
+  .nav a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;background:#c7a98c;opacity:0;transform:scaleX(.6);transition:.2s}
+  .nav a:hover{color:#c7a98c}
+  .nav a:hover::after{opacity:1;transform:scaleX(1)}
+  .spacer{flex:1}
+  .btn-book{padding:12px 20px;border-radius:999px;border:1px solid #c7a98c;background:#fff;color:#1e1e1e;box-shadow:0 4px 14px rgba(0,0,0,.05);text-decoration:none}
+  .btn-book:hover{background:#c7a98c;color:#fff}
+  @media(max-width:960px){:root{--nav-h:64px}body{padding-top:calc(var(--nav-h)+12px)}.nav{padding:12px 16px}.nav-links{display:none}.btn-book{display:none}}
+
+  /* HERO */
+  .hero{background:#fff;border-bottom:1px solid var(--line)}
+  .hero-inner{padding:22px 0}
+  .hero h1{margin:.2rem 0;font-weight:800;font-size:clamp(28px,3.5vw,40px)}
+  .hero p{margin:.4rem 0 0;color:#46546b}
+  .pill{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b7280;font-size:12px}
+
+  /* CONTENT */
+  .grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin:18px 0 36px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:18px}
+  .card h2{margin:0 0 10px;font-weight:800;font-size:20px}
+  .muted{color:#6b7280}
+  .list{margin:0;padding-left:18px;color:#374151}
+  .list li{margin:6px 0}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:700;text-decoration:none;color:#111;cursor:pointer}
+  .table{width:100%;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .table table{width:100%;border-collapse:separate;border-spacing:0}
+  .table th,.table td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}
+  .table th{background:#fafafa;font-weight:800}
+  .table tr:last-child td{border-bottom:0}
+  .lang-switch{display:flex;gap:8px}
+  .lang{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font-weight:700;font-size:12px}
+  .lang.active{background:#111;color:#fff;border-color:#111}
+  .rtl{direction:rtl}
+  .badge{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:#fff}
+  .ok{background:#f0fdf4;border-color:#bfe8c7}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<nav class="nav">
+  <div class="logo">ELITE&nbsp;AIR</div>
+  <div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../destinations.html">Destinations</a>
+    <a href="../offers.html">Offers</a>
+    <a href="../experience.html">Experience</a>
+    <a href="../news.html">Latest news</a>
+    <a href="../cargo.html">Cargo</a>
+    <a href="../membership.html">Membership</a>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn-book" type="button" onclick="location.href='../members'">Members Login</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-inner">
+    <h1>IPO Center <span class="pill" id="langTag">EN</span></h1>
+    
+  </div>
+</section>
+
+<div class="container">
+  <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div class="lang-switch">
+      <button class="lang active" id="btnEN">EN</button>
+      <button class="lang" id="btnAR">AR</button>
+    </div>
+    <div class="muted">Last updated: <span id="updatedAt">—</span></div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <!-- Offer Summary -->
+      <div class="card">
+        <h2>Offer Summary</h2>
+        <div class="table">
+          <table>
+            <tbody id="offerTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Timetable -->
+      <div class="card">
+        <h2>Timetable</h2>
+        <div class="table">
+          <table>
+            <thead><tr><th>Milestone</th><th>Date</th><th>Time</th></tr></thead>
+            <tbody id="timetable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Key Documents -->
+      <div class="card">
+        <h2>Key Documents</h2>
+        <ul class="list" id="docs"></ul>
+      </div>
+    </div>
+
+    <aside>
+      <!-- How to Subscribe -->
+      <div class="card">
+        <h2>How to Subscribe</h2>
+        <div id="subscribeText" class="muted"></div>
+      </div>
+
+      <!-- Legal Notices -->
+      <div class="card">
+        <h2>Legal Notices</h2>
+        <p id="legalText" class="muted"></p>
+        <p class="small"><span class="badge ok">Reminder</span> Check jurisdictional restrictions and forward‑looking statements in your prospectus.</p>
+      </div>
+
+      
+    </aside>
+  </div>
+</div>
+
+<!-- CMS bootstrap snippet -->
+<script>
+  async function loadCMSFromServer(){
+    try{
+      const res = await fetch('/investor/api/ipo_get.php', { cache: 'no-store' });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      // Merge into EA_CMS (keep any other sections already present in LS)
+      const ls = window.EA_CMS || {};
+      window.EA_CMS = { ...ls, ...data };
+      localStorage.setItem('EA_INVESTORS_CMS', JSON.stringify(window.EA_CMS));
+    }catch(err){
+      console.warn('Server fetch failed; using localStorage fallback:', err);
+    }
+  }
+</script>
+
+
+<script>
+  const el = id=>document.getElementById(id);
+  let lang = 'en';
+
+  function render(){
+    const cms = window.EA_CMS || {};
+    const d = cms.ipo || { offer:{}, timetable:[], subscribe:{en:'',ar:''}, documents:[], legal:{en:'',ar:''} };
+
+    // Offer table
+    const rows = [
+      ['Shares', d.offer.shares||'—'],
+      ['Par Value', d.offer.parValue||'—'],
+      ['Issuance Premium', d.offer.premium||'—'],
+      ['Payable on Application', d.offer.payableOnApp||'—'],
+      ['Use of Proceeds', d.offer.useOfProceeds||'—']
+    ];
+    el('offerTable').innerHTML = rows.map(r=>`<tr><th style="width:36%">${r[0]}</th><td>${r[1]}</td></tr>`).join('');
+
+    // Timetable
+    el('timetable').innerHTML = (d.timetable||[]).map(t=>`<tr><td>${t.label||''}</td><td>${t.date||''}</td><td>${t.time||''}</td></tr>`).join('') || '<tr><td colspan="3" class="muted">No timetable yet.</td></tr>';
+
+    // Documents
+    el('docs').innerHTML = (d.documents||[]).map(doc=>`<li><a href="${doc.url}" target="_blank" rel="noopener">${doc.title}</a></li>`).join('') || '<li class="muted">No documents yet.</li>';
+
+    // Text blocks
+    const sub = (lang==='ar'? d.subscribe.ar : d.subscribe.en) || '';
+    const leg = (lang==='ar'? d.legal.ar : d.legal.en) || '';
+    el('subscribeText').innerHTML = sub.replace(/\n/g,'<br>') || '<span class="muted">—</span>';
+    el('legalText').innerHTML = leg.replace(/\n/g,'<br>') || '<span class="muted">—</span>';
+
+    // Meta + direction
+    el('langTag').textContent = (lang==='ar'?'AR':'EN');
+    const updated = (cms.meta && cms.meta.updatedAt) ? cms.meta.updatedAt : '—';
+    document.querySelector('.muted span#updatedAt')?.remove();
+    const metaHost = document.querySelector('.card .muted');
+    const span = document.createElement('span'); span.id='updatedAt'; span.textContent = updated; metaHost && metaHost.appendChild(span);
+    if(lang==='ar'){ document.body.classList.add('rtl'); } else { document.body.classList.remove('rtl'); }
+  }
+
+  window.addEventListener('DOMContentLoaded', async ()=>{
+    const el = (id)=>document.getElementById(id);
+    el('btnEN').addEventListener('click',()=>{lang='en'; el('btnEN').classList.add('active'); el('btnAR').classList.remove('active'); render();});
+    el('btnAR').addEventListener('click',()=>{lang='ar'; el('btnAR').classList.add('active'); el('btnEN').classList.remove('active'); render();});
+
+    await loadCMSFromServer();   // ← MySQL → PHP API
+    render();                    // ← build UI from server data
+  });
+</script>
+</body>
+</html>

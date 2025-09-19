@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — Share Information</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --ea-charcoal:#161A1F; --ea-pearl:#FDFDFC; --ea-gold:#C7A98C; --ea-gold-hi:#FFD479; --ink:#111827; --muted:#6b7280; --panel:#ffffff; --back:#f7f4ee; --radius:18px; --shadow:0 18px 60px rgba(15,23,42,.12); --nav-h:72px; --line:#e6e8ee; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink);background:var(--back);line-height:1.6;padding-top:calc(var(--nav-h)+18px)}
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* HEADER */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;align-items:center;gap:18px;padding:26px 56px; background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%); box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)}
+  .logo{font-family:"Playfair Display",serif;font-size:28px;font-weight:600;color:#1e1e1e;letter-spacing:.06em}
+  .nav-links{display:flex;gap:40px;flex-wrap:wrap}
+  .nav a{color:#222;text-decoration:none;font-weight:600;position:relative}
+  .nav a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;background:#c7a98c;opacity:0;transform:scaleX(.6);transition:.2s}
+  .nav a:hover{color:#c7a98c}
+  .nav a:hover::after{opacity:1;transform:scaleX(1)}
+  .spacer{flex:1}
+  .btn-book{padding:12px 20px;border-radius:999px;border:1px solid #c7a98c;background:#fff;color:#1e1e1e;box-shadow:0 4px 14px rgba(0,0,0,.05);text-decoration:none}
+  .btn-book:hover{background:#c7a98c;color:#fff}
+  @media(max-width:960px){:root{--nav-h:64px}body{padding-top:calc(var(--nav-h)+12px)}.nav{padding:12px 16px}.nav-links{display:none}.btn-book{display:none}}
+
+  /* HERO */
+  .hero{background:#fff;border-bottom:1px solid var(--line)}
+  .hero-inner{padding:22px 0}
+  .hero h1{margin:.2rem 0;font-weight:800;font-size:clamp(28px,3.5vw,40px)}
+  .hero p{margin:.4rem 0 0;color:#46546b}
+  .pill{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b7280;font-size:12px}
+
+  /* CONTENT */
+  .grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin:18px 0 36px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:18px}
+  .card h2{margin:0 0 10px;font-weight:800;font-size:20px}
+  .muted{color:#6b7280}
+  .list{margin:0;padding-left:18px;color:#374151}
+  .list li{margin:6px 0}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:700;text-decoration:none;color:#111;cursor:pointer}
+  .btn.gold{border-color:#d8c3a9;background:linear-gradient(90deg,#fdfbf7,#fff);box-shadow:0 8px 24px rgba(199,169,140,.18)}
+  .table{width:100%;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .table table{width:100%;border-collapse:separate;border-spacing:0}
+  .table th,.table td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}
+  .table th{background:#fafafa;font-weight:800}
+  .table tr:last-child td{border-bottom:0}
+  .rtl{direction:rtl}
+  .small{font-size:12px;color:#6b7280}
+  .badge{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:#fff}
+  .ok{background:#f0fdf4;border-color:#bfe8c7}
+  .warn{background:#fff7ed;border-color:#fbd2a8}
+  canvas{width:100%;height:auto;max-height:280px}
+  .flex{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  input{padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-family:inherit}
+  /* Hide the "Need to edit?" card in the sidebar */
+#editHead,
+#editHead + p,
+#editHead,
+#editHead ~ * {
+  display: none !important;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<nav class="nav">
+  <div class="logo">ELITE&nbsp;AIR</div>
+<div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../destinations.html">Destinations</a>
+    <a href="../offers.html">Offers</a>
+    <a href="../experience.html">Experience</a>
+    <a href="../news.html">Latest news</a>
+    <a href="../cargo.html">Cargo</a>
+    <a href="../membership.html">Membership</a>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn-book" type="button" onclick="location.href='../members'">Members Login</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-inner">
+    <h1>Share Information <span class="pill" id="langTag">EN</span></h1>
+    
+</section>
+
+<div class="container">
+  <div class="card flex" style="justify-content:space-between">
+    <div class="flex">
+      <button class="btn" id="btnEN">EN</button>
+      <button class="btn" id="btnAR">AR</button>
+    </div>
+    <div class="small">Last updated: <span id="updatedAt">—</span></div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <!-- SNAPSHOT -->
+      <div class="card">
+        <h2 id="snapHead">Share Snapshot</h2>
+        <div class="table">
+          <table>
+            <tbody id="snapshot"></tbody>
+          </table>
+        </div>
+        <div id="freeFloatNote" class="small" style="margin-top:8px"></div>
+      </div>
+
+      <!-- MAJOR SHAREHOLDERS -->
+      <div class="card">
+        <div class="flex" style="justify-content:space-between">
+          <h2 id="majHead" style="margin:0">Major Shareholders</h2>
+          <button class="btn gold" id="dlMaj">Download CSV</button>
+        </div>
+        <div class="grid" style="grid-template-columns:1.2fr 1fr;gap:16px">
+          <div class="table" style="align-self:start">
+            <table>
+              <thead><tr><th id="thName">Name</th><th id="thPct">%</th></tr></thead>
+              <tbody id="majRows"><tr><td colspan="2" class="muted">—</td></tr></tbody>
+            </table>
+          </div>
+          <div>
+            <canvas id="donut" width="480" height="480"></canvas>
+            <div class="small muted" id="donutLegend" style="margin-top:6px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANALYST COVERAGE -->
+      <div class="card">
+        <div class="flex" style="justify-content:space-between">
+          <h2 id="covHead" style="margin:0">Analyst Coverage</h2>
+          <input id="qAnalyst" placeholder="Search…"/>
+        </div>
+        <div class="table" style="margin-top:10px">
+          <table>
+            <thead><tr><th id="thFirm">Firm</th><th id="thAnalyst">Analyst</th><th>Link</th></tr></thead>
+            <tbody id="covRows"><tr><td colspan="3" class="muted">—</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <aside>
+      <div class="card">
+        <h2 id="notesHead">Notes</h2>
+        <ul class="list" id="notes"></ul>
+      </div>
+      <div class="car">
+        <h2 id="editHead">Need to edit?</h2>
+        <p class="muted" id="editText">Open <a href="">Investors Admin → Share Information</a> to update details.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- CMS bootstrap snippet -->
+<script>
+  async function loadCMSFromServer(){
+    try{
+      const res = await fetch('/investor/api/share_get.php', { cache: 'no-store' });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      window.EA_CMS = data; // { meta, share:{...} }
+      localStorage.setItem('EA_INVESTORS_CMS', JSON.stringify(data)); // offline fallback
+    }catch(err){
+      console.warn('Server fetch failed; using localStorage fallback:', err);
+    }
+  }
+</script>
+
+
+<script>
+  const el = id=>document.getElementById(id);
+  const cleanNum = (s)=>{ if(s==null) return 0; const n=(''+s).replace(/[^0-9.\-]/g,''); const v=parseFloat(n); if(isNaN(v)) return 0; return v; };
+  const fmt = (n)=>{ try{ return Number(n).toLocaleString('en-KW'); }catch(e){ return n; } };
+  const parsePct = (s)=>{ if(s==null) return 0; const v = parseFloat((''+s).replace(/[^0-9.\-]/g,'')); if(isNaN(v)) return 0; return v<=1? v*100 : v; };
+  let lang='en';
+
+  const L={
+    en:{ title:'Share Information', snapshot:'Share Snapshot', ticker:'Ticker', isin:'ISIN', shares:'Total Shares', free:'Free Float', policy:'Dividend Policy', majors:'Major Shareholders', name:'Name', pct:'%', coverage:'Analyst Coverage', firm:'Firm', analyst:'Analyst', notesHead:'Notes', notes:[ 'Figures are for information only and subject to change.', 'Free float is as declared by the company. "Implied free float" is calculated as 100% minus disclosed major holdings.', 'Analyst links may lead to third‑party content.' ], editHead:'Need to edit?', editText:'Open Investors Admin → Share Information to update details.' },
+    ar:{ title:'معلومات السهم', snapshot:'نظرة عامة', ticker:'الرمز', isin:'الرقم الدولي ISIN', shares:'إجمالي الأسهم', free:'نسبة التداول الحر', policy:'سياسة الأرباح', majors:'المساهمون الرئيسيون', name:'الاسم', pct:'%', coverage:'التغطية التحليلية', firm:'الجهة', analyst:'المحلل', notesHead:'ملاحظات', notes:[ 'الأرقام للاسترشاد وقد تتغير.', 'نسبة التداول الحر المعلنة من الشركة. النسبة الضمنية تُحتسب = 100% − حصص المساهمين الرئيسيين.', 'روابط المحللين خارجية.' ], editHead:'تحتاج تعديل؟', editText:'اذهب إلى لوحة الإدارة ← معلومات السهم لتحديث التفاصيل.' }
+  };
+
+  function render(){
+    const cms = window.EA_CMS || {};
+    const d = cms.share || {ticker:'',isin:'',shareCount:'',freeFloat:'',dividendPolicy:'',majorShareholders:[],analysts:[]};
+
+    // Meta & language
+    el('langTag').textContent = (lang==='ar'?'AR':'EN');
+    el('updatedAt').textContent = (cms.meta && cms.meta.updatedAt) ? cms.meta.updatedAt : '—';
+    const t = L[lang];
+    document.title = `Elite Air — ${t.title}`;
+    el('snapHead').textContent = t.snapshot;
+    el('majHead').textContent = t.majors;
+    el('covHead').textContent = t.coverage;
+    el('notesHead').textContent = t.notesHead;
+    el('notes').innerHTML = t.notes.map(x=>`<li>${x}</li>`).join('');
+    el('editHead').textContent = t.editHead;
+    el('editText').textContent = t.editText;
+    el('thName').textContent = t.name;
+    el('thPct').textContent = t.pct;
+    el('thFirm').textContent = t.firm;
+    el('thAnalyst').textContent = t.analyst;
+    if(lang==='ar'){ document.body.classList.add('rtl'); } else { document.body.classList.remove('rtl'); }
+
+    // Snapshot table
+    const rows=[ [t.ticker, d.ticker||'—'], [t.isin, d.isin||'—'], [t.shares, d.shareCount||'—'], [t.free, d.freeFloat||'—'], [t.policy, d.dividendPolicy||'—'] ];
+    el('snapshot').innerHTML = rows.map(r=>`<tr><th style="width:32%">${r[0]}</th><td>${r[1]}</td></tr>`).join('');
+
+    // Free float check
+    const majors = Array.isArray(d.majorShareholders)? d.majorShareholders : [];
+    const sumMaj = majors.reduce((s,m)=> s + parsePct(m.pct), 0);
+    const implied = Math.max(0, 100 - sumMaj);
+    const declared = parsePct(d.freeFloat);
+    const diff = Math.abs(implied - declared);
+    const ok = diff <= 1.0; // within 1%
+    el('freeFloatNote').innerHTML = `${lang==='ar'?'التداول الحر المعلن':'Declared free float'}: <b>${declared? declared.toFixed(2)+'%':'—'}</b> • ${lang==='ar'?'الضمني':'Implied'}: <b>${implied.toFixed(2)}%</b> ${declared? (ok? '<span class="badge ok" style="margin-left:6px">OK</span>' : '<span class="badge warn" style="margin-left:6px">Δ '+diff.toFixed(2)+'%</span>'):''}`;
+
+    // Major shareholders table
+    el('majRows').innerHTML = majors.length? majors.map(m=>`<tr><td>${m.name||'—'}</td><td>${m.pct||'—'}</td></tr>`).join('') : '<tr><td colspan="2" class="muted">—</td></tr>';
+
+    // Donut chart (majors + others)
+    drawDonut('donut', majors, implied);
+
+    // Analyst coverage
+    const q = el('qAnalyst').value.trim().toLowerCase();
+    const analysts = (Array.isArray(d.analysts)? d.analysts : []).filter(a=>{
+      const s = `${a.firm||''} ${a.analyst||''}`.toLowerCase();
+      return !q || s.includes(q);
+    });
+    el('covRows').innerHTML = analysts.length? analysts.map(a=>`<tr><td>${a.firm||'—'}</td><td>${a.analyst||'—'}</td><td>${a.url? `<a href="${a.url}" target="_blank" rel="noopener">Link</a>`:'—'}</td></tr>`).join('') : '<tr><td colspan="3" class="muted">—</td></tr>';
+  }
+
+  function toCSV(rows){ return rows.map(r=>r.map(x=>`"${(x||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n'); }
+
+  function downloadMajorsCSV(){
+    const cms = window.EA_CMS || {}; const d = cms.share || {}; const majors = Array.isArray(d.majorShareholders)? d.majorShareholders : [];
+    const rows = [['Name','%']].concat(majors.map(m=>[m.name||'', (m.pct||'')]));
+    const csv = toCSV(rows); const blob = new Blob([csv], {type:'text/csv'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='elite-air_major-shareholders.csv'; a.click();
+  }
+
+  function drawDonut(id, majors, implied){
+    const canvas = el(id); if(!canvas) return; const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height; const cx=W/2, cy=H/2; const r=W*0.35; const ir=r*0.6;
+    ctx.clearRect(0,0,W,H);
+    // build segments
+    const segs = majors.map(m=>({ label:(m.name||'—'), pct: parsePct(m.pct) })).filter(s=>s.pct>0);
+    if(implied>0) segs.push({label:'Others', pct: implied});
+    const total = segs.reduce((s,a)=>s+a.pct,0) || 1;
+    // palette (soft neutrals)
+    const colors = ['#D6C2A6','#E7D7BF','#BFA889','#EDE4D6','#CAB79D','#E1CFB5','#F2E9DA','#C9B69B'];
+    let a0 = -Math.PI/2;
+    segs.forEach((s,i)=>{
+      const ang = (s.pct/total)*Math.PI*2; const a1 = a0+ang; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath(); ctx.fillStyle = colors[i%colors.length]; ctx.fill(); a0=a1; });
+    // hole
+    ctx.globalCompositeOperation='destination-out'; ctx.beginPath(); ctx.arc(cx,cy,ir,0,Math.PI*2); ctx.fill(); ctx.globalCompositeOperation='source-over';
+    // center label
+    ctx.font = '700 18px Inter, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#111827'; ctx.fillText(lang==='ar'? 'التوزيع' : 'Ownership', cx, cy);
+    // legend
+    const legend = segs.map(s=>`${s.label}: ${s.pct.toFixed(2)}%`).join(' • ');
+    el('donutLegend').textContent = legend;
+  }
+
+   window.addEventListener('DOMContentLoaded', async ()=>{
+    const el = (id)=>document.getElementById(id);
+    el('btnEN').addEventListener('click',()=>{lang='en'; render();});
+    el('btnAR').addEventListener('click',()=>{lang='ar'; render();});
+    el('qAnalyst').addEventListener('input', render);
+    el('dlMaj').addEventListener('click', downloadMajorsCSV);
+    await loadCMSFromServer();  // ← MySQL → PHP API
+    render();                   // ← build UI
+  });
+</script>
+</body>
+</html>

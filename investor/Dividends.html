@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — Dividends</title>
+<link rel="icon" type="image/x-icon" href="img/elite.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ea-charcoal:#161A1F; --ea-pearl:#FDFDFC; --ea-gold:#C7A98C; --ea-gold-hi:#FFD479;
+    --ink:#111827; --muted:#6b7280; --panel:#ffffff; --back:#f7f4ee;
+    --radius:18px; --shadow:0 18px 60px rgba(15,23,42,.12); --nav-h:72px; --line:#e6e8ee;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink);background:var(--back);line-height:1.6;padding-top:calc(var(--nav-h)+18px)}
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* HEADER (site) */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;align-items:center;gap:18px;padding:26px 56px;
+    background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%);box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)}
+  .logo{font-family:"Playfair Display",serif;font-size:28px;font-weight:600;color:#1e1e1e;letter-spacing:.06em}
+  .nav-links{display:flex;gap:40px;flex-wrap:wrap}
+  .nav a{color:#222;text-decoration:none;font-weight:600;position:relative}
+  .nav a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;background:#c7a98c;opacity:0;transform:scaleX(.6);transition:.2s}
+  .nav a:hover{color:#c7a98c}
+  .nav a:hover::after{opacity:1;transform:scaleX(1)}
+  .spacer{flex:1}
+  .btn-book{padding:12px 20px;border-radius:999px;border:1px solid #c7a98c;background:#fff;color:#1e1e1e;box-shadow:0 4px 14px rgba(0,0,0,.05);text-decoration:none}
+  .btn-book:hover{background:#c7a98c;color:#fff}
+  @media(max-width:960px){:root{--nav-h:64px}body{padding-top:calc(var(--nav-h)+12px)}.nav{padding:12px 16px}.nav-links{display:none}.btn-book{display:none}}
+
+  /* HERO */
+  .hero{background:#fff;border-bottom:1px solid var(--line)}
+  .hero-inner{padding:22px 0}
+  .hero h1{margin:.2rem 0;font-weight:800;font-size:clamp(28px,3.5vw,40px)}
+  .hero p{margin:.4rem 0 0;color:#46546b}
+  .pill{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b7280;font-size:12px}
+
+  /* CONTENT */
+  .grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin:18px 0 36px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:18px}
+  .card h2{margin:0 0 10px;font-weight:800;font-size:20px}
+  .muted{color:#6b7280}
+  .list{margin:0;padding-left:18px;color:#374151}
+  .list li{margin:6px 0}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:700;text-decoration:none;color:#111;cursor:pointer}
+  .btn.gold{border-color:#d8c3a9;background:linear-gradient(90deg,#fdfbf7,#fff);box-shadow:0 8px 24px rgba(199,169,140,.18)}
+  input{padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-family:inherit}
+  .small{font-size:12px;color:#6b7280}
+  .table{width:100%;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .table table{width:100%;border-collapse:separate;border-spacing:0}
+  .table th,.table td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}
+  .table th{background:#fafafa;font-weight:800}
+  .table tr:last-child td{border-bottom:0}
+  .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .kpi .chip{border:1px solid var(--line);border-radius:12px;padding:12px}
+  .kpi .label{font-size:12px;color:#6b7280}
+  .kpi .value{font-size:22px;font-weight:800;margin-top:6px}
+  .switch{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .spark{width:100%;height:80px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<nav class="nav">
+  <div class="logo">ELITE&nbsp;AIR</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="destinations.html">Destinations</a>
+    <a href="offers.html">Offers</a>
+    <a href="experience.html">Experience</a>
+    <a href="news.html">Latest news</a>
+    <a href="cargo.html">Cargo</a>
+    <a href="membership.html">Membership</a>
+  </div>
+  <div class="spacer"></div>
+  <a class="btn-book" href="portaladmin.html">Investors Admin</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-inner">
+    <h1>Dividends <span class="pill" id="curTag">KWD</span></h1>
+  </div>
+</section>
+
+<div class="container">
+  <div class="grid">
+    <main>
+      <!-- SNAPSHOT -->
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <h2>Snapshot</h2>
+          <div class="switch">
+            <span class="small muted">Currency:</span>
+            <button class="btn" id="btnKWD">KWD</button>
+            <button class="btn" id="btnUSD">USD</button>
+          </div>
+        </div>
+        <div class="kpi" id="kpis"></div>
+        <div style="margin-top:10px" class="small">Last updated: <span id="updatedAt">—</span></div>
+      </div>
+
+      <!-- LATEST -->
+      <div class="card">
+        <h2>Latest Dividend</h2>
+        <div class="table"><table>
+          <thead><tr><th>Amount</th><th>Ex-date</th><th>Pay date</th><th>Type</th></tr></thead>
+          <tbody id="latestRow"></tbody>
+        </table></div>
+      </div>
+
+      <!-- HISTORY -->
+      <div class="card">
+        <h2>Dividend History</h2>
+        <div class="table"><table>
+          <thead><tr><th>Year</th><th>Type</th><th>Amount</th><th>Ex-date</th><th>Pay date</th></tr></thead>
+          <tbody id="histBody"></tbody>
+        </table></div>
+      </div>
+
+      <!-- ANNUAL AMOUNTS & YIELD -->
+      <div class="card">
+        <h2>Annual Dividends & Yield</h2>
+        <div class="table" style="margin-bottom:12px"><table>
+          <thead><tr><th>Year</th><th>Annual</th><th>Interim</th></tr></thead>
+          <tbody id="annualBody"></tbody>
+        </table></div>
+        <div class="table"><table>
+          <thead><tr><th>Year</th><th>Yield %</th></tr></thead>
+          <tbody id="yieldBody"></tbody>
+        </table></div>
+      </div>
+
+      <!-- PERFORMANCE (sparklines) -->
+      <div class="card">
+        <h2>Total Return (simple view)</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div>
+            <div class="small muted">Last 12 months</div>
+            <svg id="spark12" class="spark" viewBox="0 0 400 80" preserveAspectRatio="none"></svg>
+          </div>
+          <div>
+            <div class="small muted">Last 3 years</div>
+            <svg id="spark3" class="spark" viewBox="0 0 400 80" preserveAspectRatio="none"></svg>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <aside>
+      <div class="card">
+        <h2>Meta</h2>
+        <div class="table"><table>
+          <tbody id="metaTable"></tbody>
+        </table></div>
+       
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- CMS bootstrap + logic -->
+<script>
+/* ====== Config ====== */
+const STORAGE_KEY = 'EA_INVESTORS_CMS';
+const CUR_KEY = 'EA_CUR';
+
+/* ====== DOM & Utils ====== */
+const el = (id)=> document.getElementById(id);
+const fmt = (v)=> (v==null || v==='') ? '—' : (''+v);
+const clean = (s)=> {
+  const n = parseFloat((''+s).replace(/[^0-9.\-]/g,''));
+  return isNaN(n) ? null : n;
+};
+function getCMS(){
+  if (window.EA_CMS && typeof window.EA_CMS === 'object') return window.EA_CMS;
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch(_) { return {}; }
+}
+function setCMS(data){
+  try {
+    const current = getCMS();
+    const merged = { ...current, ...data };     // shallow merge ok (dividends lives under root)
+    window.EA_CMS = merged;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+  } catch(_) {}
+}
+
+/* ====== Fetch from API ====== */
+async function loadCMSFromServer(){
+  const url = '/investor/api/dividends_get.php';
+  try{
+    const res = await fetch(url, { cache: 'no-store' });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json(); // { meta, dividends:{...} }
+    setCMS(data);
+  }catch(err){
+    console.warn('Server fetch failed; using localStorage fallback:', err);
+    const ls = localStorage.getItem(STORAGE_KEY);
+    window.EA_CMS = ls ? JSON.parse(ls) : {};
+  }
+}
+
+/* ====== Currency & Formatting ====== */
+let CUR = (localStorage.getItem(CUR_KEY) || 'KWD').toUpperCase(); // 'KWD' | 'USD'
+
+function setCurrency(c){
+  CUR = (c || 'KWD').toUpperCase();
+  localStorage.setItem(CUR_KEY, CUR);
+  const bK = el('btnKWD'), bU = el('btnUSD');
+  if (bK && bU){
+    bK.classList.toggle('active', CUR==='KWD');
+    bU.classList.toggle('active', CUR==='USD');
+  }
+  render();
+}
+
+function money(v, fx, ccy){
+  const n = clean(v);
+  if(n==null) return '—';
+  const num = (CUR==='USD' && fx) ? (n*fx) : n;
+  const pfx = (CUR==='USD') ? 'USD ' : (ccy ? (ccy+' ') : '');
+  return pfx + num.toLocaleString('en-US', { maximumFractionDigits: 3 });
+}
+function yieldPct(ltm, price, stated){
+  const s = clean(stated);
+  if(s!=null) return s.toFixed(2) + '%';
+  const l=clean(ltm), p=clean(price);
+  return (l!=null && p!=null && p!==0) ? ((l/p)*100).toFixed(2)+'%' : '—';
+}
+
+/* ====== Sparkline ====== */
+function sparkline(svgId, series){
+  const svg = el(svgId);
+  if(!svg) return;
+  svg.innerHTML='';
+  if(!Array.isArray(series) || series.length < 2) return;
+
+  // Auto size from element; fallback
+  const w = Math.max(10, svg.clientWidth || 400);
+  const h = Math.max(10, svg.clientHeight || 80);
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  svg.setAttribute('preserveAspectRatio', 'none');
+
+  const min = Math.min(...series);
+  const max = Math.max(...series);
+  const rng = (max - min) || 1;
+
+  const pts = series.map((v,i)=>{
+    const x = (i/(series.length-1))*w;
+    const y = h - ((v - min)/rng)*h;
+    return `${x},${y}`;
+  }).join(' ');
+
+  const path = document.createElementNS('http://www.w3.org/2000/svg','polyline');
+  path.setAttribute('fill','none');
+  path.setAttribute('stroke','currentColor');
+  path.setAttribute('stroke-width','2');
+  path.setAttribute('points', pts);
+  svg.appendChild(path);
+}
+
+/* ====== Render ====== */
+function render(){
+  const cms = getCMS();
+  const d = (cms && cms.dividends) ? cms.dividends : {};
+  const m = d.meta || {};
+  const fx = clean(d.fxUSD) || 0;
+
+  // Currency tag
+  if (el('curTag')) el('curTag').textContent = CUR;
+
+  // KPIs
+  const kpis = [
+    {label:'LTM dividend / share', value: money(d.ltmDividend, CUR==='USD'?fx:0, m.currency)},
+    {label:'Last price',           value: money(d.lastPrice,   CUR==='USD'?fx:0, m.currency)},
+    {label:'Dividend yield',       value: yieldPct(d.ltmDividend, d.lastPrice, d.statedYield)}
+  ];
+  if (el('kpis')) {
+    el('kpis').innerHTML = kpis.map(k=>`
+      <div class="chip"><div class="label">${k.label}</div><div class="value">${k.value}</div></div>
+    `).join('');
+  }
+
+  // Updated at
+  if (el('updatedAt')) el('updatedAt').textContent = (cms && cms.meta && cms.meta.updatedAt) ? cms.meta.updatedAt : '—';
+
+  // Latest
+  if (el('latestRow')) {
+    const L = d.latest || null;
+    el('latestRow').innerHTML = L ? `
+      <tr>
+        <td>${money(L.amount, CUR==='USD'?fx:0, m.currency)}</td>
+        <td>${fmt(L.exDate)}</td>
+        <td>${fmt(L.payDate)}</td>
+        <td>${fmt(L.type)}</td>
+      </tr>` : `<tr><td colspan="4" class="muted">—</td></tr>`;
+  }
+
+  // History
+  if (el('histBody')){
+    const hist = Array.isArray(d.history) ? d.history.slice().sort((a,b)=> (b.year||0)-(a.year||0)) : [];
+    el('histBody').innerHTML = hist.length
+      ? hist.map(h=>`
+          <tr>
+            <td>${fmt(h.year)}</td>
+            <td>${fmt(h.type)}</td>
+            <td>${money(h.amount, CUR==='USD'?fx:0, m.currency)}</td>
+            <td>${fmt(h.exDate)}</td>
+            <td>${fmt(h.payDate)}</td>
+          </tr>`).join('')
+      : `<tr><td colspan="5" class="muted">—</td></tr>`;
+  }
+
+  // Annual amounts
+  if (el('annualBody')){
+    const ann = Array.isArray(d.annualDividends) ? d.annualDividends : [];
+    el('annualBody').innerHTML = ann.length
+      ? ann.map(a=>`
+          <tr>
+            <td>${fmt(a.year)}</td>
+            <td>${money(a.annual,  CUR==='USD'?fx:0, m.currency)}</td>
+            <td>${money(a.interim, CUR==='USD'?fx:0, m.currency)}</td>
+          </tr>`).join('')
+      : `<tr><td colspan="3" class="muted">—</td></tr>`;
+  }
+
+  // Annual yield
+  if (el('yieldBody')){
+    const yld = Array.isArray(d.annualYield) ? d.annualYield : [];
+    el('yieldBody').innerHTML = yld.length
+      ? yld.map(y=>{
+          const yp = clean(y.yield);
+          return `<tr><td>${fmt(y.year)}</td><td>${yp==null ? '—' : yp.toFixed(2)+'%'}</td></tr>`;
+        }).join('')
+      : `<tr><td colspan="2" class="muted">—</td></tr>`;
+  }
+
+  // Sparklines
+  sparkline('spark12', Array.isArray(d.return12mSeries)? d.return12mSeries : []);
+  sparkline('spark3',  Array.isArray(d.return3ySeries)?  d.return3ySeries  : []);
+
+  // Meta table
+  if (el('metaTable')){
+    el('metaTable').innerHTML = `
+      <tr><th>Share</th><td>${fmt(m.share)}</td></tr>
+      <tr><th>Market</th><td>${fmt(m.market)}</td></tr>
+      <tr><th>Currency</th><td>${fmt(m.currency)}</td></tr>
+      <tr><th>Data Starting From</th><td>${fmt(m.start)}</td></tr>
+      <tr><th>USD FX (per 1 KWD)</th><td>${fmt(d.fxUSD)}</td></tr>
+    `;
+  }
+}
+
+/* ====== Events ====== */
+function debounce(fn, ms){
+  let t; return function(){ clearTimeout(t); t = setTimeout(()=>fn.apply(this, arguments), ms); };
+}
+
+window.addEventListener('DOMContentLoaded', async ()=>{
+  // Buttons
+  if (el('btnKWD')) el('btnKWD').onclick = ()=> setCurrency('KWD');
+  if (el('btnUSD')) el('btnUSD').onclick = ()=> setCurrency('USD');
+  // Initial active state
+  setCurrency(CUR);
+
+  // Load + render
+  await loadCMSFromServer();
+  render();
+
+  // Redraw on resize (for responsive sparklines)
+  window.addEventListener('resize', debounce(render, 150));
+});
+</script>
+
+</body>
+</html>

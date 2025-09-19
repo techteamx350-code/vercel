@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — ESG & Sustainability</title>
+<link rel="icon" type="image/x-icon" href="img/elite.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --ea-charcoal:#161A1F; --ea-pearl:#FDFDFC; --ea-gold:#C7A98C; --ea-gold-hi:#FFD479; --ink:#111827; --muted:#6b7280; --panel:#ffffff; --back:#f7f4ee; --radius:18px; --shadow:0 18px 60px rgba(15,23,42,.12); --nav-h:72px; --line:#e6e8ee; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink);background:var(--back);line-height:1.6;padding-top:calc(var(--nav-h)+18px)}
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* HEADER */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;align-items:center;gap:18px;padding:26px 56px; background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%); box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)}
+  .logo{font-family:"Playfair Display",serif;font-size:28px;font-weight:600;color:#1e1e1e;letter-spacing:.06em}
+  .nav-links{display:flex;gap:40px;flex-wrap:wrap}
+  .nav a{color:#222;text-decoration:none;font-weight:600;position:relative}
+  .nav a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;background:#c7a98c;opacity:0;transform:scaleX(.6);transition:.2s}
+  .nav a:hover{color:#c7a98c}
+  .nav a:hover::after{opacity:1;transform:scaleX(1)}
+  .spacer{flex:1}
+  .btn-book{padding:12px 20px;border-radius:999px;border:1px solid #c7a98c;background:#fff;color:#1e1e1e;box-shadow:0 4px 14px rgba(0,0,0,.05);text-decoration:none}
+  .btn-book:hover{background:#c7a98c;color:#fff}
+  @media(max-width:960px){:root{--nav-h:64px}body{padding-top:calc(var(--nav-h)+12px)}.nav{padding:12px 16px}.nav-links{display:none}.btn-book{display:none}}
+
+  /* HERO */
+  .hero{background:#fff;border-bottom:1px solid var(--line)}
+  .hero-inner{padding:22px 0}
+  .hero h1{margin:.2rem 0;font-weight:800;font-size:clamp(28px,3.5vw,40px)}
+  .hero p{margin:.4rem 0 0;color:#46546b}
+  .pill{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b7280;font-size:12px}
+
+  /* CONTENT */
+  .grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin:18px 0 36px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:18px}
+  .card h2{margin:0 0 10px;font-weight:800;font-size:20px}
+  .muted{color:#6b7280}
+  .list{margin:0;padding-left:18px;color:#374151}
+  .list li{margin:6px 0}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:700;text-decoration:none;color:#111;cursor:pointer}
+  .btn.gold{border-color:#d8c3a9;background:linear-gradient(90deg,#fdfbf7,#fff);box-shadow:0 8px 24px rgba(199,169,140,.18)}
+  input,select{padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-family:inherit}
+  .small{font-size:12px;color:#6b7280}
+  .rtl{direction:rtl}
+  .badge{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:#fff;white-space:nowrap}
+  .ok{background:#f0fdf4;border-color:#bfe8c7}
+  .warn{background:#fff7ed;border-color:#fbd2a8}
+  .neg{background:#fee2e2;border-color:#fecaca}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media(max-width:920px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.kpis{grid-template-columns:1fr}}
+  .kpi{border:1px solid var(--line);border-radius:12px;padding:12px}
+  .kpi .label{font-size:12px;color:#6b7280}
+  .kpi .value{font-size:22px;font-weight:800;margin-top:6px}
+  .bar{height:10px;background:#f3f4f6;border-radius:999px;overflow:hidden;margin-top:8px}
+  .bar>div{height:100%;background:linear-gradient(90deg,#d7bfa1,#fff0);width:0%}
+  canvas{width:100%;height:auto;max-height:280px}
+  .sdgs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+  @media(max-width:780px){.sdgs{grid-template-columns:repeat(4,1fr)}}
+  @media(max-width:520px){.sdgs{grid-template-columns:repeat(3,1fr)}}
+  .sdg{border:1px solid var(--line);border-radius:10px;padding:6px;text-align:center;font-weight:800}
+  /* Hide the "Need to edit?" card in the sidebar */
+#editHead,
+#editHead + p,
+#editHead,
+#editHead ~ * {
+  display: none !important;
+}
+  
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<nav class="nav">
+  <div class="logo">ELITE&nbsp;AIR</div>
+  <div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../destinations.html">Destinations</a>
+    <a href="../offers.html">Offers</a>
+    <a href="../experience.html">Experience</a>
+    <a href="../news.html">Latest news</a>
+    <a href="../cargo.html">Cargo</a>
+    <a href="../membership.html">Membership</a>
+  </div>
+  <div class="spacer"></div>
+ <button class="btn-book" type="button" onclick="location.href='../members'">Members Login</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-inner">
+    <h1>ESG & Sustainability <span class="pill" id="langTag">EN</span></h1>
+    
+  </div>
+</section>
+
+<div class="container">
+  <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn" id="btnEN">EN</button>
+      <button class="btn" id="btnAR">AR</button>
+    </div>
+    <div class="small">Last updated: <span id="updatedAt">—</span></div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <!-- KPIs DASHBOARD -->
+      <div class="card">
+        <h2 id="kpiHead">Key KPIs</h2>
+        <div class="kpis" id="kpiGrid"></div>
+      </div>
+
+      <!-- EMISSIONS TREND -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <h2 style="margin:0" id="emisHead">Emissions by Scope</h2>
+          <div>
+            <button class="btn gold" id="dlEmis">Download CSV</button>
+          </div>
+        </div>
+        <canvas id="emisChart" width="900" height="360"></canvas>
+        <div class="small muted" id="emisLegend" style="margin-top:6px"></div>
+      </div>
+
+      <!-- TARGETS -->
+      <div class="card">
+        <h2 id="tgtHead">Targets & Progress</h2>
+        <div id="tgtList"></div>
+      </div>
+
+      <!-- INITIATIVES -->
+      <div class="card">
+        <h2 id="initHead">Initiatives</h2>
+        <ul class="list" id="initList"></ul>
+      </div>
+
+      <!-- DATA TABLE -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <h2 style="margin:0" id="dataHead">ESG Data Table</h2>
+          <div>
+            <input id="qData" placeholder="Search metric…"/>
+          </div>
+        </div>
+        <div class="table" style="margin-top:10px">
+          <table>
+            <thead><tr><th id="thMetric">Metric</th><th>Unit</th><th>Year</th><th>Value</th></tr></thead>
+            <tbody id="dataRows"><tr><td colspan="4" class="muted">—</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <aside>
+      <!-- FRAMEWORKS -->
+      <div class="card">
+        <h2 id="frmHead">Frameworks</h2>
+        <ul class="list" id="frmList"></ul>
+        <div class="sdgs" id="sdgGrid" style="margin-top:10px"></div>
+      </div>
+
+      <!-- REPORTS & POLICIES -->
+      <div class="card">
+        <h2 id="repHead">ESG Reports</h2>
+        <ul class="list" id="repList"></ul>
+      </div>
+      <div class="card">
+        <h2 id="polHead">Policies</h2>
+        <ul class="list" id="polList"></ul>
+      </div>
+
+      <div class="car">
+        <h2 id="editHead">Need to edit?</h2>
+        <p class="muted" id="editText">Open <a href="">Investors Admin → ESG</a> to update KPIs, emissions, targets, frameworks and reports.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- CMS bootstrap snippet -->
+<script>
+  async function loadCMSFromServer(){
+    try{
+      const res = await fetch('/investor/api/esg_get.php', { cache: 'no-store' });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      window.EA_CMS = data; // { meta, esg:{...} }
+      localStorage.setItem('EA_INVESTORS_CMS', JSON.stringify(data)); // offline fallback
+    }catch(err){
+      console.warn('Server fetch failed; using localStorage fallback:', err);
+    }
+  }
+</script>
+
+
+<script>
+  const el = id=>document.getElementById(id);
+  let lang='en';
+
+  const L={
+    en:{ kpis:'Key KPIs', emis:'Emissions by Scope', targets:'Targets & Progress', initiatives:'Initiatives', data:'ESG Data Table', metric:'Metric', frameworks:'Frameworks', reports:'ESG Reports', policies:'Policies', needEdit:'Need to edit?', editText:'Open Investors Admin → ESG to update KPIs, emissions, targets, frameworks and reports.', scope1:'Scope 1', scope2:'Scope 2', scope3:'Scope 3', progress:'Progress', baseline:'Baseline', target:'Target', current:'Current', by:'by' },
+    ar:{ kpis:'المؤشرات الرئيسية', emis:'الانبعاثات حسب النطاق', targets:'الأهداف والتقدم', initiatives:'المبادرات', data:'جدول بيانات الاستدامة', metric:'المؤشر', frameworks:'الأطر', reports:'تقارير الاستدامة', policies:'السياسات', needEdit:'تحتاج تعديل؟', editText:'انتقل إلى لوحة الإدارة ← الاستدامة لتحديث المؤشرات والانبعاثات والأهداف والأطر والتقارير.', scope1:'النطاق 1', scope2:'النطاق 2', scope3:'النطاق 3', progress:'التقدم', baseline:'سنة الأساس', target:'الهدف', current:'الحالي', by:'بحلول' }
+  };
+
+  function cleanNum(v){ if(v==null) return 0; const n=parseFloat((''+v).replace(/[^0-9.\-]/g,'')); return isNaN(n)?0:n; }
+  function toCSV(rows){ return rows.map(r=>r.map(x=>`"${(x??'').toString().replace(/"/g,'""')}"`).join(',')).join('\n'); }
+
+  function drawLines(canvasId, series){
+    const c = el(canvasId); if(!c) return; const ctx = c.getContext('2d'); const W=c.width, H=c.height; ctx.clearRect(0,0,W,H);
+    // axes
+    ctx.strokeStyle='#d1d5db'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(48,16); ctx.lineTo(48,H-36); ctx.lineTo(W-16,H-36); ctx.stroke();
+    // collect years and max
+    const years = [...new Set(series.flatMap(s=>s.data.map(d=>d.year)))].sort();
+    const max = Math.max(1, ...series.flatMap(s=>s.data.map(d=>cleanNum(d.value))));
+    const x = yr=>{ const i=years.indexOf(yr); return 48 + ( (W-64-32) * (i/(Math.max(1,years.length-1))) ); };
+    const y = v=> (H-36) - ( (H-36-16) * (cleanNum(v)/max) );
+    // grid & labels
+    ctx.fillStyle='#6b7280'; ctx.font='12px Inter, sans-serif'; years.forEach((yr,i)=>{ const xx=x(yr); ctx.fillText(yr, xx-8, H-16); ctx.strokeStyle='#f1f5f9'; ctx.beginPath(); ctx.moveTo(xx,H-36); ctx.lineTo(xx,16); ctx.stroke(); });
+    // colors
+    const cols=['#c7a98c','#a0825f','#e2d3bf'];
+    series.forEach((s,si)=>{
+      ctx.strokeStyle=cols[si%cols.length]; ctx.lineWidth=2; ctx.beginPath(); s.data.forEach((d,i)=>{ const xx=x(d.year), yy=y(d.value); if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy); }); ctx.stroke();
+      // dots
+      ctx.fillStyle=cols[si%cols.length]; s.data.forEach(d=>{ const xx=x(d.year), yy=y(d.value); ctx.beginPath(); ctx.arc(xx,yy,3,0,Math.PI*2); ctx.fill(); });
+    });
+    // legend
+    el('emisLegend').textContent = series.map(s=>`${s.name}`).join(' • ');
+  }
+
+  function progressBar(pct){ pct=Math.max(0,Math.min(100, pct)); return `<div class="bar"><div style="width:${pct}%"></div></div>`; }
+
+  function render(){
+    const cms = window.EA_CMS || {};
+    const d = cms.esg || { kpis:{}, emissions:[], targets:[], initiatives:[], frameworks:{}, sdgs:[], reports:[], policies:[], dataTable:[] };
+
+    // Meta & Lang
+    el('langTag').textContent = (lang==='ar'?'AR':'EN');
+    el('updatedAt').textContent = (cms.meta && cms.meta.updatedAt) ? cms.meta.updatedAt : '—';
+    if(lang==='ar'){ document.body.classList.add('rtl'); } else { document.body.classList.remove('rtl'); }
+    const t = L[lang];
+    el('kpiHead').textContent = t.kpis;
+    el('emisHead').textContent = t.emis;
+    el('tgtHead').textContent = t.targets;
+    el('initHead').textContent = t.initiatives;
+    el('dataHead').textContent = t.data;
+    el('frmHead').textContent = t.frameworks;
+    el('repHead').textContent = t.reports;
+    el('polHead').textContent = t.policies;
+    el('editHead').textContent = t.needEdit; el('editText').textContent = t.editText;
+    el('thMetric').textContent = t.metric;
+
+    // KPIs
+    const k = d.kpis || {};
+    const kpis = [
+      {label: lang==='ar'? 'كثافة الكربون' : 'Carbon Intensity', value: k.carbonIntensity||'—'},
+      {label: lang==='ar'? 'المياه المستخدمة' : 'Water Use', value: k.water||'—'},
+      {label: lang==='ar'? 'تحويل النفايات' : 'Waste Diversion', value: k.wasteDiversion||'—'},
+      {label: lang==='ar'? 'استهلاك الوقود/ASK' : 'Fuel Burn / ASK', value: k.fuelBurnPerASK||'—'}
+    ];
+    el('kpiGrid').innerHTML = kpis.map(i=>`<div class="kpi"><div class="label">${i.label}</div><div class="value">${i.value}</div></div>`).join('');
+
+    // Emissions
+    const emis = Array.isArray(d.emissions)? d.emissions : [];
+    const years = [...new Set(emis.map(e=>String(e.year)))].sort();
+    const S1 = years.map(y=>({year:y, value: (emis.find(e=>String(e.year)===y)?.scope1)??0 }));
+    const S2 = years.map(y=>({year:y, value: (emis.find(e=>String(e.year)===y)?.scope2)??0 }));
+    const S3 = years.map(y=>({year:y, value: (emis.find(e=>String(e.year)===y)?.scope3)??0 }));
+    drawLines('emisChart', [ {name:t.scope1, data:S1}, {name:t.scope2, data:S2}, {name:t.scope3, data:S3} ]);
+
+    // Targets
+    const targets = Array.isArray(d.targets)? d.targets : [];
+    el('tgtList').innerHTML = targets.length? targets.map(g=>{
+      const base = cleanNum(g.base||g.baseline);
+      const current = cleanNum(g.current);
+      const target = cleanNum(g.target);
+      // If target < base => reduction target; compute completion towards target
+      let pct=0, badge='';
+      if(base && target){
+        if(target<base){ pct = Math.max(0, Math.min(100, ((base-current)/(base-target))*100 )); }
+        else { pct = Math.max(0, Math.min(100, ((current-base)/(target-base))*100 )); }
+        const cls = pct>=66? 'ok' : (pct>=33? 'warn' : 'neg');
+        badge = `<span class="badge ${cls}">${t.progress}: ${pct.toFixed(0)}%</span>`;
+      }
+      return `<div style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <div><b>${g.title||'—'}</b> <span class="small">(${t.by} ${g.targetYear||'—'})</span></div>
+          ${badge}
+        </div>
+        <div class="small muted" style="margin:4px 0">${t.baseline}: ${g.baseYear||'—'} • ${t.target}: ${g.target||'—'} • ${t.current}: ${g.current||'—'}</div>
+        ${progressBar(pct)}
+      </div>`;
+    }).join('') : '<div class="muted">—</div>';
+
+    // Initiatives
+    const inits = Array.isArray(d.initiatives)? d.initiatives : [];
+    el('initList').innerHTML = inits.length? inits.map(i=>`<li><b>${i.title||'—'}</b>${i.tag? ` <span class="badge">${i.tag}</span>`:''}<br><span class="small muted">${i.description||''}</span></li>`).join('') : '<li class="muted">—</li>';
+
+    // Data table
+    const q = el('qData').value?.toLowerCase()||'';
+    const data = (Array.isArray(d.dataTable)? d.dataTable : []).filter(r=> !q || (r.metric||'').toLowerCase().includes(q));
+    el('dataRows').innerHTML = data.length? data.map(r=>`<tr><td>${r.metric||'—'}</td><td>${r.unit||'—'}</td><td>${r.year||'—'}</td><td>${r.value||'—'}</td></tr>`).join('') : '<tr><td colspan="4" class="muted">—</td></tr>';
+
+    // Frameworks
+    const F = d.frameworks || {};
+    const items = [];
+    if(F.GRI?.url) items.push({name:'GRI', url:F.GRI.url});
+    if(F.SASB?.url) items.push({name:'SASB', url:F.SASB.url});
+    if(F.TCFD?.url) items.push({name:'TCFD', url:F.TCFD.url});
+    if(F.UNGC?.url) items.push({name:'UN Global Compact', url:F.UNGC.url});
+    el('frmList').innerHTML = items.length? items.map(f=>`<li><a href="${f.url}" target="_blank" rel="noopener">${f.name}</a></li>`).join('') : '<li class="muted">—</li>';
+
+    // SDGs
+    const sdgs = Array.isArray(d.sdgs)? d.sdgs : [];
+    el('sdgGrid').innerHTML = sdgs.length? sdgs.map(n=>`<div class="sdg">SDG ${n}</div>`).join('') : '';
+
+    // Reports & Policies
+    el('repList').innerHTML = (Array.isArray(d.reports)? d.reports: []).map(r=>`<li><a href="${r.url}" target="_blank" rel="noopener">${r.title||'Report'}</a> <span class="small muted">${r.date||''}</span></li>`).join('') || '<li class="muted">—</li>';
+    el('polList').innerHTML = (Array.isArray(d.policies)? d.policies: []).map(p=>`<li><a href="${p.url}" target="_blank" rel="noopener">${p.title||'Policy'}</a></li>`).join('') || '<li class="muted">—</li>';
+  }
+
+  function downloadEmisCSV(){
+    const cms = window.EA_CMS || {}; const d = cms.esg || {}; const emis = Array.isArray(d.emissions)? d.emissions : [];
+    const rows = [['Year','Scope 1','Scope 2','Scope 3']].concat(emis.map(e=>[e.year||'', e.scope1||'', e.scope2||'', e.scope3||'']));
+    const csv = toCSV(rows); const blob = new Blob([csv], {type:'text/csv'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='elite-air_esg_emissions.csv'; a.click();
+  }
+
+  window.addEventListener('DOMContentLoaded', async ()=>{
+    const el = (id)=>document.getElementById(id);
+    el('btnEN').addEventListener('click',()=>{lang='en'; render();});
+    el('btnAR').addEventListener('click',()=>{lang='ar'; render();});
+    el('qData').addEventListener('input', render);
+    el('dlEmis').addEventListener('click', downloadEmisCSV);
+
+    await loadCMSFromServer();   // ← MySQL → PHP API
+    render();                    // ← build UI from server data
+  });
+</script>
+</body>
+</html>

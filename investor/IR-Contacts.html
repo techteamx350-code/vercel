@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — IR Contacts</title>
+<link rel="icon" type="image/x-icon" href="img/elite.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --ea-charcoal:#161A1F; --ea-pearl:#FDFDFC; --ea-gold:#C7A98C; --ea-gold-hi:#FFD479; --ink:#111827; --muted:#6b7280; --panel:#ffffff; --back:#f7f4ee; --radius:18px; --shadow:0 18px 60px rgba(15,23,42,.12); --nav-h:72px; --line:#e6e8ee; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink);background:var(--back);line-height:1.6;padding-top:calc(var(--nav-h)+18px)}
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* HEADER */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;align-items:center;gap:18px;padding:26px 56px; background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%); box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)}
+  .logo{font-family:"Playfair Display",serif;font-size:28px;font-weight:600;color:#1e1e1e;letter-spacing:.06em}
+  .nav-links{display:flex;gap:40px;flex-wrap:wrap}
+  .nav a{color:#222;text-decoration:none;font-weight:600;position:relative}
+  .nav a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;background:#c7a98c;opacity:0;transform:scaleX(.6);transition:.2s}
+  .nav a:hover{color:#c7a98c}
+  .nav a:hover::after{opacity:1;transform:scaleX(1)}
+  .spacer{flex:1}
+  .btn-book{padding:12px 20px;border-radius:999px;border:1px solid #c7a98c;background:#fff;color:#1e1e1e;box-shadow:0 4px 14px rgba(0,0,0,.05);text-decoration:none}
+  .btn-book:hover{background:#c7a98c;color:#fff}
+  @media(max-width:960px){:root{--nav-h:64px}body{padding-top:calc(var(--nav-h)+12px)}.nav{padding:12px 16px}.nav-links{display:none}.btn-book{display:none}}
+
+  /* HERO */
+  .hero{background:#fff;border-bottom:1px solid var(--line)}
+  .hero-inner{padding:22px 0}
+  .hero h1{margin:.2rem 0;font-weight:800;font-size:clamp(28px,3.5vw,40px)}
+  .hero p{margin:.4rem 0 0;color:#46546b}
+  .pill{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b7280;font-size:12px}
+
+  /* CONTENT */
+  .grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin:18px 0 36px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:18px}
+  .card h2{margin:0 0 10px;font-weight:800;font-size:20px}
+  .muted{color:#6b7280}
+  .list{margin:0;padding-left:18px;color:#374151}
+  .list li{margin:6px 0}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:700;text-decoration:none;color:#111;cursor:pointer}
+  .btn.gold{border-color:#d8c3a9;background:linear-gradient(90deg,#fdfbf7,#fff);box-shadow:0 8px 24px rgba(199,169,140,.18)}
+  .btn.small{font-size:12px;padding:6px 10px}
+  .table{width:100%;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .table table{width:100%;border-collapse:separate;border-spacing:0}
+  .table th,.table td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}
+  .table th{background:#fafafa;font-weight:800}
+  .table tr:last-child td{border-bottom:0}
+  .small{font-size:12px;color:#6b7280}
+  .rtl{direction:rtl}
+  .badge{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:#fff;white-space:nowrap}
+  .ok{background:#f0fdf4;border-color:#bfe8c7}
+  .warn{background:#fff7ed;border-color:#fbd2a8}
+  .neg{background:#fee2e2;border-color:#fecaca}
+  .grid-contacts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(max-width:860px){.grid-contacts{grid-template-columns:1fr}}
+  .person{display:flex;gap:12px;border:1px solid var(--line);border-radius:12px;padding:12px}
+  .avatar{width:64px;height:64px;border-radius:12px;object-fit:cover;background:#f3f4f6;border:1px solid #eceff3}
+  input,textarea,select{padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-family:inherit}
+
+/* Hide the "Need to edit?" card in the sidebar */
+#editHead,
+#editHead + p,
+#editHead,
+#editHead ~ * {
+  display: none !important;
+}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<nav class="nav">
+  <div class="logo">ELITE&nbsp;AIR</div>
+  <div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../destinations.html">Destinations</a>
+    <a href="../offers.html">Offers</a>
+    <a href="../experience.html">Experience</a>
+    <a href="../news.html">Latest news</a>
+    <a href="../cargo.html">Cargo</a>
+    <a href="../membership.html">Membership</a>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn-book" type="button" onclick="location.href='members'">Members Login</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-inner">
+    <h1>IR Contacts <span class="pill" id="langTag">EN</span></h1>
+    
+</section>
+
+<div class="container">
+  <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn" id="btnEN">EN</button>
+      <button class="btn" id="btnAR">AR</button>
+    </div>
+    <div class="small">Last updated: <span id="updatedAt">—</span></div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <!-- PRIMARY CONTACT -->
+      <div class="card">
+        <h2 id="primaryHead">Primary IR Contact</h2>
+        <div class="person" id="primaryBox">
+          <div class="avatar" id="pAvatar"></div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><b id="pName">—</b> <span class="badge ok" id="pRole">—</span></div>
+            <div class="small muted" id="pDept">—</div>
+            <div class="small" style="margin-top:6px">
+              <div id="pEmail"></div>
+              <div id="pPhone"></div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+              <a class="btn gold small" id="btnMail" target="_blank" rel="noopener">Email</a>
+              <a class="btn small" id="btnCall">Call</a>
+              <a class="btn small" id="btnWA" target="_blank" rel="noopener" style="display:none">WhatsApp</a>
+              <a class="btn small" id="btnVCF">Download vCard</a>
+            </div>
+          </div>
+        </div>
+        <div class="small muted" id="hoursNow" style="margin-top:8px">—</div>
+      </div>
+
+      <!-- TEAM DIRECTORY -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <h2 style="margin:0" id="teamHead">Team & Departments</h2>
+          <button class="btn" id="dlAllVCF">Download All vCards</button>
+        </div>
+        <div class="grid-contacts" id="teamGrid"></div>
+      </div>
+
+      <!-- ENQUIRY FORM (mailto) -->
+      <div class="card">
+        <h2 id="formHead">Investor Enquiry</h2>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+          <div>
+            <label class="small muted">Your Name</label>
+            <input id="fName" placeholder="Full name"/>
+          </div>
+          <div>
+            <label class="small muted">Your Email</label>
+            <input id="fEmail" placeholder="name@example.com"/>
+          </div>
+          <div>
+            <label class="small muted">Subject</label>
+            <input id="fSubj" placeholder="Subject"/>
+          </div>
+          <div>
+            <label class="small muted">Category</label>
+            <select id="fCat"><option>General</option><option>Financials</option><option>Governance</option><option>ESG</option><option>Media</option></select>
+          </div>
+        </div>
+        <div style="margin-top:10px">
+          <label class="small muted">Message</label>
+          <textarea id="fMsg" placeholder="How can we help?" rows="5"></textarea>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <a class="btn gold" id="btnSend" target="_blank" rel="noopener">Open Email</a>
+          <span class="small muted">We use your email client to send. No data is stored on this site.</span>
+        </div>
+      </div>
+
+      <!-- FAQs -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <h2 style="margin:0" id="faqHead">FAQs</h2>
+          <input id="qFAQ" placeholder="Search FAQs…"/>
+        </div>
+        <div id="faqList" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <aside>
+      <!-- ADDRESS / MAP / HOURS -->
+      <div class="card">
+        <h2 id="addrHead">Address & Hours</h2>
+        <div id="addrBlock" class="muted"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <a class="btn" id="btnMap" target="_blank" rel="noopener">Open Maps</a>
+        </div>
+      </div>
+
+      <!-- EXTERNAL PARTNERS -->
+      <div class="card">
+        <h2 id="extHead">External Partners</h2>
+        <div class="table">
+          <table>
+            <thead><tr><th>Role</th><th>Name</th><th>Link</th></tr></thead>
+            <tbody id="extRows"><tr><td colspan="3" class="muted">—</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="car">
+        <h2 id="editHead">Need to edit?</h2>
+        <p class="muted" id="editText">Open <a href="investors-admin.html">Investors Admin → IR Contacts</a> to update contacts, FAQs and partners.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- CMS bootstrap snippet -->
+<script>
+  async function loadCMSFromServer(){
+    try{
+      const res = await fetch('/investor/api/ir_get.php', { cache: 'no-store' });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      window.EA_CMS = data; // { meta, contacts:{...} }
+      localStorage.setItem('EA_INVESTORS_CMS', JSON.stringify(data)); // offline fallback
+    }catch(err){
+      console.warn('Server fetch failed; using localStorage fallback:', err);
+    }
+  }
+</script>
+
+
+<script>
+  const el = id=>document.getElementById(id);
+  let lang='en';
+
+  const L={
+    en:{ primary:'Primary IR Contact', team:'Team & Departments', enquiry:'Investor Enquiry', faqs:'FAQs', address:'Address & Hours', partners:'External Partners', needEdit:'Need to edit?', editText:'Open Investors Admin → IR Contacts to update contacts, FAQs and partners.', email:'Email', phone:'Phone', mobile:'Mobile', now:'Office hours now', open:'Open', closed:'Closed', maps:'Open Maps' },
+    ar:{ primary:'جهة الاتصال الرئيسية لعلاقات المستثمرين', team:'الفريق والأقسام', enquiry:'نموذج الاستفسار', faqs:'الأسئلة الشائعة', address:'العنوان وساعات العمل', partners:'الشركاء الخارجيون', needEdit:'تحتاج تعديل؟', editText:'انتقل إلى لوحة الإدارة ← جهات الاتصال لتحديث البيانات والأسئلة والشركاء.', email:'البريد الإلكتروني', phone:'الهاتف', mobile:'الجوال', now:'حالة المكتب الآن', open:'مفتوح', closed:'مغلق', maps:'افتح الخريطة' }
+  };
+
+  function mailto(addr, subj, body){ const p = new URLSearchParams({subject:subj||'', body:body||''}); return `mailto:${addr}?${p.toString()}`; }
+  function vcard({name, title, email, phone, mobile, org, addr}){
+    const lines = [
+      'BEGIN:VCARD','VERSION:3.0',`FN:${name||''}`,`ORG:${org||'Elite Air'}`, title? `TITLE:${title}`:'', email? `EMAIL;TYPE=INTERNET:${email}`:'', phone? `TEL;TYPE=WORK,VOICE:${phone}`:'', mobile? `TEL;TYPE=CELL:${mobile}`:'', addr? `ADR;TYPE=WORK:;;${addr.replace(/\n/g,';')}`:'', 'END:VCARD'
+    ].filter(Boolean).join('\n');
+    return new Blob([lines], {type:'text/vcard'});
+  }
+
+  function localTimeStatus(hours){
+    try{
+      const tz = 'Asia/Kuwait';
+      const now = new Date();
+      const day = now.toLocaleString('en-US',{weekday:'short', timeZone:tz}).toLowerCase(); // mon,tue,…
+      const rule = hours && (hours[day] || hours.default);
+      if(!rule) return '';
+      // rule like "09:00-17:00"
+      const [s,e] = (rule||'').split('-');
+      if(!s||!e) return '';
+      const today = new Date(now.toLocaleString('en-US',{timeZone:tz}));
+      const [sh,sm] = s.split(':').map(Number); const [eh,em] = e.split(':').map(Number);
+      const start = new Date(today.getFullYear(), today.getMonth(), today.getDate(), sh, sm||0);
+      const end   = new Date(today.getFullYear(), today.getMonth(), today.getDate(), eh, em||0);
+      const open = today>=start && today<=end;
+      const fmt = d=> d.toLocaleTimeString(lang==='ar'?'ar-KW':'en-KW',{hour:'2-digit',minute:'2-digit',hour12:false});
+      return `${lang==='ar'?L.ar.now:L.en.now}: <b>${open? (lang==='ar'?L.ar.open:L.en.open):(lang==='ar'?L.ar.closed:L.en.closed)}</b> • ${fmt(start)}–${fmt(end)} Asia/Kuwait`;
+    }catch(e){ return '' }
+  }
+
+  function renderPrimary(p){
+    el('pName').textContent = p.name||'—';
+    el('pRole').textContent = (p.title && (p.title[lang]||p.title.en)) || p.title || '—';
+    el('pDept').textContent = (p.department && (p.department[lang]||p.department.en)) || p.department || '';
+    el('pAvatar').innerHTML = p.photo? `<img class="avatar" src="${p.photo}" alt="${p.name||''}">` : '';
+    const email = p.email||''; const phone = p.phone||''; const mobile=p.mobile||'';
+    el('pEmail').innerHTML = email? `<b>${lang==='ar'?L.ar.email:L.en.email}:</b> <a href="mailto:${email}">${email}</a>` : '';
+    el('pPhone').innerHTML = [ phone? `<b>${lang==='ar'?L.ar.phone:L.en.phone}:</b> <a href="tel:${phone}">${phone}</a>`:'' , mobile? `<b>${lang==='ar'?L.ar.mobile:L.en.mobile}:</b> <a href="tel:${mobile}">${mobile}</a>`:'' ].filter(Boolean).join(' · ');
+    // buttons
+    const subj = `Investor enquiry — ${p.name||'IR'}`; const body = '';
+    el('btnMail').href = mailto(email||'ir@eliteair.com', subj, body);
+    el('btnCall').href = phone? `tel:${phone}`:'#'; el('btnCall').style.pointerEvents = phone? 'auto':'none';
+    if(p.whatsapp){ el('btnWA').style.display='inline-flex'; el('btnWA').href = `https://wa.me/${p.whatsapp.replace(/\D/g,'')}`; }
+    else { el('btnWA').style.display='none'; }
+    el('btnVCF').onclick = ()=>{ const blob=vcard({name:p.name,title:(p.title?.en||p.title||''),email,phone,mobile,org:'Elite Air',addr:(p.address?.en||p.address||'')}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='elite-air_ir_contact.vcf'; a.click(); };
+  }
+
+  function renderTeam(list){
+    const people = Array.isArray(list)? list : [];
+    el('teamGrid').innerHTML = people.length? people.map(person=>{
+      const email=person.email||''; const phone=person.phone||''; const mobile=person.mobile||''; const addr=(person.address?.en||person.address||'');
+      const vcf = () => { const blob=vcard({name:person.name,title:(person.title?.en||person.title||''),email,phone,mobile,org:'Elite Air',addr}); const url=URL.createObjectURL(blob); return url; };
+      return `<div class="person">
+        ${person.photo? `<img class="avatar" src="${person.photo}" alt="${person.name||''}">` : `<div class="avatar"></div>`}
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><b>${person.name||'—'}</b> ${person.role? `<span class='badge'>${(person.role[lang]||person.role.en||person.role)}</span>`:''}</div>
+          <div class="small muted">${(person.title && (person.title[lang]||person.title.en)) || person.title || ''}</div>
+          <div class="small" style="margin-top:6px">${email? `<a href='mailto:${email}'>${email}</a>`:''} ${phone? ` · <a href='tel:${phone}'>${phone}</a>`:''}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+            ${email? `<a class='btn small' href='mailto:${email}' target='_blank'>Email</a>`:''}
+            ${phone? `<a class='btn small' href='tel:${phone}'>Call</a>`:''}
+            <a class='btn small' href='${vcf()}' download='contact.vcf'>vCard</a>
+          </div>
+        </div>
+      </div>`;
+    }).join('') : '<div class="muted">—</div>';
+  }
+
+  function renderFAQs(faqs){
+    const list = Array.isArray(faqs)? faqs: [];
+    const q = (el('qFAQ').value||'').toLowerCase();
+    const filtered = list.filter(f=> !q || `${(f.q?.[lang]||f.q)||''} ${(f.a?.[lang]||f.a)||''}`.toLowerCase().includes(q));
+    el('faqList').innerHTML = filtered.length? filtered.map(f=>{
+      const Q = (f.q && (f.q[lang]||f.q.en)) || f.q || '—';
+      const A = (f.a && (f.a[lang]||f.a.en)) || f.a || '';
+      return `<details><summary><b>${Q}</b></summary><div class='small' style='margin-top:6px'>${(A||'').replace(/\n/g,'<br>')}</div></details>`;
+    }).join('') : '<div class="muted">—</div>';
+  }
+
+  function renderPartners(partners){
+    const rows = Array.isArray(partners)? partners: [];
+    el('extRows').innerHTML = rows.length? rows.map(p=>`<tr><td>${p.role||'—'}</td><td>${p.name||'—'}</td><td>${p.url? `<a href='${p.url}' target='_blank' rel='noopener'>Open</a>`:'—'}</td></tr>`).join('') : '<tr><td colspan="3" class="muted">—</td></tr>';
+  }
+
+  function downloadAllVCF(list){
+    const people = Array.isArray(list)? list: [];
+    // Create one blob per contact; zip is overkill without lib, so trigger multiple downloads
+    people.slice(0,15).forEach((p,i)=>{ // limit to 15 to avoid spam
+      const blob=vcard({name:p.name,title:(p.title?.en||p.title||''),email:p.email,phone:p.phone,mobile:p.mobile,org:'Elite Air',addr:(p.address?.en||p.address||'')});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`elite-air_contact_${(p.name||'').replace(/\s+/g,'_')||i+1}.vcf`; a.click();
+    });
+  }
+
+  function render(){
+    const cms = window.EA_CMS || {};
+    const c = cms.contacts || { primary:{}, team:[], faqs:[], partners:[], address:{}, hours:{} };
+
+    // Meta & language
+    el('langTag').textContent = (lang==='ar'?'AR':'EN');
+    el('updatedAt').textContent = (cms.meta && cms.meta.updatedAt) ? cms.meta.updatedAt : '—';
+    if(lang==='ar'){ document.body.classList.add('rtl'); } else { document.body.classList.remove('rtl'); }
+    const t = lang==='ar'? L.ar : L.en;
+    el('primaryHead').textContent = t.primary;
+    el('teamHead').textContent = t.team; el('formHead').textContent = t.enquiry; el('faqHead').textContent = t.faqs; el('addrHead').textContent = t.address; el('extHead').textContent = t.partners; el('editHead').textContent = t.needEdit; el('editText').textContent = t.editText; el('btnMap').textContent = t.maps;
+
+    // Primary contact
+    renderPrimary(c.primary||{});
+
+    // Hours status
+    const status = localTimeStatus(c.hours||{}); el('hoursNow').innerHTML = status || '';
+
+    // Team & departments
+    renderTeam(c.team||[]);
+
+    // Enquiry mailto
+    const irEmail = (c.primary && c.primary.email) || c.email || 'ir@eliteair.com';
+    const openMail = ()=>{
+      const name = el('fName').value||''; const from = el('fEmail').value||''; const subj = el('fSubj').value||'Investor enquiry'; const cat = el('fCat').value||'General'; const msg = el('fMsg').value||'';
+      const body = `${name}\n${from}\nCategory: ${cat}\n\n${msg}`;
+      el('btnSend').href = mailto(irEmail, subj, body);
+    };
+    ['fName','fEmail','fSubj','fCat','fMsg'].forEach(id=> el(id).addEventListener('input', openMail));
+    openMail();
+
+    // FAQs
+    renderFAQs(c.faqs||[]);
+
+    // Address & map
+    const addrText = (c.address && (c.address[lang]||c.address.en)) || c.address || '';
+    el('addrBlock').innerHTML = addrText ? addrText.replace(/\n/g,'<br>') : '<span class="muted">—</span>';
+    el('btnMap').href = addrText? `https://maps.google.com/?q=${encodeURIComponent(addrText.replace(/<br>/g,' '))}` : '#';
+    el('btnMap').style.pointerEvents = addrText? 'auto':'none';
+
+    // Partners
+    renderPartners(c.partners||[]);
+
+    // Download all vCards
+    el('dlAllVCF').onclick = ()=> downloadAllVCF([c.primary||{}, ...(c.team||[])]);
+  }
+
+  window.addEventListener('DOMContentLoaded', async ()=>{
+    const el = (id)=>document.getElementById(id);
+    el('btnEN').addEventListener('click',()=>{lang='en'; render();});
+    el('btnAR').addEventListener('click',()=>{lang='ar'; render();});
+    el('qFAQ').addEventListener('input', ()=>{ const cms=window.EA_CMS||{}; renderFAQs((cms.contacts||{}).faqs||[]); });
+
+    await loadCMSFromServer();   // ← MySQL → PHP API
+    render();                    // ← build UI from server
+  });
+</script>
+</body>
+</html>

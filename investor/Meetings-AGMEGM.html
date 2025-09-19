@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — Meetings (AGM/EGM)</title>
+<link rel="icon" type="image/x-icon" href="img/elite.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ea-charcoal:#161A1F; --ea-pearl:#FDFDFC; --ea-gold:#C7A98C; --ea-gold-hi:#FFD479;
+    --ink:#111827; --muted:#6b7280; --panel:#ffffff; --back:#f7f4ee;
+    --radius:18px; --shadow:0 18px 60px rgba(15,23,42,.12); --nav-h:72px; --line:#e6e8ee;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink);background:var(--back);line-height:1.6;padding-top:calc(var(--nav-h)+18px)}
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* HEADER */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;align-items:center;gap:18px;padding:26px 56px;
+    background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%);box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)}
+  .logo{font-family:"Playfair Display",serif;font-size:28px;font-weight:600;color:#1e1e1e;letter-spacing:.06em}
+  .nav-links{display:flex;gap:40px;flex-wrap:wrap}
+  .nav a{color:#222;text-decoration:none;font-weight:600;position:relative}
+  .nav a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;background:#c7a98c;opacity:0;transform:scaleX(.6);transition:.2s}
+  .nav a:hover{color:#c7a98c}
+  .nav a:hover::after{opacity:1;transform:scaleX(1)}
+  .spacer{flex:1}
+  .btn-book{padding:12px 20px;border-radius:999px;border:1px solid #c7a98c;background:#fff;color:#1e1e1e;box-shadow:0 4px 14px rgba(0,0,0,.05);text-decoration:none}
+  .btn-book:hover{background:#c7a98c;color:#fff}
+  @media(max-width:960px){:root{--nav-h:64px}body{padding-top:calc(var(--nav-h)+12px)}.nav{padding:12px 16px}.nav-links{display:none}.btn-book{display:none}}
+
+  /* HERO */
+  .hero{background:#fff;border-bottom:1px solid var(--line)}
+  .hero-inner{padding:22px 0}
+  .hero h1{margin:.2rem 0;font-weight:800;font-size:clamp(28px,3.5vw,40px)}
+  .hero p{margin:.4rem 0 0;color:#46546b}
+  .pill{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b7280;font-size:12px}
+
+  /* CONTENT */
+  .grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin:18px 0 36px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:18px}
+  .card h2{margin:0 0 10px;font-weight:800;font-size:20px}
+  .muted{color:#6b7280}
+  .list{margin:0;padding-left:18px;color:#374151}
+  .list li{margin:6px 0}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:700;text-decoration:none;color:#111;cursor:pointer}
+  .btn.gold{border-color:#d8c3a9;background:linear-gradient(90deg,#fdfbf7,#fff);box-shadow:0 8px 24px rgba(199,169,140,.18)}
+  .btn.small{font-size:12px;padding:6px 10px}
+  .table{width:100%;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .table table{width:100%;border-collapse:separate;border-spacing:0}
+  .table th,.table td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}
+  .table th{background:#fafafa;font-weight:800}
+  .table tr:last-child td{border-bottom:0}
+  .badge{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:#fff}
+  .ok{background:#f0fdf4;border-color:#bfe8c7}
+  .neg{background:#fee2e2;border-color:#fecaca}
+  .rtl{direction:rtl}
+  details{background:#fafafa;border:1px dashed #e5e7eb;padding:10px;border-radius:10px}
+  details > summary{cursor:pointer;font-weight:700}
+  .small{font-size:12px;color:#6b7280}
+  #editHead,
+#editHead + p,
+#editHead + a,
+#editHead,
+#editHead ~ * {
+  display: none !important;
+}
+
+#editHead {
+  display: none !important;
+}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<nav class="nav">
+  <div class="logo">ELITE&nbsp;AIR</div>
+  <div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../destinations.html">Destinations</a>
+    <a href="../offers.html">Offers</a>
+    <a href="../experience.html">Experience</a>
+    <a href="../news.html">Latest news</a>
+    <a href="../cargo.html">Cargo</a>
+    <a href="../membership.html">Membership</a>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn-book" type="button" onclick="location.href='../members'">Members Login</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-inner">
+    <h1 id="pageTitle">Meetings (AGM/EGM) <span class="pill" id="langTag">EN</span></h1>
+    
+  </div>
+</section>
+
+<div class="container">
+  <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn small" id="btnEN">EN</button>
+      <button class="btn small" id="btnAR">AR</button>
+    </div>
+    <div class="small">Last updated: <span id="updatedAt">—</span></div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <!-- UPCOMING -->
+      <div class="card" id="upcomingCard">
+        <h2 id="upcomingHead">Upcoming Meeting</h2>
+        <h3 id="meetTitle">—</h3>
+        <p class="muted" id="meetMeta">—</p>
+        <div class="small" id="icsWrap"></div>
+        <h3 id="agendaHead" style="margin-top:16px">Agenda</h3>
+        <ul class="list" id="agendaList"></ul>
+        <h3 id="filesHead" style="margin-top:16px">Files</h3>
+        <ul class="list" id="fileList"></ul>
+      </div>
+
+      <!-- PAST -->
+      <div class="card">
+        <h2 id="pastHead">Past Meetings</h2>
+        <div class="table">
+          <table>
+            <thead>
+              <tr><th id="thMeeting">Meeting</th><th id="thDate">Date</th><th id="thQuorum">Quorum</th><th id="thRes">Resolutions</th><th id="thMin">Minutes</th><th id="thDeck">Deck</th><th> </th></tr>
+            </thead>
+            <tbody id="pastRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <aside>
+      <div class="card">
+        <h2 id="tipsHead">Tips</h2>
+        <ul class="list" id="tipsList"></ul>
+      </div>
+      <div class="car">
+        <h2 id="editHead">Need to edit?</h2>
+        <p class="muted" id="editText">Open <a href="investors-admin.html">Investors Admin → Meetings</a> to update the notice, agenda and files.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- CMS bootstrap snippet -->
+<script>
+  async function loadCMSFromServer(){
+    try{
+      const res = await fetch('/investor/api/meetings_get.php', { cache: 'no-store' });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      window.EA_CMS = data; // server payload {meta, meetings:{...}}
+      localStorage.setItem('EA_INVESTORS_CMS', JSON.stringify(data)); // offline fallback
+    }catch(err){
+      console.warn('Server fetch failed; falling back to localStorage', err);
+    }
+  }
+</script>
+
+
+<script>
+  const el = id=>document.getElementById(id);
+  let lang = 'en';
+
+  const L = {
+    en: {
+      upcoming:'Upcoming Meeting', agenda:'Agenda', files:'Files', past:'Past Meetings',
+      tips:'Tips', tipsList:[
+        'Use Asia/Kuwait times and include the Record Date.',
+        'After the meeting, publish Results, Minutes and the Presentation deck.'
+      ],
+      meeting:'Meeting', date:'Date', quorum:'Quorum', resolutions:'Resolutions', minutes:'Minutes', deck:'Deck', addToCal:'Add to Calendar (.ics)'
+    },
+    ar: {
+      upcoming:'الاجتماع القادم', agenda:'جدول الأعمال', files:'الملفات', past:'الاجتماعات السابقة',
+      tips:'نصائح', tipsList:[
+        'قم برفع إشعار الدعوة وجدول الأعمال ونموذج التوكيل كملفات PDF من لوحة التحكم.',
+        'استخدم توقيت آسيا/الكويت وأدرج تاريخ الاستحقاق.',
+        'بعد الاجتماع انشر نتائج التصويت والمحضر والعرض التقديمي.'
+      ],
+      meeting:'الاجتماع', date:'التاريخ', quorum:'النصاب', resolutions:'القرارات', minutes:'المحضر', deck:'العرض', addToCal:'إضافة إلى التقويم (.ics)'
+    }
+  };
+
+  function fmtDate(dateStr, timeStr){
+    if(!dateStr && !timeStr) return '';
+    try{
+      const iso = dateStr ? `${dateStr}T${(timeStr||'00:00')}:00` : dateStr;
+      const d = new Date(iso);
+      if(isNaN(d)) return `${dateStr||''} ${timeStr||''}`;
+      return d.toLocaleString(lang==='ar'?'ar-KW':'en-KW', {dateStyle:'medium', timeStyle: timeStr? 'short':'short'});
+    }catch(e){ return `${dateStr||''} ${timeStr||''}` }
+  }
+
+  function makeICS({title, date, time, tz, venue}){
+    if(!date) return '';
+    const dt = new Date(`${date}T${(time||'09:00')}:00`);
+    const end = new Date(dt.getTime()+60*60*1000);
+    const pad = n=> String(n).padStart(2,'0');
+    const stamp = d=> `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
+    const uid = `eliteair-${Date.now()}@investors`;
+    const ics = [
+      'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Elite Air//Investors//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH','BEGIN:VEVENT',
+      `UID:${uid}`,`DTSTAMP:${stamp(new Date())}`,`DTSTART:${stamp(dt)}`,`DTEND:${stamp(end)}`,
+      `SUMMARY:${(title||'Elite Air Meeting').replace(/\n/g,' ')}`,
+      venue? `LOCATION:${venue.replace(/\n/g,' ')}`:'',
+      'END:VEVENT','END:VCALENDAR'
+    ].filter(Boolean).join('\r\n');
+    const blob = new Blob([ics], {type:'text/calendar'});
+    return URL.createObjectURL(blob);
+  }
+
+  function badgeOutcome(outcome){
+    if(!outcome) return '';
+    const ok = /pass|approved|ratified/i.test(outcome);
+    return `<span class="badge ${ok?'ok':'neg'}">${outcome}</span>`;
+  }
+
+  function render(){
+    const t = L[lang];
+    el('langTag').textContent = (lang==='ar'?'AR':'EN');
+    if(lang==='ar'){ document.body.classList.add('rtl'); } else { document.body.classList.remove('rtl'); }
+
+    const cms = window.EA_CMS || {};
+    const d = cms.meetings || { upcoming:{}, past:[] };
+
+    // Meta
+    el('updatedAt').textContent = (cms.meta && cms.meta.updatedAt) ? cms.meta.updatedAt : '—';
+
+    // Headings
+    el('upcomingHead').textContent = t.upcoming;
+    el('agendaHead').textContent = t.agenda;
+    el('filesHead').textContent = t.files;
+    el('pastHead').textContent = t.past;
+    el('tipsHead').textContent = t.tips;
+    el('editHead').textContent = t.editHead;
+    el('editText').innerHTML = t.editText;
+    el('thMeeting').textContent = t.meeting;
+    el('thDate').textContent = t.date;
+    el('thQuorum').textContent = t.quorum;
+    el('thRes').textContent = t.resolutions;
+    el('thMin').textContent = t.minutes;
+    el('thDeck').textContent = t.deck;
+
+    // Upcoming
+    const u = d.upcoming || {};
+    el('meetTitle').textContent = u.title || '—';
+    el('meetMeta').innerHTML = [
+      `<b>${fmtDate(u.date, u.time)}</b>`,
+      u.tz? `(${u.tz})`:'',
+      u.venue? `• ${u.venue}`:'',
+      u.recordDate? `• Record date: ${u.recordDate}`:''
+    ].filter(Boolean).join(' ');
+
+    // ICS
+    const href = makeICS({title:u.title, date:u.date, time:u.time, tz:u.tz, venue:u.venue});
+    el('icsWrap').innerHTML = u.date ? `<a class="btn gold small" href="${href}" download="elite-air-meeting.ics">${t.addToCal}</a>` : '';
+
+    // Agenda list
+    const ag = Array.isArray(u.agenda)? u.agenda : [];
+    el('agendaList').innerHTML = ag.length? ag.map(x=>`<li>${x}</li>`).join('') : `<li class='muted'>—</li>`;
+
+    // Files
+    const files = Array.isArray(u.files)? u.files : [];
+    el('fileList').innerHTML = files.length? files.map(f=>`<li><a href="${f.url}" target="_blank" rel="noopener">${f.label||'File'}</a></li>`).join('') : `<li class='muted'>—</li>`;
+
+    // Past meetings
+    const past = Array.isArray(d.past)? d.past : [];
+    el('pastRows').innerHTML = past.length ? past.map((p,idx)=>{
+      const results = Array.isArray(p.results)? p.results : [];
+      const resTable = results.length? `
+        <details style="margin-top:8px">
+          <summary>Voting results</summary>
+          <div class="table" style="margin-top:8px">
+            <table>
+              <thead><tr><th>Resolution</th><th>For %</th><th>Against %</th><th>Abstain %</th><th>Outcome</th></tr></thead>
+              <tbody>
+                ${results.map(r=>`<tr><td>${r.title||'—'}</td><td>${r.for??'—'}</td><td>${r.against??'—'}</td><td>${r.abstain??'—'}</td><td>${badgeOutcome(r.outcome||'')}</td></tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </details>` : '';
+
+      return `<tr>
+        <td>${p.meeting||'—'}${resTable? '<div class="small">(see results)</div>':''}</td>
+        <td>${p.date||'—'}</td>
+        <td>${p.quorum||'—'}</td>
+        <td>${p.resolutions? `<a href='${p.resolutions}' target='_blank'>PDF</a>`:'—'}</td>
+        <td>${p.minutes? `<a href='${p.minutes}' target='_blank'>PDF</a>`:'—'}</td>
+        <td>${p.deck? `<a href='${p.deck}' target='_blank'>PDF</a>`:'—'}</td>
+        <td style="white-space:nowrap">${resTable? `<button class='btn small' onclick="document.getElementById('vr_${idx}').open = !document.getElementById('vr_${idx}').open">Toggle</button>`:''}</td>
+      </tr>
+      <tr><td colspan="7">${resTable.replace('<details','<details id=\'vr_'+idx+'\'')}</td></tr>`;
+    }).join('') : `<tr><td colspan="7" class="muted">No past meetings yet.</td></tr>`;
+
+    // Tips list
+    el('tipsList').innerHTML = (t.tipsList||[]).map(i=>`<li>${i}</li>`).join('');
+  }
+
+  window.addEventListener('DOMContentLoaded', async ()=>{
+  el('btnEN').addEventListener('click',()=>{lang='en'; render();});
+  el('btnAR').addEventListener('click',()=>{lang='ar'; render();});
+  await loadCMSFromServer(); // ← MySQL→PHP API
+  render();                  // ← build UI
+});
+
+</script>
+<script src="../lang.js"></script>
+</body>
+</html>

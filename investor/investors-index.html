@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Elite Air — Investors</title>
+<link rel="icon" type="image/x-icon" href="img/elite.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --ea-charcoal:#161A1F; --ea-pearl:#FDFDFC; --ea-gold:#C7A98C; --ea-gold-hi:#FFD479; --ink:#111827; --muted:#6b7280; --panel:#ffffff; --back:#f7f4ee; --radius:18px; --shadow:0 18px 60px rgba(15,23,42,.12); --nav-h:72px; --line:#e6e8ee; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink);background:var(--back);line-height:1.6;padding-top:calc(var(--nav-h)+18px)}
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* GLOBAL LINKS: no underlines anywhere */
+  a{ text-decoration:none; color:inherit; }
+  a:hover{ text-decoration:none; }
+
+  /* HEADER */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;align-items:center;gap:18px;padding:26px 56px; background:linear-gradient(90deg,#D5D7DB 0%,#C7A98C 44%,#F7F6F3 78%,#FDFDFC 100%); box-shadow:0 6px 24px rgba(0,0,0,.06), inset 0 -3px 0 rgba(184,146,106,.45)}
+  .logo{font-family:"Playfair Display",serif;font-size:28px;font-weight:600;color:#1e1e1e;letter-spacing:.06em}
+  .nav-links{display:flex;gap:40px;flex-wrap:wrap}
+  .nav a{color:#222;font-weight:600;position:relative}
+  .nav a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;background:#c7a98c;opacity:0;transform:scaleX(.6);transition:.2s}
+  .nav a:hover{color:#c7a98c}
+  .nav a:hover::after{opacity:1;transform:scaleX(1)}
+  .spacer{flex:1}
+  .btn-book{padding:12px 20px;border-radius:999px;border:1px solid #c7a98c;background:#fff;color:#1e1e1e;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+  .btn-book:hover{background:#c7a98c;color:#fff}
+  @media(max-width:960px){:root{--nav-h:64px}body{padding-top:calc(var(--nav-h)+12px)}.nav{padding:12px 16px}.nav-links{display:none}.btn-book{display:none}}
+
+  /* HERO */
+  .hero{background:#fff;border-bottom:1px solid var(--line)}
+  .hero-inner{padding:22px 0}
+  .hero h1{margin:.2rem 0;font-weight:800;font-size:clamp(28px,3.5vw,40px)}
+  .pill{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b7280;font-size:12px}
+
+  /* CONTENT */
+  .grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin:18px 0 36px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:18px}
+  .card h2{margin:0 0 10px;font-weight:800;font-size:20px}
+  .muted{color:#6b7280}
+  .list{margin:0;padding-left:18px;color:#374151}
+  .list li{margin:6px 0}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:700;color:#111;cursor:pointer}
+  .btn.gold{border-color:#d8c3a9;background:linear-gradient(90deg,#fdfbf7,#fff);box-shadow:0 8px 24px rgba(199,169,140,.18)}
+  input{padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-family:inherit}
+  .small{font-size:12px;color:#6b7280}
+  .rtl{direction:rtl}
+
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:1100px){.tiles{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:680px){.tiles{grid-template-columns:1fr}}
+  .tile{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);border-radius:16px;padding:14px}
+  .tile h3{margin:0;font-size:18px;color:#0b46e5}
+  .badge{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:#fff;white-space:nowrap}
+  .ok{background:#f0fdf4;border-color:#bfe8c7}
+
+  /* Hide the small filename line under each tile */
+  .tile .small.muted{display:none}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<nav class="nav">
+  <div class="logo">ELITE&nbsp;AIR</div>
+  <div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../destinations.html">Destinations</a>
+    <a href="../offers.html">Offers</a>
+    <a href="../experience.html">Experience</a>
+    <a href="../news.html">Latest news</a>
+    <a href="../cargo.html">Cargo</a>
+    <a href="../membership.html">Membership</a>
+  </div>
+  <div class="spacer">
+    <button class="btn-book" type="button" onclick="location.href='../members'">Members Login</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-inner">
+    <h1>Investors <span class="pill" id="langTag">EN</span></h1>
+  </div>
+</section>
+
+<div class="container">
+  <!-- LANGUAGE & META -->
+  <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn" id="btnEN">EN</button>
+      <button class="btn" id="btnAR">AR</button>
+      <input id="q" placeholder="Quick search pages…"/>
+    </div>
+    <div class="small">Last updated: <span id="updatedAt">—</span></div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <!-- SNAPSHOT -->
+      <div class="card">
+        <h2 id="snapHead">Snapshot</h2>
+        <div class="kpis" id="kpiGrid"></div>
+        <div class="small" id="nextEvent" style="margin-top:8px"></div>
+      </div>
+
+      <!-- SECTIONS -->
+      <div class="card">
+        <h2 id="pagesHead">Sections</h2>
+        <div class="tiles" id="tiles"></div>
+      </div>
+
+      <!-- WHAT'S NEW -->
+      <div class="card">
+        <h2 id="newsHead">What's New</h2>
+        <div class="list" id="newsList"></div>
+        <div style="margin-top:10px"><a class="btn gold" href="News-&-Disclosures.html">Open News & Disclosures</a></div>
+      </div>
+    </div>
+
+    <aside>
+      <!-- QUICK LINKS -->
+      <div class="card">
+        <h2 id="quickHead">Quick Links</h2>
+        <ul class="list" id="quickList"></ul>
+      </div>
+
+      <!-- CONTACT IR -->
+      <div class="card">
+        <h2 id="contactHead">Contact IR</h2>
+        <div id="contactBlock" class="muted"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <a class="btn gold" id="btnEmailIR" target="_blank" rel="noopener">Email IR</a>
+          <a class="btn" href="IR-Contacts.html">More Contacts</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- CMS bootstrap snippet -->
+<script>
+/* ========= helpers & state ========= */
+const el = (id)=>document.getElementById(id);
+const STORAGE_KEY = 'EA_INVESTORS_CMS';
+let lang = 'en';
+
+function getCMS(){
+  try { return window.EA_CMS || JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); }
+  catch { return {}; }
+}
+function setCMS(data){
+  const cur = getCMS();
+  const merged = { ...cur, ...data, news: { ...(cur.news||{}), ...(data.news||{}) } };
+  window.EA_CMS = merged;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(merged)); } catch {}
+}
+const L = {
+  en: { investors:'Investors', snapshot:'Snapshot', sections:'Sections', quick:'Quick Links', whatsnew:`What's New`, next:'Next event', shares:'Total Shares', free:'Free Float', ticker:'Ticker', isin:'ISIN', emailIR:'Email IR', ar:'AR', en:'EN' },
+  ar: { investors:'علاقات المستثمرين', snapshot:'نظرة عامة', sections:'الأقسام', quick:'روابط سريعة', whatsnew:'آخر المستجدات', next:'الحدث القادم', shares:'إجمالي الأسهم', free:'الأسهم الحرة', ticker:'الرمز', isin:'الترقيم الدولي', emailIR:'مراسلة علاقات المستثمرين', ar:'ع', en:'E' }
+};
+
+/* ========= API loads ========= */
+async function loadIndexCMS(){
+  try{
+    const r = await fetch('/investor/api/investors_index_get.php', { cache:'no-store' });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    setCMS(await r.json());
+  }catch(e){ console.warn('index api fail', e); }
+}
+/* optional: fire-and-forget prefetch to improve news/other bits */
+async function prefetchOptional(){
+  const tryFetch = async (url) => {
+    try{ const r = await fetch(url, {cache:'no-store'}); if(r.ok) setCMS(await r.json()); }catch{}
+  };
+  [
+    '/api/news_get.php',
+    '/api/meetings_get.php',
+    '/api/dividends_get.php',
+    '/api/ipo_get.php',
+    '/api/share_get.php',
+    '/api/ir_get.php',
+    '/api/certs_get.php',
+    '/api/governance_get.php',
+    '/api/esg_get.php',
+    '/api/docs_get.php'
+  ].forEach(tryFetch);
+}
+
+/* ========= tiny utils ========= */
+function parseDate(s){ if(!s) return null; const d=new Date(s); return isNaN(d)? null : d; }
+function fmtDate(s){ const d=parseDate(s); return d? d.toISOString().slice(0,10): (s||'—'); }
+
+/* ========= renderers ========= */
+function renderSnapshot(){
+  const cms = getCMS(); const share=cms.share||{}; const meetings=cms.meetings||{};
+  // updatedAt
+  const uAt = cms.meta?.updatedAt;
+  if (el('updatedAt')) el('updatedAt').textContent = uAt ? (parseDate(uAt)?.toLocaleString() || uAt) : '—';
+
+  // KPI grid
+  const kpis = [
+    {label: L[lang].ticker, value: share.ticker || '—'},
+    {label: L[lang].isin,   value: share.isin   || '—'},
+    {label: L[lang].shares, value: share.shareCount || '—'},
+    {label: L[lang].free,   value: share.freeFloat || '—'}
+  ];
+  if (el('kpiGrid')){
+    el('kpiGrid').innerHTML = kpis.map(k=>`
+      <div class="tile" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <div class="small muted">${k.label}</div>
+        <div style="font-weight:700">${k.value}</div>
+      </div>
+    `).join('');
+  }
+
+  // Next event
+  const u=meetings.upcoming||{};
+  if (el('nextEvent')){
+    el('nextEvent').innerHTML = u.date
+      ? `${L[lang].next}: <b>${u.title||'—'}</b> • ${fmtDate(u.date)}${u.time?' '+u.time:''}${u.venue?' • '+u.venue:''}`
+      : '';
+  }
+}
+
+/* ---- DB-driven Quick Links ---- */
+function renderQuick(){
+  const cms = getCMS();
+  const arr = cms.index?.quickLinks || []; // [{title:{en,ar}, url, icon}]
+  const html = arr.length ? arr.map(x=>{
+    const title = (lang==='ar' ? (x.title?.ar || x.title?.en || '') : (x.title?.en || x.title?.ar || ''));
+    const icon  = x.icon ? `<span style="margin-right:6px">${x.icon}</span>` : '';
+    return `<li><a href="${x.url}">${icon}${title}</a></li>`;
+  }).join('') : '<li class="muted">—</li>';
+  if (el('quickList')) el('quickList').innerHTML = html;
+}
+
+/* ---- DB-driven Sections (tiles grid) ---- */
+function renderTiles(){
+  const cms = getCMS();
+  const all = cms.index?.sections || []; // [{title:{en,ar}, url, icon}]
+  const q = (el('q')?.value||'').toLowerCase().trim();
+  const list = all.filter(x=>{
+    const en=(x.title?.en||'').toLowerCase(), ar=(x.title?.ar||'').toLowerCase();
+    return !q || en.includes(q) || ar.includes(q);
+  });
+  if (el('tiles')){
+    el('tiles').innerHTML = list.length ? list.map(x=>{
+      const title = (lang==='ar' ? (x.title?.ar || x.title?.en || '') : (x.title?.en || x.title?.ar || ''));
+      const ico   = x.icon ? `${x.icon} ` : '';
+      return `<a class="tile" href="${x.url}">
+        <div style="display:flex;align-items:center;gap:8px;justify-content:space-between">
+          <h3>${ico}${title}</h3>
+          <div aria-hidden="true">›</div>
+        </div>
+        <div class="small muted">${x.url}</div>
+      </a>`;
+    }).join('') : '<div class="muted">—</div>';
+  }
+}
+
+/* ---- News (unchanged) ---- */
+function renderNews(){
+  const cms=getCMS(); const items=(cms.news?.items||[]).slice().sort((a,b)=>{
+    const da=parseDate(b.date), db=parseDate(a.date);
+    return (da?da.getTime():0)-(db?db.getTime():0);
+  }).slice(0,5);
+
+  if (!el('newsList')) return;
+  el('newsList').innerHTML = items.length
+    ? `<ul class="list">` + items.map(i=>`<li><b>${i.title||'—'}</b> <span class="small muted">${fmtDate(i.date)} • ${i.type||''}</span></li>`).join('') + `</ul>`
+    : `<div class="muted">No recent updates.</div>`;
+}
+
+/* ---- IR Contact (unchanged) ---- */
+function renderContact(){
+  const cms=getCMS(); const c=cms.contacts||{}; const p=c.primary||{};
+  const email=p.email||c.email||'ir@eliteair.com.kw';
+  const phone=p.phone||'';
+  if (el('contactBlock')) {
+    el('contactBlock').innerHTML = [
+      email? `<div><b>Email:</b> <a href="mailto:${email}">${email}</a></div>` : '',
+      phone? `<div><b>Phone:</b> <a href="tel:${phone}">${phone}</a></div>` : ''
+    ].filter(Boolean).join('') || '<span class="muted">—</span>';
+  }
+  const btn = document.getElementById('btnEmailIR');
+  if(btn) btn.href = `mailto:${email}?subject=Investor%20enquiry`;
+}
+
+/* ---- master render ---- */
+function render(){
+  const t=L[lang];
+  document.title = `Elite Air — ${t.investors}`;
+  if (el('langTag')) el('langTag').textContent = (lang==='ar'?t.ar:t.en);
+  if (lang==='ar') document.body.classList.add('rtl'); else document.body.classList.remove('rtl');
+  if (el('snapHead'))   el('snapHead').textContent   = t.snapshot;
+  if (el('pagesHead'))  el('pagesHead').textContent  = t.sections;
+  if (el('quickHead'))  el('quickHead').textContent  = t.quick;
+  if (el('newsHead'))   el('newsHead').textContent   = t.whatsnew;
+  if (el('contactHead'))el('contactHead').textContent= 'IR';
+
+  renderSnapshot();
+  renderTiles();
+  renderNews();
+  renderQuick();
+  renderContact();
+}
+
+/* ========= boot ========= */
+window.addEventListener('DOMContentLoaded', async ()=>{
+  if (el('btnEN')) el('btnEN').onclick = ()=>{ lang='en'; render(); };
+  if (el('btnAR')) el('btnAR').onclick = ()=>{ lang='ar'; render(); };
+  if (el('q'))     el('q').addEventListener('input', renderTiles);
+
+  await loadIndexCMS();   // ← DB snapshot (share/news/meeting/IR + index.quickLinks/sections)
+  prefetchOptional();     // ← fire-and-forget enrichment
+  render();
+});
+</script>
+</body>
+</html>
